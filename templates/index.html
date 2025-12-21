@@ -1,0 +1,1480 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Aethera | Sonic Firmament</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon.png">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="../static/images/apple-touch-icon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-deep: #020305;
+      --ink: #f4f4f6;
+      --muted: rgba(255,255,255,0.78);
+      --gold: #c5a059;
+      --gold-bright: #f2e1c2;
+      --border: rgba(197, 160, 89, 0.2);
+
+      --step-border: rgba(242, 225, 194, 0.22);
+      --step-ink: rgba(255,255,255,0.96);
+      --step-muted: rgba(255,255,255,0.86);
+
+      --chip: rgba(255,255,255,0.06);
+      --chip-b: rgba(242,225,194,0.18);
+      --danger: rgba(255, 120, 120, 0.92);
+    }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--ink);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    /* --- HERO BACKGROUND SYSTEM --- */
+    .hero-wrap {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background: var(--bg-deep);
+    }
+
+    .milky-way {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      opacity: 0.4;
+      background:
+        radial-gradient(ellipse at 40% 60%, rgba(64, 84, 134, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 30%, rgba(197, 160, 89, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 50% 50%, rgba(15, 20, 30, 1) 0%, var(--bg-deep) 100%);
+      filter: blur(40px);
+      pointer-events: none;
+    }
+
+    #star-canvas { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+
+    /* --- NAV --- */
+    .nav-glass {
+      background: rgba(2, 3, 5, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 0;
+      z-index: 1000;
+    }
+    .navbar-brand {
+      font-family: "Cinzel", serif;
+      letter-spacing: .4em;
+      color: var(--gold-bright) !important;
+      font-weight: 700;
+    }
+
+    /* nav links */
+    .nav-link-aethera{
+      color: rgba(255,255,255,0.78) !important;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-size: .72rem;
+      padding: .55rem .70rem !important;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: .2s ease;
+    }
+    .nav-link-aethera:hover{
+      color: rgba(242,225,194,0.96) !important;
+      border-color: rgba(242,225,194,0.18);
+      background: rgba(255,255,255,0.04);
+      transform: translateY(-1px);
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: var(--bg-deep);
+      padding: 12px 22px;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      text-decoration: none;
+      transition: 0.3s ease;
+      display: inline-block;
+      border: 0;
+      border-radius: 0;
+      white-space: nowrap;
+    }
+    .btn-gold:hover {
+      background: var(--gold-bright);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(197, 160, 89, 0.4);
+    }
+    .btn-outline-gold{
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: rgba(255,255,255,0.92);
+      padding: 12px 22px;
+      border-radius: 0;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      text-decoration: none;
+      display:inline-block;
+      transition: .22s ease;
+      white-space: nowrap;
+    }
+    .btn-outline-gold:hover{
+      color: var(--gold-bright);
+      border-color: var(--gold-bright);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(197,160,89,.18);
+    }
+
+    /* --- HERO CONTENT --- */
+    .hero-container { position: relative; z-index: 10; }
+    .hero-label {
+      font-weight: 900;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6em;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .hero-title {
+      font-family: "Cinzel", serif;
+      font-size: clamp(2.2rem, 7vw, 4rem);
+      line-height: 1.1;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+    .hero-description {
+      font-size: 1.12rem;
+      line-height: 1.85;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 2.25rem;
+      border-left: 2px solid var(--gold);
+      padding-left: 1.5rem;
+    }
+
+    /* --- CONSTELLATION STAGE (hero) --- */
+    .stage-wrapper { position: relative; }
+    .stage-frame {
+      aspect-ratio: 1/1;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-radius: 10px;
+    }
+    .corner { position: absolute; width: 15px; height: 15px; border: 1px solid var(--gold); }
+    .tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+    .bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+    .br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+    .orion-svg { width: 85%; height: 85%; overflow: visible; }
+    .const-line {
+      stroke: var(--gold);
+      stroke-width: 1.5;
+      fill: none;
+      opacity: 0.42;
+      stroke-dasharray: 2000;
+      stroke-dashoffset: 2000;
+      animation: draw 5s forwards;
+    }
+    .star-flare { fill: var(--gold-bright); filter: drop-shadow(0 0 8px var(--gold)); }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+
+    /* --- USER GUIDE --- */
+    .howto-section{
+      padding: 92px 0 72px;
+      background:
+        radial-gradient(900px 380px at 22% 10%, rgba(197,160,89,0.16), transparent 60%),
+        radial-gradient(820px 360px at 78% 30%, rgba(110,140,210,0.12), transparent 62%),
+        #050608;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .howto-top{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+
+    .howto-title{
+      font-family: "Cinzel", serif;
+      font-weight: 700;
+      letter-spacing: .08em;
+      margin: 10px 0 12px;
+      color: #fff;
+      font-size: clamp(2.0rem, 3.2vw, 2.6rem);
+      display:flex;
+      align-items:center;
+      gap: 14px;
+    }
+    .howto-title i{
+      color: var(--gold-bright);
+      font-size: 1.35em;
+      filter: drop-shadow(0 0 14px rgba(197,160,89,0.25));
+    }
+
+    .howto-sub{
+      color: rgba(255,255,255,0.88);
+      max-width: 920px;
+      line-height: 1.9;
+      margin: 0;
+      font-size: 1.12rem;
+    }
+
+    .timeline{
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    @media (min-width: 992px){
+      .timeline{
+        grid-template-columns: 180px 1fr;
+        column-gap: 26px;
+        row-gap: 18px;
+        align-items: start;
+      }
+    }
+
+    .t-node{
+      position: relative;
+      padding: 18px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(242,225,194,0.20);
+      background: rgba(0,0,0,0.22);
+      box-shadow: 0 18px 50px rgba(0,0,0,.40);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow: hidden;
+    }
+    @media (min-width: 992px){
+      .t-node{
+        min-height: 132px;
+        flex-direction: column;
+        justify-content:center;
+        gap: 10px;
+      }
+      .t-node:after{
+        content:"";
+        position:absolute;
+        left: 50%;
+        top: 80px;
+        bottom: -90px;
+        width: 1px;
+        background: rgba(242,225,194,0.16);
+        transform: translateX(-50%);
+      }
+      .t-node.last:after{ display:none; }
+    }
+
+    .t-step{
+      font-size: .82rem;
+      letter-spacing: .34em;
+      text-transform: uppercase;
+      color: rgba(242,225,194,0.95);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .t-num{
+      font-family: "Cinzel", serif;
+      font-weight: 700;
+      font-size: 2.25rem;
+      letter-spacing: .08em;
+      color: rgba(242,225,194,0.95);
+      line-height: 1;
+      margin-top: 6px;
+    }
+
+    .t-card{
+      border: 1px solid var(--step-border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border-radius: 18px;
+      padding: 22px 20px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.50);
+      position: relative;
+      overflow: hidden;
+    }
+    .t-card:before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background:
+        radial-gradient(520px 240px at 18% 20%, rgba(197,160,89,0.18), transparent 60%),
+        radial-gradient(520px 240px at 85% 70%, rgba(110,140,210,0.12), transparent 62%);
+      opacity: .75;
+      pointer-events:none;
+    }
+    .t-card > *{ position: relative; z-index: 1; }
+
+    .t-head{
+      margin: 0 0 10px;
+      font-weight: 950;
+      letter-spacing: .01em;
+      font-size: 1.50rem;
+      color: var(--step-ink);
+    }
+    .t-body{
+      margin: 0;
+      color: var(--step-muted);
+      line-height: 1.86;
+      font-size: 1.10rem;
+    }
+
+    .how-mini{
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(242,225,194,0.20);
+      background: rgba(0,0,0,0.26);
+      color: rgba(255,255,255,0.90);
+      font-size: 1.02rem;
+      line-height: 1.75;
+      box-shadow: 0 18px 50px rgba(0,0,0,.42);
+    }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: .86em;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.96);
+      white-space: nowrap;
+    }
+
+    /* --- AUDIO STARS SECTION (NEW) --- */
+    .audio-section{
+      padding: 88px 0 92px;
+      background:
+        radial-gradient(920px 420px at 75% 0%, rgba(197,160,89,0.14), transparent 60%),
+        radial-gradient(860px 420px at 15% 30%, rgba(110,140,210,0.12), transparent 62%),
+        #050608;
+      border-bottom: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      position: relative;
+      overflow:hidden;
+    }
+    .audio-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .audio-title{
+      margin:0;
+      font-family:"Cinzel", serif;
+      font-weight:700;
+      letter-spacing:.08em;
+      color:#fff;
+      font-size: clamp(2.0rem, 3.2vw, 2.6rem);
+    }
+    .audio-sub{
+      margin: 10px 0 0;
+      color: rgba(255,255,255,0.86);
+      max-width: 920px;
+      line-height: 1.85;
+      font-size: 1.05rem;
+    }
+
+    .audio-panel{
+      border: 1px solid rgba(242,225,194,0.18);
+      background: rgba(0,0,0,0.24);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.50);
+    }
+
+    .searchbar{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+    .searchbar .form-control, .searchbar .form-select{
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(242,225,194,0.18);
+      color: rgba(255,255,255,0.92);
+      border-radius: 999px;
+      padding: 12px 14px;
+      box-shadow: none !important;
+    }
+    .searchbar .form-control::placeholder{ color: rgba(255,255,255,0.55); }
+    .searchbar .form-control:focus, .searchbar .form-select:focus{
+      border-color: rgba(242,225,194,0.34);
+      background: rgba(255,255,255,0.06);
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--chip-b);
+      background: var(--chip);
+      color: rgba(255,255,255,0.90);
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: .70rem;
+      white-space: nowrap;
+    }
+    .chip i{ color: rgba(242,225,194,0.92); }
+
+    .audio-grid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 992px){
+      .audio-grid{ grid-template-columns: 1.2fr .8fr; }
+    }
+
+    .audio-list{
+      border: 1px solid rgba(242,225,194,0.14);
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      overflow: hidden;
+      max-height: 540px;
+    }
+    .audio-list-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(242,225,194,0.12);
+      background: rgba(0,0,0,0.18);
+    }
+    .audio-count{
+      color: rgba(255,255,255,0.82);
+      font-weight: 800;
+      letter-spacing: .06em;
+      font-size: .85rem;
+      text-transform: uppercase;
+      margin: 0;
+    }
+    .audio-list-body{
+      overflow:auto;
+      max-height: 486px;
+    }
+
+    .star-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(242,225,194,0.10);
+      cursor: pointer;
+      transition: .18s ease;
+    }
+    .star-row:hover{
+      background: rgba(197,160,89,0.08);
+      transform: translateY(-1px);
+    }
+    .star-row.active{
+      background: rgba(197,160,89,0.14);
+      border-bottom-color: rgba(242,225,194,0.18);
+    }
+
+    .star-left{
+      min-width: 0;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .star-dot{
+      width: 10px; height: 10px;
+      border-radius: 999px;
+      background: rgba(242,225,194,0.80);
+      box-shadow: 0 0 18px rgba(197,160,89,0.35);
+      flex: 0 0 auto;
+    }
+    .star-meta{
+      min-width: 0;
+      display:flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .star-name{
+      margin:0;
+      font-weight: 950;
+      color: rgba(255,255,255,0.96);
+      letter-spacing: .02em;
+      font-size: 1.02rem;
+      line-height: 1.15;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 420px;
+    }
+    .star-sub{
+      margin:0;
+      color: rgba(255,255,255,0.70);
+      font-size: .90rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 520px;
+    }
+    .star-right{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+    .badge-mag{
+      border: 1px solid rgba(242,225,194,0.20);
+      background: rgba(255,255,255,0.04);
+      color: rgba(242,225,194,0.92);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      font-size: .70rem;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .btn-play{
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(242,225,194,0.22);
+      background: rgba(255,255,255,0.05);
+      color: rgba(242,225,194,0.95);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      transition:.18s ease;
+    }
+    .btn-play:hover{
+      border-color: rgba(242,225,194,0.36);
+      background: rgba(197,160,89,0.14);
+      transform: translateY(-1px);
+    }
+
+    /* Player card */
+    .player-card{
+      border: 1px solid rgba(242,225,194,0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border-radius: 16px;
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+      min-height: 280px;
+    }
+    .player-card:before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background:
+        radial-gradient(520px 260px at 20% 25%, rgba(197,160,89,0.18), transparent 60%),
+        radial-gradient(520px 260px at 85% 70%, rgba(110,140,210,0.12), transparent 62%);
+      opacity:.80;
+      pointer-events:none;
+    }
+    .player-card > *{ position: relative; z-index: 1; }
+
+    .player-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .player-title{
+      margin:0;
+      font-weight: 950;
+      letter-spacing: .01em;
+      font-size: 1.25rem;
+      color: rgba(255,255,255,0.96);
+    }
+    .player-sub{
+      margin:6px 0 0;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.7;
+      font-size: .98rem;
+      max-width: 52ch;
+    }
+    .player-actions{
+      display:flex;
+      gap: 8px;
+      align-items:center;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+    .mini{
+      border: 1px solid rgba(242,225,194,0.20);
+      background: rgba(0,0,0,0.22);
+      color: rgba(242,225,194,0.95);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-weight: 900;
+      font-size: .72rem;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* "nice audio playing animation" */
+    .viz{
+      margin-top: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(242,225,194,0.14);
+      background: rgba(0,0,0,0.22);
+      padding: 14px 14px 10px;
+    }
+    .bars{
+      height: 74px;
+      display:flex;
+      align-items:flex-end;
+      gap: 6px;
+      padding: 6px 4px 2px;
+    }
+    .bar{
+      width: 10px;
+      border-radius: 10px;
+      background: rgba(242,225,194,0.92);
+      height: 10px;
+      opacity: .8;
+      transform-origin: bottom;
+      animation: idle 1.6s ease-in-out infinite;
+    }
+    .bar:nth-child(2){ animation-delay: .12s; }
+    .bar:nth-child(3){ animation-delay: .24s; }
+    .bar:nth-child(4){ animation-delay: .36s; }
+    .bar:nth-child(5){ animation-delay: .48s; }
+    .bar:nth-child(6){ animation-delay: .60s; }
+    .bar:nth-child(7){ animation-delay: .72s; }
+    .bar:nth-child(8){ animation-delay: .84s; }
+    .bar:nth-child(9){ animation-delay: .96s; }
+    .bar:nth-child(10){ animation-delay: 1.08s; }
+    .bar:nth-child(11){ animation-delay: 1.20s; }
+    .bar:nth-child(12){ animation-delay: 1.32s; }
+
+    @keyframes idle{
+      0%,100%{ height: 10px; opacity:.55; }
+      50%{ height: 38px; opacity:.85; }
+    }
+    .playing .bar{
+      animation-name: play;
+      animation-duration: .9s;
+      opacity: .9;
+    }
+    @keyframes play{
+      0%,100%{ height: 14px; }
+      25%{ height: 58px; }
+      55%{ height: 28px; }
+      75%{ height: 70px; }
+    }
+
+    .player-footer{
+      margin-top: 10px;
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: rgba(255,255,255,0.72);
+      font-size: .92rem;
+    }
+
+    .hint{
+      color: rgba(255,255,255,0.72);
+      font-size: .92rem;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .errorline{
+      color: var(--danger);
+      font-weight: 800;
+      letter-spacing: .04em;
+      font-size: .90rem;
+    }
+
+    /* --- SKY MAIN SECTION --- */
+    .sky-section{
+      padding: 72px 0 96px;
+      background: #050608;
+    }
+    .container-sky{
+      width: min(1420px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+    .sky-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .sky-title{
+      margin:0;
+      font-family:"Cinzel", serif;
+      font-weight:700;
+      letter-spacing:.08em;
+      color: #fff;
+    }
+    .sky-desc{
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 920px;
+      font-size: 1.02rem;
+    }
+    .sky-frame{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 26px 90px rgba(0,0,0,.48);
+    }
+    .sky-iframe{
+      width: 100%;
+      height: min(88vh, 980px);
+      border: 0;
+      display:block;
+      background:#000;
+    }
+
+    /* --- CONTACT --- */
+    .contact-section{
+      padding: 78px 0 86px;
+      background:
+        radial-gradient(820px 360px at 30% 30%, rgba(197,160,89,0.14), transparent 60%),
+        #050608;
+      border-top: 1px solid var(--border);
+    }
+    .contact-card{
+      border: 1px solid rgba(242,225,194,0.18);
+      background: rgba(0,0,0,0.24);
+      border-radius: 18px;
+      padding: 22px 20px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.50);
+    }
+    .contact-title{
+      font-family:"Cinzel", serif;
+      color:#fff;
+      letter-spacing:.08em;
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 3vw, 2.2rem);
+    }
+    .contact-sub{
+      color: rgba(255,255,255,0.86);
+      line-height: 1.85;
+      margin: 0 0 16px;
+      font-size: 1.08rem;
+      max-width: 70ch;
+    }
+    .contact-email{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(242,225,194,0.22);
+      background: rgba(255,255,255,0.05);
+      color: rgba(242,225,194,0.96);
+      text-decoration: none;
+      font-weight: 900;
+      letter-spacing: .06em;
+      transition: .2s ease;
+    }
+    .contact-email:hover{
+      border-color: rgba(242,225,194,0.34);
+      background: rgba(197,160,89,0.14);
+      transform: translateY(-1px);
+      color: rgba(242,225,194,1);
+    }
+    .contact-email i{
+      color: var(--gold-bright);
+      filter: drop-shadow(0 0 12px rgba(197,160,89,0.22));
+    }
+
+    /* tiny scrollbar */
+    .audio-list-body::-webkit-scrollbar{ width: 10px; }
+    .audio-list-body::-webkit-scrollbar-track{ background: rgba(255,255,255,0.03); }
+    .audio-list-body::-webkit-scrollbar-thumb{
+      background: rgba(242,225,194,0.16);
+      border-radius: 999px;
+      border: 2px solid rgba(0,0,0,0.24);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar nav-glass navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="/">AETHERA</a>
+
+      <button class="navbar-toggler text-light border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navAethera">
+        <span class="navbar-toggler-icon" style="filter: invert(1); opacity:.85;"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navAethera">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+          <li class="nav-item">
+            <a class="nav-link nav-link-aethera" href="#howto">User Guide</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-aethera" href="#audio">Audio Stars</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-aethera" href="/constellations">Constellations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-aethera" href="#contact">Contact</a>
+          </li>
+          <li class="nav-item ms-lg-2">
+            <a href="#sky" class="btn-gold">Open Sky</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero-wrap">
+    <div class="milky-way"></div>
+    <canvas id="star-canvas"></canvas>
+
+    <div class="container hero-container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <span class="hero-label">Sonic Archive v1.0</span>
+          <h1 class="hero-title">Behold The<br>Sonic Sky.</h1>
+          <p class="hero-description">
+            Aethera maps high-fidelity celestial coordinates into a generative audio engine, turning the geometry of the stars into a living ambient instrument.
+          </p>
+
+          <div class="d-flex gap-3 flex-wrap">
+            <a href="#sky" class="btn-gold">Enter Sky</a>
+            <a href="/constellations" class="btn-outline-gold">Constellations</a>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="stage-wrapper">
+            <div class="stage-frame">
+              <div class="corner tl"></div><div class="corner tr"></div>
+              <div class="corner bl"></div><div class="corner br"></div>
+              <svg id="heroOrionSvg" class="orion-svg" viewBox="0 0 800 800">
+                <g id="heroOrionLayer"></g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- USER GUIDE -->
+  <section class="howto-section" id="howto">
+    <div class="container">
+      <div class="howto-top">
+        <div>
+          <h2 class="howto-title"><i class="bi bi-compass"></i>User Guide</h2>
+          <p class="howto-sub">
+            Follow these steps in order. Explore live in the Sky first, then use the Archive to read myths and replay constellation audio.
+          </p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <a href="#sky" class="btn-outline-gold">Go to Sky</a>
+          <a href="/constellations" class="btn-outline-gold" style="border-color: rgba(242,225,194,0.30);">
+            <i class="bi bi-grid-3x3-gap me-2"></i>Open Archive
+          </a>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="t-node">
+          <div class="t-step">Step 01</div>
+          <div class="t-num">01</div>
+        </div>
+        <div class="t-card">
+          <h3 class="t-head">Choose location + time</h3>
+          <p class="t-body">
+            Inside the Sky panel, enter <span class="kbd">Lat</span> and <span class="kbd">Lon</span> or click <span class="kbd">Use my location</span>.
+            Pick a season and hour, then press <span class="kbd">Show sky</span>.
+          </p>
+        </div>
+
+        <div class="t-node">
+          <div class="t-step">Step 02</div>
+          <div class="t-num">02</div>
+        </div>
+        <div class="t-card">
+          <h3 class="t-head">Find a constellation</h3>
+          <p class="t-body">
+            Use the Finder search (top-left) to locate a constellation. Hover a result to highlight it.
+            Click to zoom and center the shape.
+          </p>
+        </div>
+
+        <div class="t-node">
+          <div class="t-step">Step 03</div>
+          <div class="t-num">03</div>
+        </div>
+        <div class="t-card">
+          <h3 class="t-head">Play audio stars</h3>
+          <p class="t-body">
+            Click a bright audio star to open the sidebar. The audio player loads automatically.
+            Dim line-stars stay visible to preserve the constellation geometry.
+          </p>
+        </div>
+
+        <div class="t-node last">
+          <div class="t-step">Step 04</div>
+          <div class="t-num">04</div>
+        </div>
+        <div class="t-card">
+          <h3 class="t-head">Open the Constellations Archive</h3>
+          <p class="t-body">
+            Visit the Archive to browse constellation cards, read full myth stories, and press <span class="kbd">Play</span> to listen again.
+            This is the best place to explore everything in one list.
+          </p>
+          <div class="mt-3 d-flex gap-2 flex-wrap">
+            <a href="/constellations" class="btn-outline-gold" style="border-color: rgba(242,225,194,0.32); color: rgba(242,225,194,0.98);">
+              <i class="bi bi-grid-3x3-gap me-2"></i>Open Constellations Archive
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="how-mini">
+        Quick controls:
+        <span class="kbd">Drag</span> to pan ·
+        <span class="kbd">Wheel</span> to zoom ·
+        <span class="kbd">Hover</span> to highlight ·
+        <span class="kbd">Click</span> audio stars to play ·
+        <span class="kbd">Archive</span> to read myths & replay
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW: AUDIO STARS DIRECTORY -->
+  <section class="audio-section" id="audio">
+    <div class="container">
+      <div class="audio-head">
+        <div>
+          <span class="hero-label">Directory</span>
+          <h2 class="audio-title">Audio Stars</h2>
+          <p class="audio-sub">
+            Search and filter the full audio-star library (from <span class="kbd">star_map.csv</span>). Pick a star to preview, then jump into the Sky when you want the full context.
+          </p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <a href="#sky" class="btn-outline-gold">Go to Sky</a>
+          <a href="/constellations" class="btn-outline-gold" style="border-color: rgba(242,225,194,0.30);">
+            Open Archive
+          </a>
+        </div>
+      </div>
+
+      <div class="audio-panel">
+        <div class="searchbar">
+          <span class="chip"><i class="bi bi-search"></i> search</span>
+          <input id="q" class="form-control flex-grow-1" placeholder="Search star name, constellation, file..." autocomplete="off"/>
+
+          <span class="chip"><i class="bi bi-funnel"></i> filters</span>
+          <select id="constFilter" class="form-select" style="min-width: 220px;">
+            <option value="">All constellations</option>
+          </select>
+
+          <select id="hasAudioFilter" class="form-select d-none" style="min-width: 190px;">
+            <option value="1">Audio only</option>
+            <option value="0">Include missing audio</option>
+          </select>
+
+          <select id="sortBy" class="form-select" style="min-width: 220px;">
+            <option value="mag_asc">Sort: brightness (mag ↑)</option>
+            <option value="mag_desc">Sort: dimmer (mag ↓)</option>
+            <option value="name_asc">Sort: name (A→Z)</option>
+            <option value="const_asc">Sort: constellation (A→Z)</option>
+          </select>
+
+          <button id="resetBtn" class="btn-outline-gold" style="border-radius:999px; padding: 12px 16px;">
+            Reset
+          </button>
+        </div>
+
+        <div class="audio-grid">
+          <div class="audio-list">
+            <div class="audio-list-head">
+              <p class="audio-count mb-0" id="countText">Loading…</p>
+              <span class="chip"><i class="bi bi-music-note-beamed"></i> click to play</span>
+            </div>
+            <div class="audio-list-body" id="list"></div>
+          </div>
+
+          <div class="player-card">
+            <div class="player-top">
+              <div>
+                <p class="player-title mb-0" id="playerTitle">Select a star</p>
+                <p class="player-sub" id="playerSub">
+                  Choose a row on the left to preview audio and view RA/Dec + magnitude.
+                </p>
+              </div>
+              <div class="player-actions">
+                <span class="mini" id="playerConst">—</span>
+                <span class="mini" id="playerMag">MAG —</span>
+              </div>
+            </div>
+
+            <div class="viz" id="viz">
+              <div class="bars" id="bars">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+              </div>
+              <div class="player-footer">
+                <div>
+                  <div><span class="kbd">RA</span> <span id="playerRA">—</span></div>
+                  <div><span class="kbd">Dec</span> <span id="playerDec">—</span></div>
+                </div>
+                <div class="text-end">
+                  <div><span class="kbd">File</span> <span id="playerFile">—</span></div>
+                  <div id="playerErr" class="errorline" style="display:none;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 d-flex gap-2 flex-wrap align-items-center">
+              <button id="playBtn" class="btn-gold" style="padding: 12px 18px; letter-spacing:.18em;">
+                <i class="bi bi-play-fill me-1"></i> Play
+              </button>
+              <button id="pauseBtn" class="btn-outline-gold" style="padding: 12px 18px; border-radius:0;">
+                <i class="bi bi-pause-fill me-1"></i> Pause
+              </button>
+              <div class="flex-grow-1"></div>
+              <a href="/sky" class="btn-outline-gold" style="padding: 12px 18px; border-radius:0;">
+                Open Sky
+              </a>
+            </div>
+
+            <p class="hint mt-3 mb-0">
+              Tip: use <span class="kbd">Sort: brightness</span> to quickly find your most prominent audio stars.
+            </p>
+
+            <audio id="audioEl" preload="none"></audio>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKY MAIN -->
+  <section class="sky-section" id="sky">
+    <div class="container-sky">
+      <div class="sky-head">
+        <div>
+          <span class="hero-label">Live view</span>
+          <h2 class="sky-title">Interactive Sky</h2>
+          <p class="sky-desc">
+            This is the full constellation map experience. Use the controls inside the panel to select time/location and explore the visible sky.
+          </p>
+        </div>
+        <div class="d-flex gap-2">
+          <a class="btn-outline-gold" href="/sky">Open in new page</a>
+        </div>
+      </div>
+
+      <div class="sky-frame">
+        <iframe class="sky-iframe" src="/sky" title="Aethera Sky"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <div class="contact-card">
+        <h2 class="contact-title">Contact</h2>
+        <p class="contact-sub">
+          Questions, collaborations, or feedback about Aethera? Send an email and include your device/browser and a short description of what you were trying to do.
+        </p>
+
+        <a class="contact-email" href="mailto:hello@aethera.studio">
+          <i class="bi bi-envelope-fill"></i>
+          hello@aethera.studio
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    /* --- STARFIELD --- */
+    const canvas = document.getElementById('star-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function initCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = Array.from({length: 300}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 1.5,
+        opacity: Math.random(),
+        twinkle: Math.random() * 0.02
+      }));
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => {
+        ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
+        s.opacity += s.twinkle;
+        if(s.opacity > 1 || s.opacity < 0.2) s.twinkle *= -1;
+      });
+      requestAnimationFrame(drawStars);
+    }
+
+    /* --- HERO ORION PREVIEW --- */
+    let ALL = [];
+    async function loadHero(){
+      try {
+        const r = await fetch(`/api/constellations?min_alt=-90`);
+        const d = await r.json();
+        ALL = d.constellations || [];
+        renderHeroOrion();
+      } catch(e) { console.error(e); }
+    }
+
+    function starFlarePath(cx, cy, r) {
+      const inner = r * 0.2;
+      return `M ${cx} ${cy-r} Q ${cx+inner} ${cy-inner} ${cx+r} ${cy}
+              Q ${cx+inner} ${cy+inner} ${cx} ${cy+r}
+              Q ${cx-inner} ${cy+inner} ${cx-r} ${cy}
+              Q ${cx-inner} ${cy-inner} ${cx} ${cy-r} Z`;
+    }
+
+    function renderHeroOrion(){
+      const layer = document.getElementById("heroOrionLayer");
+      if(!layer) return;
+
+      layer.innerHTML = "";
+
+      const orion =
+        ALL.find(c => String(c.name || "").toLowerCase() === "orion") ||
+        ALL.find(c => String(c.name || "").toLowerCase().includes("orion")) ||
+        ALL[0];
+
+      if(!orion || !orion.polylines || !orion.polylines.length) return;
+
+      const pts = [];
+      orion.polylines.forEach(l => l.forEach(p => pts.push({x:+p[0], y:+p[1]})));
+      if(!pts.length) return;
+
+      const minX = Math.min(...pts.map(p=>p.x)), maxX = Math.max(...pts.map(p=>p.x));
+      const minY = Math.min(...pts.map(p=>p.y)), maxY = Math.max(...pts.map(p=>p.y));
+      const spanX = Math.max(1e-6, (maxX - minX));
+      const spanY = Math.max(1e-6, (maxY - minY));
+      const scale = 700 / Math.max(spanX, spanY);
+
+      const mapX = x => (x - minX) * scale + (800 - spanX*scale)/2;
+      const mapY = y => (y - minY) * scale + (800 - spanY*scale)/2;
+
+      orion.polylines.forEach(line => {
+        const d = line.map((p, i) => `${i===0?'M':'L'} ${mapX(p[0])} ${mapY(p[1])}`).join(" ");
+        const path = document.createElementNS("http://www.w3.org/2000/svg","path");
+        path.setAttribute("d", d);
+        path.setAttribute("class", "const-line");
+        layer.appendChild(path);
+      });
+
+      (orion.line_stars || []).forEach(s => {
+        const star = document.createElementNS("http://www.w3.org/2000/svg","path");
+        star.setAttribute("d", starFlarePath(mapX(s[0]), mapY(s[1]), 12));
+        star.setAttribute("class", "star-flare");
+        layer.appendChild(star);
+      });
+    }
+
+    /* --- AUDIO STARS DIRECTORY (NEW) --- */
+    const state = {
+      all: [],
+      filtered: [],
+      selectedId: null,
+      selected: null
+    };
+
+    const el = {
+      q: document.getElementById('q'),
+      constFilter: document.getElementById('constFilter'),
+      hasAudioFilter: document.getElementById('hasAudioFilter'),
+      sortBy: document.getElementById('sortBy'),
+      resetBtn: document.getElementById('resetBtn'),
+      list: document.getElementById('list'),
+      countText: document.getElementById('countText'),
+
+      playerTitle: document.getElementById('playerTitle'),
+      playerSub: document.getElementById('playerSub'),
+      playerConst: document.getElementById('playerConst'),
+      playerMag: document.getElementById('playerMag'),
+      playerRA: document.getElementById('playerRA'),
+      playerDec: document.getElementById('playerDec'),
+      playerFile: document.getElementById('playerFile'),
+      playerErr: document.getElementById('playerErr'),
+
+      playBtn: document.getElementById('playBtn'),
+      pauseBtn: document.getElementById('pauseBtn'),
+      audio: document.getElementById('audioEl'),
+      viz: document.getElementById('viz'),
+    };
+
+    const fmt = {
+      mag(m){
+        if(m === null || m === undefined || Number.isNaN(+m)) return "—";
+        const v = +m;
+        return (Math.round(v * 100) / 100).toFixed(2);
+      }
+    };
+
+    function normalize(s){ return String(s || "").toLowerCase().trim(); }
+
+    function buildConstOptions(rows){
+      const set = new Set();
+      rows.forEach(r => { if(r.const_name) set.add(r.const_name); });
+      const arr = Array.from(set).sort((a,b)=>a.localeCompare(b));
+      el.constFilter.innerHTML = `<option value="">All constellations</option>` + arr.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+    }
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+    function applyFilters(){
+      const q = normalize(el.q.value);
+      const c = el.constFilter.value;
+      const audioOnly = el.hasAudioFilter.value === "1";
+
+      let rows = state.all.slice();
+
+      if(audioOnly){
+        rows = rows.filter(r => !!r.audio);
+      }
+      if(c){
+        rows = rows.filter(r => r.const_name === c);
+      }
+      if(q){
+        rows = rows.filter(r => {
+          const hay = `${r.name} ${r.const_name} ${r.audio_file || ""} ${r.ra || ""} ${r.dec || ""}`.toLowerCase();
+          return hay.includes(q);
+        });
+      }
+
+      const sort = el.sortBy.value;
+      if(sort === "mag_asc"){
+        rows.sort((a,b)=> (a.mag ?? 999) - (b.mag ?? 999) || (a.name||"").localeCompare(b.name||""));
+      } else if(sort === "mag_desc"){
+        rows.sort((a,b)=> (b.mag ?? -999) - (a.mag ?? -999) || (a.name||"").localeCompare(b.name||""));
+      } else if(sort === "name_asc"){
+        rows.sort((a,b)=> (a.name||"").localeCompare(b.name||"") || (a.const_name||"").localeCompare(b.const_name||""));
+      } else if(sort === "const_asc"){
+        rows.sort((a,b)=> (a.const_name||"").localeCompare(b.const_name||"") || (a.name||"").localeCompare(b.name||""));
+      }
+
+      state.filtered = rows;
+      renderList();
+    }
+
+    function renderList(){
+      const rows = state.filtered;
+      el.countText.textContent = `${rows.length.toLocaleString()} stars`;
+
+      if(!rows.length){
+        el.list.innerHTML = `<div class="p-3">
+          <p class="mb-1" style="color: rgba(255,255,255,0.84); font-weight:800; letter-spacing:.06em;">No matches</p>
+          <p class="mb-0" style="color: rgba(255,255,255,0.70);">Try removing filters or searching a shorter keyword.</p>
+        </div>`;
+        return;
+      }
+
+      el.list.innerHTML = rows.map(r => {
+        const active = (state.selectedId === r.id) ? "active" : "";
+        const mag = fmt.mag(r.mag);
+        const sub = `${r.const_name || "Unknown"} · RA ${r.ra || "—"} · Dec ${r.dec || "—"}`;
+        return `
+          <div class="star-row ${active}" data-id="${escapeHtml(r.id)}">
+            <div class="star-left">
+              <div class="star-dot"></div>
+              <div class="star-meta">
+                <p class="star-name">${escapeHtml(r.name || "Unnamed")}</p>
+                <p class="star-sub">${escapeHtml(sub)}</p>
+              </div>
+            </div>
+            <div class="star-right">
+              <span class="badge-mag">MAG ${escapeHtml(mag)}</span>
+              <span class="btn-play" title="Play">
+                <i class="bi bi-play-fill"></i>
+              </span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      el.list.querySelectorAll('.star-row').forEach(node => {
+        node.addEventListener('click', () => {
+          const id = node.getAttribute('data-id');
+          const r = state.filtered.find(x => x.id === id);
+          if(!r) return;
+          selectStar(r);
+        });
+      });
+    }
+
+    function setErr(msg){
+      if(!msg){
+        el.playerErr.style.display = "none";
+        el.playerErr.textContent = "";
+        return;
+      }
+      el.playerErr.style.display = "block";
+      el.playerErr.textContent = msg;
+    }
+
+    function selectStar(r){
+      state.selectedId = r.id;
+      state.selected = r;
+
+      // UI
+      el.playerTitle.textContent = r.name || "Unnamed";
+      el.playerSub.textContent = `${r.const_name || "Unknown"} audio star`;
+      el.playerConst.textContent = (r.const_name || "—");
+      el.playerMag.textContent = `MAG ${fmt.mag(r.mag)}`;
+      el.playerRA.textContent = (r.ra || "—");
+      el.playerDec.textContent = (r.dec || "—");
+      el.playerFile.textContent = (r.audio_file || "—");
+
+      // audio
+      el.audio.pause();
+      el.audio.currentTime = 0;
+      el.viz.classList.remove('playing');
+      setErr("");
+
+      if(!r.audio){
+        setErr("No audio file linked for this star.");
+        el.audio.removeAttribute('src');
+      } else {
+        el.audio.src = r.audio;
+      }
+
+      // rerender list to mark active
+      renderList();
+    }
+
+    function playSelected(){
+      const r = state.selected;
+      if(!r){
+        setErr("Select a star first.");
+        return;
+      }
+      if(!r.audio){
+        setErr("No audio file linked for this star.");
+        return;
+      }
+      setErr("");
+      el.audio.play().then(()=>{
+        el.viz.classList.add('playing');
+      }).catch(()=>{
+        setErr("Audio playback blocked by browser. Click play again after interacting.");
+      });
+    }
+
+    function pauseSelected(){
+      el.audio.pause();
+      el.viz.classList.remove('playing');
+    }
+
+    el.audio.addEventListener('ended', ()=> el.viz.classList.remove('playing'));
+    el.audio.addEventListener('pause', ()=> el.viz.classList.remove('playing'));
+
+    el.playBtn.addEventListener('click', playSelected);
+    el.pauseBtn.addEventListener('click', pauseSelected);
+
+    ['input','change'].forEach(evt => el.q.addEventListener(evt, applyFilters));
+    el.constFilter.addEventListener('change', applyFilters);
+    el.hasAudioFilter.addEventListener('change', applyFilters);
+    el.sortBy.addEventListener('change', applyFilters);
+
+    el.resetBtn.addEventListener('click', ()=>{
+      el.q.value = "";
+      el.constFilter.value = "";
+      el.hasAudioFilter.value = "1";
+      el.sortBy.value = "mag_asc";
+      applyFilters();
+    });
+
+    async function loadAudioStars(){
+      try{
+        const r = await fetch('/api/audio_stars');
+        const d = await r.json();
+        state.all = (d.items || []).map(x => ({
+          id: String(x.id || ""),
+          name: x.name || "",
+          const_name: x.const || x.const_name || "",
+          ra: x.ra || "",
+          dec: x.dec || "",
+          mag: (x.mag === null || x.mag === undefined) ? null : +x.mag,
+          audio: x.audio || null,
+          audio_file: x.audio_file || ""
+        }));
+
+        buildConstOptions(state.all);
+        applyFilters();
+
+        // auto-select first row if exists
+        if(state.filtered.length){
+          selectStar(state.filtered[0]);
+        }
+      }catch(e){
+        console.error(e);
+        el.list.innerHTML = `<div class="p-3">
+          <p class="mb-1 errorline">Failed to load /api/audio_stars</p>
+          <p class="mb-0" style="color: rgba(255,255,255,0.70);">Check your Flask route and console output.</p>
+        </div>`;
+        el.countText.textContent = "Error";
+      }
+    }
+
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+    drawStars();
+    loadHero();
+    loadAudioStars();
+  </script>
+</body>
+</html>

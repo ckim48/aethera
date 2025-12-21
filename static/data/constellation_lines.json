@@ -1,0 +1,68 @@
+{
+  "Orion": {
+    "stars": ["Betelgeuse", "Rigel", "Bellatrix", "Alnilam", "Alnitak"],
+    "edges": [
+      ["Betelgeuse", "Alnitak"],
+      ["Bellatrix", "Alnilam"],
+      ["Alnilam", "Alnitak"],
+      ["Alnitak", "Rigel"],
+      ["Alnilam", "Rigel"]
+    ]
+  },
+  "Scorpius": {
+    "stars": ["Antares", "Shaula (λ Sco)", "Sargas", "Dschubba (δ Sco)"],
+    "edges": [
+      ["Dschubba (δ Sco)", "Antares"],
+      ["Antares", "Sargas"],
+      ["Sargas", "Shaula (λ Sco)"]
+    ]
+  },
+  "Leo": {
+    "stars": ["Regulus", "Denebola", "Algieba (γ Leo)", "Zosma"],
+    "edges": [
+      ["Regulus", "Algieba (γ Leo)"],
+      ["Algieba (γ Leo)", "Zosma"],
+      ["Zosma", "Denebola"],
+      ["Regulus", "Denebola"]
+    ]
+  },
+  "Taurus": {
+    "stars": ["Aldebaran", "Elnath (γ Tau / β Aur?)", "Alcyone (η Tau / Pleiades)"],
+    "edges": [
+      ["Aldebaran", "Elnath (γ Tau / β Aur?)"],
+      ["Aldebaran", "Alcyone (η Tau / Pleiades)"]
+    ]
+  },
+  "Gemini": {
+    "stars": ["Pollux", "Castor", "Alhena (γ Gem)"],
+    "edges": [
+      ["Pollux", "Castor"],
+      ["Pollux", "Alhena (γ Gem)"]
+    ]
+  },
+  "Cassiopeia": {
+    "stars": ["Schedar (α Cas)", "Caph (β Cas)", "Ruchbah (δ Cas)"],
+    "edges": [
+      ["Caph (β Cas)", "Schedar (α Cas)"],
+      ["Schedar (α Cas)", "Ruchbah (δ Cas)"]
+    ]
+  },
+  "Ursa Major": {
+    "stars": ["Dubhe (α UMa)", "Merak (β UMa)", "Phecda (γ UMa)", "Megrez (δ UMa)", "Alioth (ε UMa)", "Mizar (ζ UMa)"],
+    "edges": [
+      ["Dubhe (α UMa)", "Merak (β UMa)"],
+      ["Merak (β UMa)", "Phecda (γ UMa)"],
+      ["Phecda (γ UMa)", "Megrez (δ UMa)"],
+      ["Megrez (δ UMa)", "Alioth (ε UMa)"],
+      ["Alioth (ε UMa)", "Mizar (ζ UMa)"],
+      ["Megrez (δ UMa)", "Dubhe (α UMa)"]
+    ]
+  },
+  "Crux": {
+    "stars": ["Acrux (α Cru)", "Gacrux (γ Cru)", "Mimosa (β Cru)"],
+    "edges": [
+      ["Acrux (α Cru)", "Gacrux (γ Cru)"],
+      ["Mimosa (β Cru)", "Acrux (α Cru)"]
+    ]
+  }
+}

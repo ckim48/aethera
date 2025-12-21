@@ -1,0 +1,199 @@
+{
+  "Orion": {
+    "color": "rgba(80, 120, 255, 0.34)",
+    "stars": [
+      "orion-betelgeuse",
+      "orion-bellatrix",
+      "orion-alnilam",
+      "orion-alnitak",
+      "orion-rigel"
+    ]
+  },
+  "Scorpius": {
+    "color": "rgba(255, 80, 120, 0.32)",
+    "stars": [
+      "scorpius-dschubba-sco",
+      "scorpius-antares",
+      "scorpius-sargas",
+      "scorpius-shaula-sco"
+    ]
+  },
+  "Leo": {
+    "color": "rgba(255, 190, 80, 0.32)",
+    "stars": [
+      "leo-regulus",
+      "leo-algieba-leo",
+      "leo-zosma",
+      "leo-denebola"
+    ]
+  },
+  "Taurus": {
+    "color": "rgba(120, 255, 180, 0.30)",
+    "stars": [
+      "taurus-aldebaran",
+      "taurus-elnath-tau-aur",
+      "taurus-alcyone-tau-pleiades"
+    ]
+  },
+  "Libra": {
+    "color": "rgba(160, 140, 255, 0.31)",
+    "stars": [
+      "libra-zubeneschamali-lib",
+      "libra-zubenelgenubi-lib",
+      "libra-brachium-lib"
+    ]
+  },
+  "Gemini": {
+    "color": "rgba(90, 220, 255, 0.31)",
+    "stars": [
+      "gemini-castor",
+      "gemini-pollux",
+      "gemini-alhena-gem"
+    ]
+  },
+  "Andromeda": {
+    "color": "rgba(255, 120, 220, 0.30)",
+    "stars": [
+      "andromeda-alpheratz-and",
+      "andromeda-mirach-and",
+      "andromeda-almach-and"
+    ]
+  },
+  "Perseus": {
+    "color": "rgba(255, 120, 90, 0.30)",
+    "stars": [
+      "perseus-atik",
+      "perseus-algol-per",
+      "perseus-mirfak-per"
+    ]
+  },
+  "Cygnus": {
+    "color": "rgba(120, 200, 255, 0.30)",
+    "stars": [
+      "cygnus-albireo-cyg",
+      "cygnus-sadr-cyg",
+      "cygnus-deneb"
+    ]
+  },
+  "Aquila": {
+    "color": "rgba(220, 255, 120, 0.30)",
+    "stars": [
+      "aquila-tarazed-aql",
+      "aquila-altair",
+      "aquila-alshain-aql"
+    ]
+  },
+  "Lyra": {
+    "color": "rgba(200, 120, 255, 0.30)",
+    "stars": [
+      "lyra-sheliak-lyrae",
+      "lyra-vega",
+      "lyra-sulafat-lyrae"
+    ]
+  },
+  "Cassiopeia": {
+    "color": "rgba(255, 160, 120, 0.30)",
+    "stars": [
+      "cassiopeia-caph-cas",
+      "cassiopeia-schedar-cas",
+      "cassiopeia-ruchbah-cas"
+    ]
+  },
+  "Virgo": {
+    "color": "rgba(120, 255, 220, 0.39)",
+    "stars": [
+      "virgo-zavijava-vir",
+      "virgo-porrima-vir",
+      "virgo-spica"
+    ]
+  },
+  "Sagittarius": {
+    "color": "rgba(255, 220, 120, 0.30)",
+    "stars": [
+      "sagittarius-kaus-australis-e-sgr",
+      "sagittarius-nunki-s-sgr",
+      "sagittarius-ascella-z-sgr"
+    ]
+  },
+  "Capricornus": {
+    "color": "rgba(160, 255, 180, 0.39)",
+    "stars": [
+      "capricornus-deneb-algedi-d-cap",
+      "capricornus-dabih-b-cap",
+      "capricornus-oculus"
+    ]
+  },
+  "Aries": {
+    "color": "rgba(255, 150, 150, 0.39)",
+    "stars": [
+      "aries-hamal-a-ari",
+      "aries-sheratan-b-ari",
+      "aries-mesarthim-g-ari"
+    ]
+  },
+  "Pisces": {
+    "color": "rgba(160, 200, 255, 0.39)",
+    "stars": [
+      "pisces-alrescha-a-psc",
+      "pisces-fumalsamakah-h-psc",
+      "pisces-alrescha-a-psc"
+    ]
+  },
+  "Cancer": {
+    "color": "rgba(200, 255, 160, 0.39)",
+    "stars": [
+      "cancer-acubens-a-cnc",
+      "cancer-asellus-australis-d-cnc",
+      "cancer-tarf-b-cnc"
+    ]
+  },
+  "Ursa Major": {
+    "color": "rgba(180, 180, 255, 0.39)",
+    "stars": [
+      "ursa-major-dubhe-a-uma",
+      "ursa-major-merak-b-uma",
+      "ursa-major-phecda-g-uma",
+      "ursa-major-megrez-d-uma"
+    ]
+  },
+  "Auriga": {
+    "color": "rgba(255, 200, 180, 0.39)",
+    "stars": [
+      "auriga-hassaleh-q-aur",
+      "auriga-capella-a-aur",
+      "auriga-menkalinan-b-aur"
+    ]
+  },
+  "Canis Major": {
+    "color": "rgba(180, 255, 220, 0.39)",
+    "stars": [
+      "canis-major-adhara-e-cma",
+      "canis-major-sirius-a-cma",
+      "canis-major-wezen-d-cma"
+    ]
+  },
+  "Bootes": {
+    "color": "rgba(255, 220, 200, 0.39)",
+    "stars": [
+      "bootes-arcturus-a-boo",
+      "bootes-nekkar-b-boo",
+      "bootes-arcturus-a-boo"
+    ]
+  },
+  "Draco": {
+    "color": "rgba(200, 200, 200, 0.38)",
+    "stars": [
+      "draco-thuban-a-dra",
+      "draco-rastaban-b-dra",
+      "draco-eltanin-g-dra"
+    ]
+  },
+  "Crux": {
+    "color": "rgba(220, 255, 255, 0.38)",
+    "stars": [
+      "crux-acrux-a-cru",
+      "crux-mimosa-b-cru",
+      "crux-gacrux-g-cru"
+    ]
+  }
+}

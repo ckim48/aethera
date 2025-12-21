@@ -1,0 +1,87 @@
+Constellation,Star Name,RA (hh:mm:ss),Dec (dd:mm:ss),Magnitude,Spectral Type,Binary / Cluster Membership,Pitch_Hz,Pan,Loudness,Timbre,Extra_Layers,Mood_Tag,File,"Mythic Identity Summary 
+Constellation Mythic Story",Emotion Code,Tempo (BPM),Suggested Instrument Set
+Orion,Betelgeuse,05:55:10,+07:24:25.4,0.42,M2Iab,Single (supergiant),382.78,-0.082,0.755,dark_soft,1,neutral,Betelgeuse,A proud yet fearless hunter placed among the stars after his fateful encounter with the scorpion.,Courage + Tension,110–130,"Brass ensemble, driving strings, bright synth lead, light percussion"
+,Rigel,05:14:32,-08:12:06,0.13,B8Ia,Multiple / multiple-star system,369.02,0.091,0.789,bright_sharp,3,neutral,,,,,
+,Bellatrix,05:25:08,+06:20:58.7,1.64,B2III,Single (no confirmed companion),372.37,-0.071,0.595,bright_sharp,1,neutral,,,,,
+,Alnilam,05:36:13,-01:12:07,1.7,B0Ia,Single (supergiant),375.81,0.015,0.589,bright_sharp,1,neutral,,,,,
+,Alnitak,05:40:46,-01:56:33,1.77,O9.7Ib,Multiple (triple),376.18,0.022,0.581,bright_sharp,3,neutral,,,,,
+Scorpius,Antares,16:29:24,-26:25:55,1.09,M1Ib / M1.5Iab-Ib,Binary (Antares A + B),670.46,0.293,0.655,dark_soft,2,neutral,,"The celestial scorpion sent to defeat Orion, symbolizing danger, retribution, and cosmic warning.",Danger / Threat,80–110,"Low strings, dark brass, deep percussion, subtle distorted pads"
+,Shaula (λ Sco),17:33:37,-37:06:14,1.62,B2IV (or B2IV + companions),Multiple (),698.4,0.412,0.601,bright_sharp,3,neutral,,,,,
+,Sargas,16:52:21,-42:21:43,1.86,F1Ib / F1II,Single (or no confirmed multiple components),678.2,0.469,0.574,clean,1,neutral,,,,,
+,Dschubba (δ Sco),16:00:20,-22:37:19,2.29,B0.2IV,Single (or binary; no bright known companion),660.36,0.251,0.526,bright_sharp,1,neutral,,,,,
+Leo,Regulus,10:08:22,+11:58:02.0,1.35,B7V,Multiple (Regulus is a multiple system),502.43,-0.133,0.636,bright_sharp,3,neutral,,"The mighty Nemean Lion, conquered by Hercules, representing power, pride, and royal authority.",Pride,110–130,"Horns, bold brass, toms, powerful pads"
+,Denebola,11:49:04,+14:34:19.3,2.14,A3V,Single (main-sequence),548.89,-0.162,0.538,clean,1,neutral,,,,,
+,Algieba (γ Leo),10:19:58,+19:50:30.4,2.01,K1III,Binary (part of a double star system),506.11,-0.22,0.552,warm,2,neutral,,,,,
+,Zosma,11:14:06,+20:31:25.9,2.56,A4V,Single (no known companion),537.62,-0.228,0.503,clean,1,neutral,,,,,
+Taurus,Aldebaran,04:35:55,+16:30:33.5,0.87,K5III,Single (giant),355.08,-0.183,0.709,warm,1,neutral,,"The divine bull—Zeus in disguise—embodying strength, protection, and the duality of gentleness and power.",Strength + Warmth,90–110,"Cello & bass, warm horns, soft piano, mellow pads"
+,Elnath (γ Tau / β Aur?),05:26:18,+28:36:26.0,1.65,B7III,Binary or multiple (some uncertainty),372.69,-0.318,0.594,bright_sharp,3,neutral,,,,,
+,Alcyone (η Tau / Pleiades),03:47:29,+24:06:18.4,2.87,B7IIIe,Multiple (member of Pleiades cluster),339.93,-0.268,0.471,bright_sharp,3,neutral,,,,,
+Libra,Zubeneschamali (β Lib),15:17:01,-09:22:59,2.61,B8V,Single (main-sequence),641.93,0.104,0.498,bright_sharp,1,neutral,,"The sacred scales of justice, representing balance, fairness, and the ideal of cosmic harmony.",Harmony,90–110,"Piano, soft strings, gentle pads, light mallet percussion"
+,Zubenelgenubi (α Lib),14:50:53,-16:02:30,2.75,A3V,Binary (α¹ + α² Librae),632.84,0.178,0.483,clean,2,neutral,,,,,
+,Brachium (γ² Lib),15:28:17,-25:15:12,3.91,G8III,Single (giant),645.7,0.281,0.354,warm,1,dark,,,,,
+Gemini,Pollux,07:45:19,+28:01:34.3,1.14,K0III,Single (giant),433.84,-0.313,0.663,warm,1,neutral,,"The inseparable twins Castor and Pollux, bound by love, sacrifice, and the desire to remain together beyond mortality.",Connection / Duality,90–110,"Two contrasting leads, plucked strings, soft drums in call-and-response"
+,Castor,07:34:36,+31:53:17.0,1.58,A2V,Multiple (Castor is a multiple star system),430.66,-0.354,0.616,clean,3,neutral,,,,,
+,Alhena (γ Gem),06:37:42,+16:23:57.0,1.93,A1IV,Single (subgiant),407.32,-0.182,0.577,clean,1,neutral,,,,,
+Andromeda,Alpheratz (α And),00:08:23,+29:05:25.6,2.06,B9p,Binary (double star),221.52,-0.323,0.563,bright_sharp,2,neutral,,The princess chained to the rocks—a symbol of sacrifice and salvation—rescued by the hero Perseus.,Hope / Sacrifice,70–100,"String ensemble, soft piano, evolving pads, subtle choir"
+,Mirach (β And),01:09:44,+35:37:14.3,2.07,M0III,Single (giant),248.54,-0.396,0.561,dark_soft,1,neutral,,,,,
+,Almach (γ And),02:03:54,+42:19:47.4,2.1,K0III + B9V,Multiple / binary system,275.21,-0.471,0.558,warm,3,neutral,,,,,
+Perseus,Algol (β Per),03:08:10,+40:57:20.4,2.12,B8V,Multiple (eclipsing binary),307.88,-0.455,0.556,bright_sharp,3,neutral,,"The heroic slayer of Medusa and savior of Andromeda, representing courage through risk and decisive action.",Heroism / Risk,100–120,"Strong strings, snare and timpani, brass stabs, airy lead"
+,Mirfak (α Per),03:24:20,+49:51:40.3,1.79,F5Ib,Single (supergiant),313.15,-0.554,0.593,clean,1,neutral,,,,,
+,Atik,03:02:16,+40:41:07.0,3.77,B1III,Single (giant),305.81,-0.452,0.369,bright_sharp,1,dark,,,,,
+,Markab (α Peg),23:04:45,+15:12:19.6,2.49,A0V,Single (main-sequence),879.66,-0.169,0.509,clean,1,neutral,,,,,
+,Scheat (β Peg),23:03:47,+09:57:56.7,2.42,M2III,Single (giant),879.34,-0.111,0.517,dark_soft,1,neutral,,,,,
+,Enif (ε Peg),21:44:12,+09:52:30.1,2.38,K2Ib,Single (supergiant),825.6,-0.11,0.521,warm,1,neutral,,,,,
+Cygnus,Deneb,20:41:26,+45:16:49.3,1.25,A2Ia,Single (supergiant),794.66,-0.503,0.651,clean,1,neutral,,"The celestial swan, often a figure of graceful transformation, loss, and enduring beauty.",Melancholy / Grace,70–90,"Legato strings, soft choir, gentle piano, reverb-heavy pads"
+,Albireo (β Cyg),19:30:43,+27:57:34.5,3.11,K3II + B8V,Binary (double star),760.78,-0.311,0.424,warm,2,neutral,,,,,
+,Sadr (γ Cyg),20:22:14,+40:15:23.8,2.23,F8Ib,Single (supergiant),786.75,-0.447,0.544,clean,1,neutral,,,,,
+Aquila,Altair,19:50:47,+08:52:05.9,0.77,A7V,Single (fast rotator main-sequence),768.07,-0.098,0.716,clean,1,neutral,,"The great eagle of Zeus—a symbol of divine authority, elevated perspective, and spiritual clarity.",Nobility / Vision,100–120,"Brass, soaring synth lead, wide pads, steady rhythmic pulses"
+,Tarazed (γ Aql),19:46:16,+00:14:15.0,2.72,K3II,Single (giant),766.6,-0.003,0.487,warm,1,neutral,,,,,
+,Alshain (δ Aql),19:55:19,+05:13:29.0,3.71,G8IV,Single (sub-giant),769.5,-0.057,0.376,warm,1,dark,,,,,
+Lyra,Vega,18:36:56,+38:47:01.3,0.03,A0V,Single (main-sequence),738.97,-0.431,0.794,clean,1,energetic,,"The lyre of Orpheus, representing the power of music, love, memory, and emotional resonance.",Elegance / Memory,90–110,"Harp, piano, bells, light strings, shimmering pads"
+,Sulafat (γ Lyrae),18:58:56,+32:41:20.9,3.25,B9III,Single (giant),746.09,-0.363,0.409,bright_sharp,1,dark,,,,,
+,Sheliak (β Lyrae),18:21:05,+30:10:32.8,3.52,B8IV + binary,Multiple (binary),733.78,-0.335,0.378,bright_sharp,3,dark,,,,,
+Cassiopeia,Schedar (α Cas),00:40:30,+56:32:14.4,2.24,K0III,Single (giant),235.21,-0.628,0.543,warm,1,neutral,,"The vain queen punished for her pride, embodying themes of arrogance, consequence, and cosmic humility.",Vanity / Caution,90–110,"Bright plucks, harp, thin strings, slightly detuned pads"
+,Caph (β Cas),00:09:11,+59:08:59.1,2.28,F2III,Single (giant),221.9,-0.657,0.538,clean,1,neutral,,,,,
+,Ruchbah (δ Cas),01:25:49,+60:14:05.5,2.68,A5V,Single (main-sequence),254.24,-0.669,0.494,clean,1,neutral,,,,,
+Virgo,Spica,13:25:12,-11:09:40,0.98,B1V,Binary (double star),603.31,0.124,0.693,bright_sharp,2,neutral,,"A celestial figure linked to purity, justice, or the harvest goddess—symbolizing renewal and quiet strength.",Purity / Renewal,80–100,"Soft pads, flute and woodwinds, gentle strings, light piano"
+,Porrima (γ Vir),12:41:40,-01:26:59,2.74,F0V,Binary (binary system),580.38,0.032,0.486,clean,2,neutral,,,,,
+,Zavijava (β Vir),11:52:59,-01:02:54,3.61,F9V,Single (main-sequence),554.76,0.019,0.378,clean,1,dark,,,,,
+Sagittarius,Kaus Australis (ε Sgr),18:24:11,-34:23:05,1.79,B9V,Multiple / probable binary,740.28,0.382,0.593,bright_sharp,3,neutral,,"The wise centaur or traveling archer, evoking themes of knowledge, direction, and purposeful journeying.",Wisdom / Journey,100–120,"Acoustic guitar, light percussion, steady bass, airy leads"
+,Nunki (σ Sgr),18:55:16,-26:17:48,2.02,B3V,Single (main-sequence),745.42,0.292,0.567,bright_sharp,1,neutral,,,,,
+,Ascella (ζ Sgr),18:27:58,-29:49:07,2.6,B2IV,Single (sub-giant),741.45,0.331,0.5,bright_sharp,1,neutral,,,,,
+Capricornus,Deneb Algedi (δ Cap),21:47:02,-16:07:38,2.85,A5m,Single (main-sequence),827.2,0.179,0.472,clean,1,neutral,,"The mysterious sea-goat, a creature of dual realms, symbolizing transition, resilience, and ancient mythic hybridity.",Mystery / Boundary,70–100,"Low pads, subtle drones, sparse piano, soft ethnic percussion"
+,Dabih (β Cap),20:20:39,-14:47:20,3.07,K0III + binary,Binary (double star),791.23,0.164,0.427,warm,2,neutral,,,,,
+,Oculus,21:51:13,-18:27:58,4.08,K-type,Single (giant),828.51,0.205,0.312,warm,1,dark,,,,,
+Aries,Hamal (α Ari),02:07:10,+23:27:48.2,2,K2III,Single (giant),267.99,-0.261,0.569,warm,1,neutral,,"The golden ram that rescued the children Phrixus and Helle—an emblem of protection, courage, and new beginnings.",Initiation / Courage,100–120,"Brass stabs, rhythmic strings, driving drums, bold lead"
+,Sheratan (β Ari),02:44:11,+20:48:28.7,2.66,A5V,Binary (binary system),282.48,-0.231,0.496,clean,2,neutral,,,,,
+,Mesarthim (γ Ari),03:19:20,+19:34:29.5,3.86,B9III,Single (giant),299.15,-0.217,0.366,bright_sharp,1,dark,,,,,
+Pisces,Alrescha (α Psc),02:01:54,+03:22:13.9,3.82,A0p,Binary (double star),266.24,-0.044,0.37,clean,2,dark,,"The two fishes formed from Aphrodite and Eros escaping danger—symbolizing connection, instinct, and shared survival.",Connection / Escape,70–100,"Soft synth bass, gentle piano, flowing pads, delay-heavy plucks"
+,Fumalsamakah (η Psc),01:10:56,+03:12:05.2,4.27,A0V,Single (main-sequence),249.01,-0.043,0.32,clean,1,dark,,,,,
+Cancer,Acubens (α Cnc),08:29:27,+10:13:58.0,4.26,K0III,Binary (suspected),451.67,-0.113,0.321,warm,2,dark,,"The crab sent to challenge Hercules—small but defiant—representing protection, fragility, and steadfast loyalty.",Protection / Fragility,60–90,"Warm strings, soft marimba or bell, low piano, subtle percussion"
+,Asellus Australis (δ Cnc),08:46:41,+09:18:00.0,3.94,K0III,Single (giant),457.44,-0.103,0.354,warm,1,dark,,,,,
+,Tarf (β Cnc),08:16:30,+06:04:44.9,4.67,M3III,Single (giant),446.78,-0.067,0.28,dark_soft,1,dark,,,,,
+Ursa Major,Dubhe (α UMa),11:03:44,+61:45:03.0,1.79,K0III,Binary (multiple),551.8,-0.686,0.593,warm,3,neutral,,"Callisto transformed into a bear and placed in the heavens—a myth of motherhood, memory, and eternal guardianship.",Legacy / Motherhood,80–100,"Warm strings, horns, soft choir, slow rhythmic pulses"
+,Merak (β UMa),11:01:51,+56:22:56.7,2.34,A1V,Single (main-sequence),551.09,-0.626,0.53,clean,1,neutral,,,,,
+,Phecda (γ UMa),11:53:50,+53:41:41.7,2.41,A0V,Single (main-sequence),569.36,-0.596,0.522,clean,1,neutral,,,,,
+,Megrez (δ UMa),12:15:25,+57:01:57.6,3.32,A3V,Single (main-sequence),576.99,-0.633,0.422,clean,1,dark,,,,,
+,Alioth (ε UMa),12:54:00,+55:57:35.4,1.76,A0p,Single (main-sequence),590.79,-0.621,0.596,clean,1,neutral,,,,,
+,Mizar (ζ UMa),13:23:56,+54:55:31.5,2.23,A2V + binary,Multiple (binary / multiple),602.22,-0.61,0.542,clean,3,neutral,,,,,
+,Polaris (α UMi),02:31:49,+89:15:50.8,1.97,F7Ib,Multiple (multiple system),276.32,-0.992,0.571,clean,3,neutral,,,,,
+,Kochab (β UMi),14:50:43,+74:09:19.7,2.08,K4III,Single (giant),632.8,-0.824,0.559,warm,1,neutral,,,,,
+,Pherkad (γ UMi),15:20:43,+71:50:02.8,3.05,A3II,Single (giant),642.91,-0.799,0.429,clean,1,neutral,,,,,
+Auriga,Capella (α Aur),05:16:41,+45:59:52.8,0.08,G5III + G0III,Multiple (binary),369.82,-0.511,0.791,warm,3,energetic,,"The charioteer or goat-keeper, seen as a protector and guide offering safety and steady care.",Comfort / Guidance,70–100,"Acoustic guitar, soft strings, light pads, subtle percussion"
+,Menkalinan (β Aur),06:00:57,+44:57:43.7,1.9,A2IV,Multiple (binary),396.23,-0.499,0.581,clean,3,neutral,,,,,
+,Hassaleh (θ Aur),05:02:28,+51:27:19.7,3,K3III,Single (giant),364.89,-0.571,0.437,warm,1,neutral,,,,,
+Canis Major,Sirius (α CMa),06:45:09,-16:42:58,-1.46,A1V,Binary (Sirius A + B),413.4,0.186,1,clean,2,energetic,,"The loyal celestial hound of Orion, tied to Sirius, the brightest star—symbol of devotion and companionship.",Loyalty / Companionship,90–120,"Acoustic or piano lead, gentle drums, warm pads, expressive lead line"
+,Adhara (ε CMa),06:58:38,-28:58:20,1.5,B2II,Single (bright giant),417.73,0.322,0.608,bright_sharp,1,neutral,,,,,
+,Wezen (δ CMa),07:08:24,-26:23:36,1.83,F8Iab,Single (supergiant),420.7,0.293,0.572,clean,1,neutral,,,,,
+,Procyon (α CMi),07:39:18,+05:13:29.9,0.34,F5IV,Binary (Procyon A + B),431.77,-0.058,0.773,clean,2,energetic,,,,,
+,Gomeisa (β CMi),07:27:09,+09:55:25.6,2.89,B8V,Single (main-sequence),427.92,-0.11,0.469,bright_sharp,1,dark,,,,,
+Bootes,Arcturus (α Boo),14:15:40,+19:10:56.7,-0.05,K0III,Single (giant),616.07,-0.213,0.933,warm,1,energetic,,"The herdsman and guardian of the plow, embodying stewardship, harvest, and the quiet dignity of labor.",Harvest / Stewardship,90–110,"Acoustic guitar, folk-like strings, light percussion, earthy pads"
+,Nekkar (β Boo),15:01:55,+16:08:53.3,3.49,G8III,Single (giant),630.18,-0.179,0.392,warm,1,dark,,,,,
+Draco,Thuban (α Dra),14:04:22,+64:22:33.9,3.67,A0III,Single (giant),612.48,-0.715,0.373,clean,1,dark,,"The vigilant dragon guarding sacred treasures, representing unending watchfulness and ancient cosmic power.",Serpent / Guardian,70–100,"Low strings, dark drones, occasional metallic hits, subtle choir"
+,Rastaban (β Dra),17:30:27,+64:24:51.9,2.79,G2II,Single (bright giant),697.37,-0.716,0.479,warm,1,neutral,,,,,
+,Eltanin (γ Dra),17:56:36,+51:29:20.4,2.24,K5III,Single (giant),707.16,-0.572,0.541,warm,1,neutral,,,,,
+Crux,Acrux (α Cru),12:26:36,-63:05:57,0.77,B0.5IV,Multiple (triple system),575.45,0.701,0.716,bright_sharp,3,neutral,,"The Southern Cross, revered as a symbol of navigation, hope, and direction across cultures.",Hope / Guidance,70–100,"Airy pads, soft choir, bell tones, slow evolving textures"
+,Gacrux (γ Cru),12:31:10,-57:06:47,1.59,M3III,Single (giant),576.9,0.635,0.615,dark_soft,1,neutral,,,,,
+,Mimosa (β Cru),12:47:43,-59:41:20,1.25,B0.5III,Multiple (binary or more),582.22,0.663,0.651,bright_sharp,3,neutral,,,,,

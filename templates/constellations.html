@@ -1,0 +1,764 @@
+<!-- templates/constellations.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Aethera | Celestial Archive</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon.png">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="../static/images/apple-touch-icon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-deep: #020305;
+      --ink: #f4f4f6;
+      --muted: rgba(244, 244, 246, 0.6);
+      --gold: #c5a059;
+      --gold-bright: #f2e1c2;
+      --border: rgba(197, 160, 89, 0.2);
+      --card-shadow: 0 26px 90px rgba(0,0,0,.48);
+    }
+
+    html, body { height: 100%; }
+    body{
+      background: var(--bg-deep);
+      color: var(--ink);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+      padding-bottom: 110px;
+    }
+
+    /* BACKDROP */
+    .bg-wrap{ position: fixed; inset: 0; pointer-events:none; z-index:0; }
+    .milky-way{
+      position:absolute; inset:0; opacity:.38;
+      background:
+        radial-gradient(ellipse at 40% 60%, rgba(64, 84, 134, 0.26) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 30%, rgba(197, 160, 89, 0.14) 0%, transparent 60%),
+        radial-gradient(circle at 50% 50%, rgba(15, 20, 30, 1) 0%, var(--bg-deep) 100%);
+      filter: blur(42px);
+    }
+    #star-canvas{ position:absolute; inset:0; }
+
+    /* NAV */
+    .nav-glass{
+      background: rgba(2, 3, 5, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: .9rem 0;
+      z-index: 1000;
+    }
+    .navbar-brand{
+      font-family: "Cinzel", serif;
+      letter-spacing: .4em;
+      color: var(--gold-bright) !important;
+      font-weight: 700;
+    }
+    .nav-link-aethera{
+      color: rgba(255,255,255,0.78) !important;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-size: .72rem;
+      padding: .55rem .70rem !important;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: .2s ease;
+    }
+    .nav-link-aethera:hover{
+      color: rgba(242,225,194,0.96) !important;
+      border-color: rgba(242,225,194,0.18);
+      background: rgba(255,255,255,0.04);
+      transform: translateY(-1px);
+    }
+    .btn-gold{
+      background: var(--gold);
+      color: var(--bg-deep);
+      padding: 12px 22px;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      text-decoration:none;
+      transition: .3s ease;
+      display:inline-block;
+      border:0;
+      border-radius:0;
+      white-space:nowrap;
+    }
+    .btn-gold:hover{
+      background: var(--gold-bright);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(197, 160, 89, 0.4);
+      color: var(--bg-deep);
+    }
+
+    /* LAYOUT */
+    .page{ position:relative; z-index:2; }
+    .container-wide{ width:min(1320px, calc(100% - 40px)); margin:0 auto; }
+
+    .hero{ padding: 78px 0 30px; }
+    .hero-kicker{
+      font-weight:900; font-size:.72rem; text-transform:uppercase;
+      letter-spacing:.6em; color: var(--gold); margin-bottom:12px;
+      display:inline-flex; align-items:center; gap:10px;
+    }
+    .hero-kicker i{ color: var(--gold-bright); filter: drop-shadow(0 0 12px rgba(197,160,89,0.25)); }
+    .hero-title{
+      font-family:"Cinzel",serif; font-weight:700; color:#fff;
+      letter-spacing:.10em; margin:0 0 14px;
+      font-size: clamp(2.1rem, 4.8vw, 3.6rem);
+      line-height:1.12;
+    }
+    .hero-sub{
+      color: var(--muted); line-height:1.8; max-width:920px;
+      margin:0 0 22px; border-left:2px solid var(--gold); padding-left:16px;
+    }
+
+    .search-wrap{ position:relative; max-width:720px; }
+    .search-ico{
+      position:absolute; left:16px; top:50%; transform:translateY(-50%);
+      color: rgba(242,225,194,0.78); font-size:1.05rem; pointer-events:none;
+      filter: drop-shadow(0 0 12px rgba(197,160,89,0.20));
+    }
+    .search-input{
+      width:100%; border-radius:16px; padding:16px 18px 16px 48px;
+      border:1px solid rgba(242,225,194,0.18);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      color: rgba(255,255,255,0.90);
+      box-shadow: 0 24px 70px rgba(0,0,0,.50);
+      outline:none;
+    }
+    .search-input::placeholder{ color: rgba(255,255,255,0.46); }
+    .search-input:focus{ border-color: rgba(242,225,194,0.30); box-shadow: 0 30px 90px rgba(0,0,0,.58); }
+
+    .grid-wrap{ padding: 12px 0 10px; }
+
+    .const-card{
+      background:
+        radial-gradient(420px 240px at 18% 20%, rgba(197,160,89,0.16), transparent 60%),
+        radial-gradient(420px 240px at 85% 70%, rgba(110,140,210,0.10), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(242,225,194,0.16);
+      border-radius: 18px;
+      overflow: hidden;
+      height: 100%;
+      cursor: pointer;
+      box-shadow: var(--card-shadow);
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+      position: relative;
+    }
+    .const-card:hover{
+      transform: translateY(-4px);
+      border-color: rgba(242,225,194,0.28);
+      box-shadow: 0 30px 90px rgba(0,0,0,.58);
+    }
+
+    .plotter-container{
+      width:100%;
+      aspect-ratio: 1/1;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display:flex; align-items:center; justify-content:center;
+      position:relative;
+    }
+    .star-svg{ width:86%; height:86%; filter: drop-shadow(0 0 14px rgba(197,160,89,0.20)); }
+
+    /* CARD PLAY (constellation audio) */
+    .play-btn-overlay{
+      position:absolute;
+      top: 16px;
+      right: 16px;
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(242,225,194,0.18);
+      color: var(--gold-bright);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: 0 18px 50px rgba(0,0,0,.42);
+      transition: .18s ease;
+      z-index: 2;
+    }
+    .const-card:hover .play-btn-overlay{
+      background: rgba(197,160,89,0.22);
+      border-color: rgba(242,225,194,0.30);
+      transform: translateY(-1px);
+    }
+    .play-btn-overlay.disabled{
+      opacity:.45;
+      pointer-events:none;
+    }
+
+    .card-body-custom{ padding: 18px 18px 20px; }
+    .mythic-title-sm{
+      color: rgba(242,225,194,0.90);
+      font-size: .72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .22em;
+      display:block;
+      margin-bottom: 8px;
+    }
+    .const-name{
+      font-family:"Cinzel",serif;
+      color:#fff;
+      font-weight:700;
+      letter-spacing:.06em;
+      margin: 0 0 10px;
+      font-size: 1.18rem;
+    }
+    .story-preview{
+      color: rgba(255,255,255,0.68);
+      line-height:1.7;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+      margin:0;
+      font-size:.95rem;
+    }
+
+    .empty-state{
+      border: 1px dashed rgba(242,225,194,0.22);
+      border-radius: 18px;
+      padding: 22px;
+      color: rgba(255,255,255,0.68);
+      background: rgba(0,0,0,0.22);
+      box-shadow: 0 18px 50px rgba(0,0,0,.42);
+    }
+
+    /* MODAL */
+    .modal-content{
+      background:
+        radial-gradient(600px 280px at 18% 12%, rgba(197,160,89,0.16), transparent 60%),
+        radial-gradient(640px 300px at 80% 32%, rgba(110,140,210,0.10), transparent 62%),
+        #07080b;
+      border: 1px solid rgba(242,225,194,0.16) !important;
+      border-radius: 22px !important;
+      overflow: hidden;
+    }
+    .modal-header{ border-bottom: 1px solid rgba(255,255,255,0.08) !important; }
+    .btn-close{ filter: invert(1); opacity:.75; }
+    .btn-close:hover{ opacity:1; }
+
+    .modal-mythic-identity{
+      color: rgba(242,225,194,0.92);
+      font-weight: 900;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      font-size: .78rem;
+      display:block;
+      margin-bottom: 10px;
+    }
+    .modal-title{
+      font-family:"Cinzel",serif;
+      color:#fff;
+      letter-spacing:.06em;
+      font-weight:700;
+    }
+
+    #modalStory{
+      max-width: 72ch;
+      margin: 10px auto 0;
+      padding: 16px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(242,225,194,0.16);
+      background: rgba(0,0,0,0.22);
+      color: rgba(255,255,255,0.78);
+      line-height: 1.95;
+      font-size: 1.02rem;
+    }
+    #modalStory p{ margin: 0 0 14px; }
+    #modalStory p:last-child{ margin-bottom: 0; }
+
+    .stars-list{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 768px){
+      .stars-list{ grid-template-columns: 1fr 1fr; }
+    }
+    .star-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(242,225,194,0.14);
+      background: rgba(0,0,0,0.18);
+    }
+    .star-name{ font-weight: 800; color: rgba(255,255,255,0.92); }
+    .star-meta{ color: rgba(255,255,255,0.62); font-size: .85rem; }
+
+    .modal-footer{ border-top: 1px solid rgba(255,255,255,0.08) !important; }
+    .btn-outline-light{
+      border-radius: 14px;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      font-weight: 900;
+      font-size: .75rem;
+    }
+
+    /* PLAYER DOCK */
+    .player-dock{
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(92%, 560px);
+      background: rgba(2, 3, 5, 0.78);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(242,225,194,0.16);
+      border-radius: 18px;
+      padding: 14px 18px;
+      box-shadow: 0 26px 90px rgba(0,0,0,.60);
+      display:flex;
+      align-items:center;
+      gap: 16px;
+      z-index: 2000;
+    }
+    #nowTrack{
+      font-family: "Cinzel", serif;
+      letter-spacing: .06em;
+      color: rgba(255,255,255,0.92);
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #nowSub{
+      color: rgba(255,255,255,0.62);
+      font-size: .85rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .player-btn{
+      width: 50px;
+      height: 50px;
+      border-radius: 999px;
+      background: rgba(197,160,89,0.22);
+      border: 1px solid rgba(242,225,194,0.22);
+      color: var(--gold-bright);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: .18s ease;
+      flex: 0 0 auto;
+    }
+    .player-btn:hover{
+      background: rgba(197,160,89,0.30);
+      border-color: rgba(242,225,194,0.30);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-wrap" aria-hidden="true">
+    <div class="milky-way"></div>
+    <canvas id="star-canvas"></canvas>
+  </div>
+
+  <nav class="navbar nav-glass navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="/">AETHERA</a>
+      <button class="navbar-toggler text-light border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navAethera">
+        <span class="navbar-toggler-icon" style="filter: invert(1); opacity:.85;"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navAethera">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+          <li class="nav-item"><a class="nav-link nav-link-aethera" href="/">User Guide</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-aethera" href="/constellations">Constellations</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-aethera" href="/#contact">Contact</a></li>
+          <li class="nav-item ms-lg-2"><a href="/sky" class="btn-gold">Open Sky</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page">
+    <header class="hero">
+      <div class="container-wide">
+        <div class="hero-kicker"><i class="bi bi-grid-3x3-gap"></i> CELESTIAL ARCHIVE</div>
+        <h1 class="hero-title">Constellations & Myth Index</h1>
+        <p class="hero-sub">
+          Each constellation has a dedicated sounificaiton.
+          Use the <span class="kbd">Play</span> button on a card to listen.
+        </p>
+
+        <div class="search-wrap">
+          <i class="bi bi-search search-ico"></i>
+          <input id="q" class="search-input"
+                 placeholder="Find a constellation, mythic title, or story text..."
+                 oninput="render()">
+        </div>
+      </div>
+    </header>
+
+    <section class="grid-wrap">
+      <div class="container-wide">
+        <div id="grid" class="row g-4"></div>
+        <div id="empty" class="empty-state mt-4 d-none">No constellations match your search.</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Story Modal -->
+  <div class="modal fade" id="storyModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <div class="modal-content shadow-lg">
+        <div class="modal-header border-0 p-4 pb-3">
+          <div>
+            <span id="modalMythicTitle" class="modal-mythic-identity"></span>
+            <h2 class="modal-title fs-2" id="modalTitle"></h2>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body p-4 pt-0">
+          <div id="modalStory"></div>
+
+          <div id="modalStarsWrap" class="mt-4">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div class="fw-bold" style="font-family:'Cinzel', serif; color: rgba(255,255,255,0.92); letter-spacing:.06em;">
+                Featured Stars
+              </div>
+
+            </div>
+            <div id="modalStars" class="stars-list"></div>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0 px-4 pb-4 pt-0">
+          <button class="btn btn-outline-light" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Player Dock (global, reused for constellation tracks) -->
+  <div id="playerDock" class="player-dock" style="display:none;">
+    <div class="flex-grow-1" style="min-width:0;">
+      <div id="nowTrack"></div>
+      <div id="nowSub">Constellation Track</div>
+    </div>
+    <audio id="audioPlayer"></audio>
+    <button onclick="togglePlay()" class="player-btn" type="button" aria-label="Play/Pause">
+      <i id="playIcon" class="bi bi-play-fill fs-4"></i>
+    </button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Flask: render_template("constellations.html", preload_data=items)
+    let DATA = ({{ preload_data|tojson }} || []);
+    const modal = new bootstrap.Modal(document.getElementById('storyModal'));
+
+    function escAttr(s){
+      return String(s ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/"/g,"&quot;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;");
+    }
+    function escJs(s){
+      return String(s ?? "")
+        .replace(/\\/g,"\\\\")
+        .replace(/'/g,"\\'")
+        .replace(/\n/g,"\\n");
+    }
+
+    // ---------- Constellation audio url ----------
+    // File naming rule you said: "canis major.mp3" inside static/constellations_audio
+    // So: Constellation name -> lowercased, spaces collapsed -> "<name>.mp3"
+    function constAudioUrl(constName){
+      const n = String(constName || "").trim().toLowerCase().replace(/\s+/g, " ");
+      if(!n) return "";
+      return "/static/constellations_audio/" + encodeURIComponent(n) + ".mp3";
+    }
+
+    // (Optional) HEAD check cache so we don't spam requests
+    const AUDIO_EXISTS_CACHE = new Map();
+    async function audioExists(url){
+      if(!url) return false;
+      if(AUDIO_EXISTS_CACHE.has(url)) return AUDIO_EXISTS_CACHE.get(url);
+      try{
+        const r = await fetch(url, { method: "HEAD" });
+        const ok = !!r.ok;
+        AUDIO_EXISTS_CACHE.set(url, ok);
+        return ok;
+      }catch(e){
+        AUDIO_EXISTS_CACHE.set(url, false);
+        return false;
+      }
+    }
+
+    // -------- Story formatting --------
+    function formatStoryHTML(text){
+      const t = String(text || "").trim();
+      if (!t) return "";
+      const blocks = t.replace(/\r\n/g, "\n")
+        .split(/\n\s*\n/g)
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      const paras = (blocks.length > 1) ? blocks : chunkLongParagraph(blocks[0] || "");
+      return paras.map(p => `<p>${escAttr(p)}</p>`).join("");
+    }
+    function chunkLongParagraph(p){
+      const s = String(p || "").trim();
+      if (!s) return [];
+      const sentences = s.split(/(?<=[.!?])\s+/).filter(Boolean);
+      const out = [];
+      for (let i = 0; i < sentences.length; i += 3){
+        out.push(sentences.slice(i, i + 3).join(" "));
+      }
+      return out.length ? out : [s];
+    }
+
+    // --- Tiny constellation doodle (same as your earlier version) ---
+    function hash32(str){
+      let h = 2166136261 >>> 0;
+      for (let i=0; i<str.length; i++){
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return h >>> 0;
+    }
+    function mulberry32(seed){
+      return function(){
+        let t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      }
+    }
+    function buildMST(points){
+      const n = points.length;
+      if (n < 2) return [];
+      const used = Array(n).fill(false);
+      used[0] = true;
+      const edges = [];
+      const dist2 = (i,j) => {
+        const dx = points[i].x - points[j].x;
+        const dy = points[i].y - points[j].y;
+        return dx*dx + dy*dy;
+      };
+      for (let k=0; k<n-1; k++){
+        let bestI=-1, bestJ=-1, bestD=Infinity;
+        for (let i=0; i<n; i++){
+          if (!used[i]) continue;
+          for (let j=0; j<n; j++){
+            if (used[j]) continue;
+            const d = dist2(i,j);
+            if (d < bestD){ bestD=d; bestI=i; bestJ=j; }
+          }
+        }
+        if (bestI !== -1){ used[bestJ] = true; edges.push([bestI, bestJ]); }
+      }
+      return edges;
+    }
+    function createPlot(item) {
+      const name = (item?.name || "constellation");
+      const seed = hash32(name);
+      const rnd = mulberry32(seed);
+      const count = 10;
+      const points = [];
+      for (let i=0; i<count; i++){
+        points.push({ x: 10 + rnd()*80, y: 10 + rnd()*80, baseR: 1 + rnd()*1.5 });
+      }
+      const edges = buildMST(points);
+      const important = new Set();
+      edges.forEach(([i,j]) => { important.add(i); important.add(j); });
+
+      let svgContent = "";
+      edges.forEach(([i,j]) => {
+        svgContent += `<line x1="${points[i].x}" y1="${points[i].y}" x2="${points[j].x}" y2="${points[j].y}"
+                        stroke="#c5a059" stroke-width="0.9" opacity="0.30" />`;
+      });
+      points.forEach((p, i) => {
+        const isImp = important.has(i);
+        const r = isImp ? p.baseR * 1.30 : p.baseR * 0.55;
+        svgContent += `<circle cx="${p.x}" cy="${p.y}" r="${r}"
+                        fill="${isImp ? '#f2e1c2':'#ffffff'}" opacity="${isImp?0.92:0.22}" />`;
+      });
+      return `<svg viewBox="0 0 100 100" class="star-svg" aria-hidden="true">${svgContent}</svg>`;
+    }
+
+    // ---- Player Dock (constellation audio) ----
+    const audio = document.getElementById('audioPlayer');
+    const playIcon = document.getElementById('playIcon');
+
+    function playConstellation(url, constName, subtitle){
+      if(!url) return;
+      document.getElementById('playerDock').style.display = 'flex';
+      document.getElementById('nowTrack').innerText = constName || '';
+      document.getElementById('nowSub').innerText = subtitle || 'Constellation Track';
+      audio.src = url;
+      audio.play().catch(()=>{});
+      updateIcon();
+    }
+    function togglePlay(){
+      audio.paused ? audio.play().catch(()=>{}) : audio.pause();
+      updateIcon();
+    }
+    function updateIcon(){
+      playIcon.className = audio.paused ? 'bi bi-play-fill fs-4' : 'bi bi-pause-fill fs-4';
+    }
+    audio.addEventListener('play', updateIcon);
+    audio.addEventListener('pause', updateIcon);
+    audio.addEventListener('ended', updateIcon);
+
+    // ---- Render grid with play button per constellation ----
+    async function render(){
+      const term = (document.getElementById('q').value || '').toLowerCase().trim();
+      const grid = document.getElementById('grid');
+      const empty = document.getElementById('empty');
+
+      const filtered = (DATA || []).filter(c =>
+        (String(c?.name || '').toLowerCase().includes(term)) ||
+        (String(c?.title || '').toLowerCase().includes(term)) ||
+        (String(c?.story || '').toLowerCase().includes(term))
+      );
+
+      empty.classList.toggle('d-none', filtered.length !== 0);
+
+      // Build HTML first (fast). We mark buttons as "checking", then resolve availability.
+      grid.innerHTML = filtered.map((c, idx) => {
+        const url = constAudioUrl(c.name);
+        const btnId = `playbtn_${idx}`;
+        return `
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="const-card" onclick="openStory('${escJs(c.name)}')">
+              <div class="plotter-container">
+                ${createPlot(c)}
+                <button id="${btnId}"
+                  class="play-btn-overlay"
+                  onclick="event.stopPropagation(); playConstellation('${escJs(url)}','${escJs(c.name)}','${escJs(c.title || 'Constellation Track')}')"
+                  type="button"
+                  title="Play constellation track">
+                  <i class="bi bi-play-fill fs-4"></i>
+                </button>
+              </div>
+
+              <div class="card-body-custom">
+                <span class="mythic-title-sm">${escAttr(c.title || '')}</span>
+                <h3 class="const-name">${escAttr(c.name || '')}</h3>
+                <p class="story-preview">${escAttr(c.story || '')}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // OPTIONAL: disable play buttons if file missing (HEAD check).
+      // If your static server doesn't support HEAD, remove this block.
+      const checks = filtered.map(async (c, idx) => {
+        const url = constAudioUrl(c.name);
+        const ok = await audioExists(url);
+        const btn = document.getElementById(`playbtn_${idx}`);
+        if(!btn) return;
+        if(!ok){
+          btn.classList.add('disabled');
+          btn.title = "No audio file found in static/constellations_audio";
+        }
+      });
+      Promise.allSettled(checks);
+    }
+
+    function openStory(name){
+      const item = (DATA || []).find(c => String(c.name) === String(name));
+      if(!item) return;
+
+      document.getElementById('modalMythicTitle').innerText = item.title || '';
+      document.getElementById('modalTitle').innerText = item.name || '';
+      document.getElementById('modalStory').innerHTML = formatStoryHTML(item.story || '');
+
+      // Stars list: astronomy-only (no pitch/pan/loudness/etc)
+      const wrap = document.getElementById('modalStarsWrap');
+      const list = document.getElementById('modalStars');
+      const stars = item.stars || [];
+
+      if(!stars.length){
+        wrap.style.display = 'none';
+      }else{
+        wrap.style.display = '';
+        const sorted = [...stars].sort((a,b)=>{
+          const am = (typeof a.mag === 'number') ? a.mag : 999;
+          const bm = (typeof b.mag === 'number') ? b.mag : 999;
+          if (am !== bm) return am - bm;
+          return String(a.name||'').localeCompare(String(b.name||''));
+        });
+
+        list.innerHTML = sorted.map(s=>{
+          const meta = [
+            (s.mag !== null && s.mag !== undefined) ? `Mag ${s.mag}` : null,
+            (s.ra ? `RA ${s.ra}` : null),
+            (s.dec ? `Dec ${s.dec}` : null),
+          ].filter(Boolean).join(' · ');
+
+          return `
+            <div class="star-item">
+              <div style="min-width:0;">
+                <div class="star-name">${escAttr(s.name || '')}</div>
+                <div class="star-meta">${escAttr(meta)}</div>
+              </div>
+              <div class="star-meta" style="text-align:right; white-space:nowrap;">
+                ${((s.mag !== null && s.mag !== undefined) ? `Mag ${escAttr(s.mag)}` : '—')}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      modal.show();
+    }
+
+    // ===== STARFIELD =====
+    const canvas = document.getElementById('star-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function initCanvas(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = Array.from({length: 240}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 1.5,
+        opacity: Math.random(),
+        twinkle: Math.random() * 0.02
+      }));
+    }
+
+    function drawStars(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => {
+        ctx.fillStyle = `rgba(255,255,255,${s.opacity})`;
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
+        s.opacity += s.twinkle;
+        if(s.opacity > 1 || s.opacity < 0.2) s.twinkle *= -1;
+      });
+      requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+    drawStars();
+    render();
+  </script>
+</body>
+</html>
