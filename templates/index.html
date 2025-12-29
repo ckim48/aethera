@@ -4,12 +4,15 @@
   <meta charset="utf-8" />
   <title>Aethera | Sonic Firmament</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon.png">
-
+  <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../static/images/apple-touch-icon.png">
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- AOS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"/>
 
   <style>
     :root {
@@ -36,6 +39,9 @@
       margin: 0;
       overflow-x: hidden;
     }
+
+    /* AOS smoothness */
+    [data-aos]{ will-change: transform, opacity; }
 
     /* --- HERO BACKGROUND SYSTEM --- */
     .hero-wrap {
@@ -116,27 +122,6 @@
       transform: translateY(-3px);
       box-shadow: 0 10px 30px rgba(197, 160, 89, 0.4);
     }
-    .btn-outline-gold{
-      background: transparent;
-      border: 1px solid var(--gold);
-      color: rgba(255,255,255,0.92);
-      padding: 12px 22px;
-      border-radius: 0;
-      font-weight: 900;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      font-size: 0.72rem;
-      text-decoration: none;
-      display:inline-block;
-      transition: .22s ease;
-      white-space: nowrap;
-    }
-    .btn-outline-gold:hover{
-      color: var(--gold-bright);
-      border-color: var(--gold-bright);
-      transform: translateY(-2px);
-      box-shadow: 0 12px 26px rgba(197,160,89,.18);
-    }
 
     /* --- HERO CONTENT --- */
     .hero-container { position: relative; z-index: 10; }
@@ -178,6 +163,7 @@
       justify-content: center;
       position: relative;
       border-radius: 10px;
+      overflow: hidden;
     }
     .corner { position: absolute; width: 15px; height: 15px; border: 1px solid var(--gold); }
     .tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
@@ -197,572 +183,477 @@
     .star-flare { fill: var(--gold-bright); filter: drop-shadow(0 0 8px var(--gold)); }
     @keyframes draw { to { stroke-dashoffset: 0; } }
 
-    /* --- USER GUIDE --- */
-    .howto-section{
-      padding: 92px 0 72px;
-      background:
-        radial-gradient(900px 380px at 22% 10%, rgba(197,160,89,0.16), transparent 60%),
-        radial-gradient(820px 360px at 78% 30%, rgba(110,140,210,0.12), transparent 62%),
-        #050608;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .howto-top{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap: 18px;
-      flex-wrap: wrap;
-      margin-bottom: 26px;
-    }
-
-    .howto-title{
-      font-family: "Cinzel", serif;
-      font-weight: 700;
-      letter-spacing: .08em;
-      margin: 10px 0 12px;
-      color: #fff;
-      font-size: clamp(2.0rem, 3.2vw, 2.6rem);
-      display:flex;
-      align-items:center;
-      gap: 14px;
-    }
-    .howto-title i{
-      color: var(--gold-bright);
-      font-size: 1.35em;
-      filter: drop-shadow(0 0 14px rgba(197,160,89,0.25));
-    }
-
-    .howto-sub{
-      color: rgba(255,255,255,0.88);
-      max-width: 920px;
-      line-height: 1.9;
-      margin: 0;
-      font-size: 1.12rem;
-    }
-
-    .timeline{
-      margin-top: 18px;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 18px;
-    }
-    @media (min-width: 992px){
-      .timeline{
-        grid-template-columns: 180px 1fr;
-        column-gap: 26px;
-        row-gap: 18px;
-        align-items: start;
-      }
-    }
-
-    .t-node{
-      position: relative;
-      padding: 18px 14px;
-      border-radius: 18px;
-      border: 1px solid rgba(242,225,194,0.20);
-      background: rgba(0,0,0,0.22);
-      box-shadow: 0 18px 50px rgba(0,0,0,.40);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow: hidden;
-    }
-    @media (min-width: 992px){
-      .t-node{
-        min-height: 132px;
-        flex-direction: column;
-        justify-content:center;
-        gap: 10px;
-      }
-      .t-node:after{
-        content:"";
-        position:absolute;
-        left: 50%;
-        top: 80px;
-        bottom: -90px;
-        width: 1px;
-        background: rgba(242,225,194,0.16);
-        transform: translateX(-50%);
-      }
-      .t-node.last:after{ display:none; }
-    }
-
-    .t-step{
-      font-size: .82rem;
-      letter-spacing: .34em;
-      text-transform: uppercase;
-      color: rgba(242,225,194,0.95);
-      font-weight: 900;
-      white-space: nowrap;
-    }
-    .t-num{
-      font-family: "Cinzel", serif;
-      font-weight: 700;
-      font-size: 2.25rem;
-      letter-spacing: .08em;
-      color: rgba(242,225,194,0.95);
-      line-height: 1;
-      margin-top: 6px;
-    }
-
-    .t-card{
-      border: 1px solid var(--step-border);
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-      border-radius: 18px;
-      padding: 22px 20px;
-      box-shadow: 0 24px 70px rgba(0,0,0,.50);
-      position: relative;
-      overflow: hidden;
-    }
-    .t-card:before{
-      content:"";
+    /* --- SMALL LABEL INSIDE FRAME (HUD) --- */
+    .stage-hud{
       position:absolute;
-      inset:-1px;
-      background:
-        radial-gradient(520px 240px at 18% 20%, rgba(197,160,89,0.18), transparent 60%),
-        radial-gradient(520px 240px at 85% 70%, rgba(110,140,210,0.12), transparent 62%);
-      opacity: .75;
-      pointer-events:none;
-    }
-    .t-card > *{ position: relative; z-index: 1; }
-
-    .t-head{
-      margin: 0 0 10px;
-      font-weight: 950;
-      letter-spacing: .01em;
-      font-size: 1.50rem;
-      color: var(--step-ink);
-    }
-    .t-body{
-      margin: 0;
-      color: var(--step-muted);
-      line-height: 1.86;
-      font-size: 1.10rem;
-    }
-
-    .how-mini{
-      margin-top: 22px;
-      padding: 16px 18px;
-      border-radius: 16px;
-      border: 1px solid rgba(242,225,194,0.20);
-      background: rgba(0,0,0,0.26);
-      color: rgba(255,255,255,0.90);
-      font-size: 1.02rem;
-      line-height: 1.75;
-      box-shadow: 0 18px 50px rgba(0,0,0,.42);
-    }
-
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size: .86em;
-      padding: 2px 8px;
+      top: 14px;
+      left: 14px;
+      z-index: 5;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid rgba(242,225,194,0.22);
+      background: rgba(0,0,0,0.28);
+      backdrop-filter: blur(10px);
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.96);
+      box-shadow: 0 18px 45px rgba(0,0,0,.45);
+      max-width: calc(100% - 28px);
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .stage-hud .hud-dot{
+      width: 8px; height: 8px;
+      border-radius: 999px;
+      background: rgba(242,225,194,0.92);
+      box-shadow: 0 0 18px rgba(197,160,89,0.35);
+      flex: 0 0 auto;
+    }
+    .stage-hud .hud-text{
+      min-width: 0;
+      display:flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stage-hud .hud-kicker{
+      font-weight: 900;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      font-size: .62rem;
+      color: rgba(242,225,194,0.90);
+      line-height: 1.1;
       white-space: nowrap;
     }
+    .stage-hud .hud-name{
+      font-family: "Cinzel", serif;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: rgba(255,255,255,0.96);
+      font-size: .95rem;
+      line-height: 1.15;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 44ch;
+    }
 
-    /* --- AUDIO STARS SECTION (NEW) --- */
-    .audio-section{
-      padding: 88px 0 92px;
+    /* --- ABOUT + FEATURES --- */
+    .about-section{
+      padding: 92px 0 48px;
       background:
-        radial-gradient(920px 420px at 75% 0%, rgba(197,160,89,0.14), transparent 60%),
-        radial-gradient(860px 420px at 15% 30%, rgba(110,140,210,0.12), transparent 62%),
+        radial-gradient(920px 420px at 20% 10%, rgba(197,160,89,0.16), transparent 60%),
+        radial-gradient(920px 420px at 82% 30%, rgba(110,140,210,0.12), transparent 62%),
         #050608;
-      border-bottom: 1px solid var(--border);
       border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
       position: relative;
       overflow:hidden;
     }
-    .audio-head{
+
+    .about-head{
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
-      gap: 14px;
+      gap: 16px;
       flex-wrap: wrap;
-      margin-bottom: 14px;
+      margin-bottom: 18px;
     }
-    .audio-title{
+
+    .about-title{
       margin:0;
       font-family:"Cinzel", serif;
       font-weight:700;
       letter-spacing:.08em;
       color:#fff;
       font-size: clamp(2.0rem, 3.2vw, 2.6rem);
+      display:flex;
+      align-items:center;
+      gap: 14px;
     }
-    .audio-sub{
+    .about-title i{
+      color: var(--gold-bright);
+      font-size: 1.35em;
+      filter: drop-shadow(0 0 14px rgba(197,160,89,0.25));
+    }
+
+    .about-desc{
       margin: 10px 0 0;
       color: rgba(255,255,255,0.86);
       max-width: 920px;
-      line-height: 1.85;
-      font-size: 1.05rem;
+      line-height: 1.9;
+      font-size: 1.08rem;
     }
 
-    .audio-panel{
+    .about-hero{
+      margin-top: 18px;
+      border-radius: 18px;
       border: 1px solid rgba(242,225,194,0.18);
       background: rgba(0,0,0,0.24);
-      border-radius: 18px;
-      padding: 16px;
       box-shadow: 0 24px 70px rgba(0,0,0,.50);
+      padding: 18px;
+      position: relative;
+      overflow:hidden;
     }
+    .about-hero:before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background:
+        radial-gradient(520px 260px at 18% 25%, rgba(197,160,89,0.18), transparent 60%),
+        radial-gradient(520px 260px at 85% 70%, rgba(110,140,210,0.12), transparent 62%);
+      opacity:.85;
+      pointer-events:none;
+    }
+    .about-hero > *{ position: relative; z-index: 1; }
 
-    .searchbar{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items:center;
-    }
-    .searchbar .form-control, .searchbar .form-select{
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(242,225,194,0.18);
-      color: rgba(255,255,255,0.92);
-      border-radius: 999px;
-      padding: 12px 14px;
-      box-shadow: none !important;
-    }
-    .searchbar .form-control::placeholder{ color: rgba(255,255,255,0.55); }
-    .searchbar .form-control:focus, .searchbar .form-select:focus{
-      border-color: rgba(242,225,194,0.34);
-      background: rgba(255,255,255,0.06);
-    }
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap: 8px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--chip-b);
-      background: var(--chip);
-      color: rgba(255,255,255,0.90);
-      font-weight: 900;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: .70rem;
-      white-space: nowrap;
-    }
-    .chip i{ color: rgba(242,225,194,0.92); }
-
-    .audio-grid{
-      margin-top: 14px;
+    .feature-grid{
       display:grid;
       grid-template-columns: 1fr;
       gap: 12px;
     }
     @media (min-width: 992px){
-      .audio-grid{ grid-template-columns: 1.2fr .8fr; }
+      .feature-grid{ grid-template-columns: repeat(3, 1fr); gap: 14px; }
     }
 
-    .audio-list{
-      border: 1px solid rgba(242,225,194,0.14);
-      background: rgba(255,255,255,0.03);
-      border-radius: 16px;
-      overflow: hidden;
-      max-height: 540px;
-    }
-    .audio-list-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-      padding: 12px 14px;
-      border-bottom: 1px solid rgba(242,225,194,0.12);
-      background: rgba(0,0,0,0.18);
-    }
-    .audio-count{
-      color: rgba(255,255,255,0.82);
-      font-weight: 800;
-      letter-spacing: .06em;
-      font-size: .85rem;
-      text-transform: uppercase;
-      margin: 0;
-    }
-    .audio-list-body{
-      overflow:auto;
-      max-height: 486px;
-    }
-
-    .star-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 12px;
-      padding: 12px 14px;
-      border-bottom: 1px solid rgba(242,225,194,0.10);
-      cursor: pointer;
-      transition: .18s ease;
-    }
-    .star-row:hover{
-      background: rgba(197,160,89,0.08);
-      transform: translateY(-1px);
-    }
-    .star-row.active{
-      background: rgba(197,160,89,0.14);
-      border-bottom-color: rgba(242,225,194,0.18);
-    }
-
-    .star-left{
-      min-width: 0;
-      display:flex;
-      align-items:center;
-      gap: 10px;
-    }
-    .star-dot{
-      width: 10px; height: 10px;
-      border-radius: 999px;
-      background: rgba(242,225,194,0.80);
-      box-shadow: 0 0 18px rgba(197,160,89,0.35);
-      flex: 0 0 auto;
-    }
-    .star-meta{
-      min-width: 0;
-      display:flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .star-name{
-      margin:0;
-      font-weight: 950;
-      color: rgba(255,255,255,0.96);
-      letter-spacing: .02em;
-      font-size: 1.02rem;
-      line-height: 1.15;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 420px;
-    }
-    .star-sub{
-      margin:0;
-      color: rgba(255,255,255,0.70);
-      font-size: .90rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 520px;
-    }
-    .star-right{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      flex: 0 0 auto;
-    }
-    .badge-mag{
-      border: 1px solid rgba(242,225,194,0.20);
-      background: rgba(255,255,255,0.04);
-      color: rgba(242,225,194,0.92);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-weight: 900;
-      letter-spacing: .06em;
-      font-size: .70rem;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-    .btn-play{
-      width: 42px;
-      height: 42px;
-      border-radius: 999px;
-      border: 1px solid rgba(242,225,194,0.22);
-      background: rgba(255,255,255,0.05);
-      color: rgba(242,225,194,0.95);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      transition:.18s ease;
-    }
-    .btn-play:hover{
-      border-color: rgba(242,225,194,0.36);
-      background: rgba(197,160,89,0.14);
-      transform: translateY(-1px);
-    }
-
-    /* Player card */
-    .player-card{
-      border: 1px solid rgba(242,225,194,0.14);
+    .feature-card{
+      border: 1px solid rgba(242,225,194,0.16);
       background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-      border-radius: 16px;
-      padding: 14px;
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.50);
       position: relative;
-      overflow: hidden;
-      min-height: 280px;
+      overflow:hidden;
+      min-height: 210px;
     }
-    .player-card:before{
+    .feature-card:before{
       content:"";
       position:absolute;
       inset:-1px;
       background:
-        radial-gradient(520px 260px at 20% 25%, rgba(197,160,89,0.18), transparent 60%),
-        radial-gradient(520px 260px at 85% 70%, rgba(110,140,210,0.12), transparent 62%);
-      opacity:.80;
+        radial-gradient(520px 240px at 18% 20%, rgba(197,160,89,0.16), transparent 60%),
+        radial-gradient(520px 240px at 85% 70%, rgba(110,140,210,0.10), transparent 62%);
+      opacity:.75;
       pointer-events:none;
     }
-    .player-card > *{ position: relative; z-index: 1; }
+    .feature-card > *{ position: relative; z-index: 1; }
 
-    .player-top{
+    .feature-top{
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 12px;
+      margin-bottom: 10px;
     }
-    .player-title{
+
+    .feature-ico{
+      width: 46px; height: 46px;
+      border-radius: 999px;
+      border: 1px solid rgba(242,225,194,0.18);
+      background: rgba(255,255,255,0.05);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: rgba(242,225,194,0.95);
+      box-shadow: 0 18px 45px rgba(0,0,0,.45);
+      flex: 0 0 auto;
+    }
+    .feature-ico i{ font-size: 1.2rem; }
+
+    .feature-kicker{
+      font-weight: 950;
+      letter-spacing: .30em;
+      text-transform: uppercase;
+      font-size: .62rem;
+      color: rgba(242,225,194,0.90);
+      margin: 0 0 6px;
+    }
+
+    .feature-title{
       margin:0;
       font-weight: 950;
       letter-spacing: .01em;
-      font-size: 1.25rem;
+      font-size: 1.28rem;
       color: rgba(255,255,255,0.96);
     }
-    .player-sub{
-      margin:6px 0 0;
-      color: rgba(255,255,255,0.78);
-      line-height: 1.7;
-      font-size: .98rem;
-      max-width: 52ch;
-    }
-    .player-actions{
-      display:flex;
-      gap: 8px;
-      align-items:center;
-      flex-wrap: wrap;
-      justify-content:flex-end;
-    }
-    .mini{
-      border: 1px solid rgba(242,225,194,0.20);
-      background: rgba(0,0,0,0.22);
-      color: rgba(242,225,194,0.95);
-      border-radius: 999px;
-      padding: 8px 10px;
-      font-weight: 900;
-      font-size: .72rem;
-      letter-spacing: .10em;
-      text-transform: uppercase;
-      white-space: nowrap;
+
+    .feature-text{
+      margin: 10px 0 0;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.85;
+      font-size: 1.02rem;
     }
 
-    /* "nice audio playing animation" */
-    .viz{
-      margin-top: 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(242,225,194,0.14);
-      background: rgba(0,0,0,0.22);
-      padding: 14px 14px 10px;
-    }
-    .bars{
-      height: 74px;
-      display:flex;
-      align-items:flex-end;
-      gap: 6px;
-      padding: 6px 4px 2px;
-    }
-    .bar{
-      width: 10px;
-      border-radius: 10px;
-      background: rgba(242,225,194,0.92);
-      height: 10px;
-      opacity: .8;
-      transform-origin: bottom;
-      animation: idle 1.6s ease-in-out infinite;
-    }
-    .bar:nth-child(2){ animation-delay: .12s; }
-    .bar:nth-child(3){ animation-delay: .24s; }
-    .bar:nth-child(4){ animation-delay: .36s; }
-    .bar:nth-child(5){ animation-delay: .48s; }
-    .bar:nth-child(6){ animation-delay: .60s; }
-    .bar:nth-child(7){ animation-delay: .72s; }
-    .bar:nth-child(8){ animation-delay: .84s; }
-    .bar:nth-child(9){ animation-delay: .96s; }
-    .bar:nth-child(10){ animation-delay: 1.08s; }
-    .bar:nth-child(11){ animation-delay: 1.20s; }
-    .bar:nth-child(12){ animation-delay: 1.32s; }
-
-    @keyframes idle{
-      0%,100%{ height: 10px; opacity:.55; }
-      50%{ height: 38px; opacity:.85; }
-    }
-    .playing .bar{
-      animation-name: play;
-      animation-duration: .9s;
-      opacity: .9;
-    }
-    @keyframes play{
-      0%,100%{ height: 14px; }
-      25%{ height: 58px; }
-      55%{ height: 28px; }
-      75%{ height: 70px; }
+    /* =========================
+       STEP TIMELINE (VERTICAL)
+       ========================= */
+    .steps-section{
+      padding: 46px 0 92px;
+      background:
+        radial-gradient(820px 360px at 70% 10%, rgba(197,160,89,0.10), transparent 60%),
+        #050608;
+      border-bottom: 1px solid var(--border);
+      overflow:hidden;
     }
 
-    .player-footer{
-      margin-top: 10px;
-      display:flex;
-      justify-content:space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      color: rgba(255,255,255,0.72);
-      font-size: .92rem;
-    }
-
-    .hint{
-      color: rgba(255,255,255,0.72);
-      font-size: .92rem;
-      line-height: 1.7;
-      margin: 0;
-    }
-    .errorline{
-      color: var(--danger);
-      font-weight: 800;
-      letter-spacing: .04em;
-      font-size: .90rem;
-    }
-
-    /* --- SKY MAIN SECTION --- */
-    .sky-section{
-      padding: 72px 0 96px;
-      background: #050608;
-    }
-    .container-sky{
-      width: min(1420px, calc(100% - 40px));
-      margin: 0 auto;
-    }
-    .sky-head{
+    .steps-head{
+      margin-top: 18px;
+      margin-bottom: 18px;
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
       gap: 16px;
       flex-wrap: wrap;
-      margin-bottom: 14px;
     }
-    .sky-title{
+
+    .steps-title{
       margin:0;
       font-family:"Cinzel", serif;
       font-weight:700;
       letter-spacing:.08em;
-      color: #fff;
+      color:#fff;
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      display:flex;
+      align-items:center;
+      gap: 12px;
     }
-    .sky-desc{
-      margin: 8px 0 0;
-      color: var(--muted);
-      line-height: 1.75;
-      max-width: 920px;
-      font-size: 1.02rem;
+    .steps-title i{
+      color: var(--gold-bright);
+      filter: drop-shadow(0 0 14px rgba(197,160,89,0.25));
     }
-    .sky-frame{
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
+    .steps-sub{
+      margin: 10px 0 0;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.9;
+      max-width: 76ch;
+      font-size: 1.06rem;
+    }
+
+    .steps-wrap{
+      margin-top: 18px;
       border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 26px 90px rgba(0,0,0,.48);
+      border: 1px solid rgba(242,225,194,0.18);
+      background: rgba(0,0,0,0.22);
+      box-shadow: 0 24px 70px rgba(0,0,0,.50);
+      position: relative;
+      overflow:hidden;
+      padding: 18px;
     }
-    .sky-iframe{
+    .steps-wrap:before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background:
+        radial-gradient(520px 260px at 18% 25%, rgba(197,160,89,0.14), transparent 60%),
+        radial-gradient(520px 260px at 85% 70%, rgba(110,140,210,0.10), transparent 62%);
+      opacity:.85;
+      pointer-events:none;
+    }
+    .steps-wrap > *{ position:relative; z-index:1; }
+
+    .timeline{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 992px){
+      .timeline{
+        grid-template-columns: 0.92fr 1.08fr;
+        gap: 18px;
+        align-items:start;
+      }
+    }
+
+    /* left rail */
+    .rail{
+      position: relative;
+      padding: 12px 10px 12px 8px;
+      border-radius: 16px;
+      border: 1px solid rgba(242,225,194,0.14);
+      background: rgba(255,255,255,0.03);
+      overflow:hidden;
+    }
+    .rail:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(420px 220px at 30% 10%, rgba(197,160,89,0.10), transparent 60%);
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    .step{
+      position: relative;
+      padding: 14px 14px 14px 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(242,225,194,0.12);
+      background: rgba(0,0,0,0.18);
+      margin: 10px 8px;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+      cursor: pointer;
+    }
+    .step:hover{
+      transform: translateY(-1px);
+      border-color: rgba(242,225,194,0.22);
+      background: rgba(255,255,255,0.04);
+    }
+    .step.active{
+      border-color: rgba(242,225,194,0.30);
+      background: rgba(197,160,89,0.10);
+      box-shadow: 0 18px 45px rgba(0,0,0,.38);
+    }
+
+    /* vertical line */
+    .step:before{
+      content:"";
+      position:absolute;
+      left: 22px;
+      top: -10px;
+      bottom: -10px;
+      width: 2px;
+      background: linear-gradient(
+        to bottom,
+        rgba(242,225,194,0.06),
+        rgba(242,225,194,0.18),
+        rgba(242,225,194,0.06)
+      );
+      opacity: .9;
+    }
+
+    /* star node */
+    .step .node{
+      position:absolute;
+      left: 13px;
+      top: 18px;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(242,225,194,0.28);
+      background: rgba(0,0,0,0.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: 0 0 0 6px rgba(197,160,89,0.06);
+    }
+    .step .node:after{
+      content:"";
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(242,225,194,0.92);
+      box-shadow: 0 0 18px rgba(197,160,89,0.35);
+    }
+
+    .step-kicker{
+      font-weight: 950;
+      letter-spacing: .30em;
+      text-transform: uppercase;
+      font-size: .62rem;
+      color: rgba(242,225,194,0.90);
+      margin: 0 0 6px;
+    }
+    .step-title{
+      margin:0;
+      font-weight: 950;
+      letter-spacing: .01em;
+      font-size: 1.14rem;
+      color: rgba(255,255,255,0.96);
+    }
+    .step-text{
+      margin: 8px 0 0;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.75;
+      font-size: .98rem;
+    }
+
+    /* right preview panel (GIF placeholder) */
+    .step-preview{
+      border-radius: 16px;
+      border: 1px solid rgba(242,225,194,0.14);
+      background: rgba(255,255,255,0.03);
+      overflow:hidden;
+      position: relative;
+      min-height: 320px;
+    }
+    .step-preview:before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background:
+        radial-gradient(520px 260px at 18% 25%, rgba(197,160,89,0.12), transparent 60%),
+        radial-gradient(520px 260px at 85% 70%, rgba(110,140,210,0.10), transparent 62%);
+      opacity:.85;
+      pointer-events:none;
+    }
+    .step-preview > *{ position:relative; z-index:1; }
+
+    .preview-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid rgba(242,225,194,0.10);
+    }
+    .preview-title{
+      margin:0;
+      font-weight: 950;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      font-size: .72rem;
+      color: rgba(242,225,194,0.92);
+      white-space: nowrap;
+    }
+    .preview-chip{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(242,225,194,0.16);
+      background: rgba(0,0,0,0.22);
+      color: rgba(255,255,255,0.88);
+      font-weight: 900;
+      font-size: .72rem;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+    .preview-body{
+      padding: 14px;
+    }
+
+    .gif-box{
+      border-radius: 14px;
+      border: 1px dashed rgba(242,225,194,0.22);
+      background: rgba(0,0,0,0.18);
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height: 260px;
+      position: relative;
+    }
+    .gif-box img{
       width: 100%;
-      height: min(88vh, 980px);
-      border: 0;
+      height: 100%;
+      object-fit: cover;
       display:block;
-      background:#000;
+    }
+    .gif-placeholder{
+      text-align:center;
+      padding: 18px;
+      color: rgba(255,255,255,0.76);
+      max-width: 60ch;
+      line-height: 1.7;
+      font-size: .98rem;
+    }
+    .gif-placeholder b{
+      color: rgba(242,225,194,0.92);
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      font-size: .72rem;
+      display:block;
+      margin-bottom: 8px;
     }
 
     /* --- CONTACT --- */
@@ -819,44 +710,372 @@
       filter: drop-shadow(0 0 12px rgba(197,160,89,0.22));
     }
 
-    /* tiny scrollbar */
-    .audio-list-body::-webkit-scrollbar{ width: 10px; }
-    .audio-list-body::-webkit-scrollbar-track{ background: rgba(255,255,255,0.03); }
-    .audio-list-body::-webkit-scrollbar-thumb{
-      background: rgba(242,225,194,0.16);
-      border-radius: 999px;
-      border: 2px solid rgba(0,0,0,0.24);
-    }
-  </style>
+  /* =========================
+     Modern section styling
+     ========================= */
+/* --- MODERN SCHEMATIC MAPPING SECTION --- */
+.mapsec {
+  padding: 120px 0;
+  background: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.08) 0%, #020305 100%);
+  position: relative;
+}
+
+/* The horizontal "Wire" connecting cards */
+.schematic-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  z-index: 2;
+}
+
+@media (min-width: 992px) {
+  .schematic-container {
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+}
+
+/* Glass Schematic Cards */
+.schematic-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(197, 160, 89, 0.2);
+  backdrop-filter: blur(12px);
+  border-radius: 4px; /* Sharper edges for a technical look */
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.schematic-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.tech-num {
+  font-family: monospace;
+  color: var(--gold);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  opacity: 0.6;
+}
+
+.tech-header {
+  font-family: "Cinzel", serif;
+  font-size: 1.4rem;
+  color: #fff;
+  margin: 10px 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Complex Mapping List */
+.map-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.map-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.map-input {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.map-op {
+  font-size: 0.7rem;
+  color: var(--gold);
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: rgba(197, 160, 89, 0.05);
+  margin: 0 10px;
+}
+
+.map-output {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--gold-bright);
+}
+
+/* Central Core Logic Icon */
+.core-logic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: #000;
+  box-shadow: 0 0 40px rgba(197, 160, 89, 0.2);
+}
+
+.core-logic i {
+  font-size: 2.5rem;
+  color: var(--gold-bright);
+  animation: pulse-gold 3s infinite;
+}
+
+@keyframes pulse-gold {
+  0% { opacity: 0.5; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.5; transform: scale(0.9); }
+}
+
+.glitch-text {
+  font-family: monospace;
+  font-size: 0.65rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  position: absolute;
+  bottom: -30px;
+  white-space: nowrap;
+}
+    /* ElevenLabs Specific Styling */
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(197, 160, 89, 0.15);
+  border: 1px solid var(--gold);
+  color: var(--gold-bright);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.neural-node {
+  border-left: 2px solid var(--gold);
+  padding-left: 20px;
+  margin-top: 20px;
+}
+
+.engine-footer {
+  margin-top: 60px;
+  padding: 30px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.status-indicator {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.status-online {
+  color: #00ffaa;
+  text-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+}
+    /* --- TECHNICAL SPECIFICATION TABLE --- */
+.tech-table-wrap {
+  margin-top: 40px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.tech-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.tech-table th {
+  background: rgba(197, 160, 89, 0.1);
+  color: var(--gold);
+  text-transform: uppercase;
+  font-family: monospace;
+  letter-spacing: 0.1em;
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.tech-table td {
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--step-ink);
+  vertical-align: middle;
+}
+
+.tech-table tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.code-inline {
+  font-family: monospace;
+  color: var(--gold-bright);
+  background: rgba(197, 160, 89, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.sentiment-badge {
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+        .sent-dark { border-color: #7886ff; color: #7886ff; }
+.sent-bright { border-color: #ffda78; color: #ffda78; }
+/* --- INTEGRATED FEATURE ROWS --- */
+.feature-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+  margin-top: 80px;
+}
+.feature-row:nth-child(even) { flex-direction: row-reverse; }
+
+.feature-content { flex: 0 0 45%; }
+.feature-visual { flex: 0 0 50%; position: relative; }
+
+/* Cinematic Glass Frame for GIFs */
+.gif-frame {
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.24);
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.50);
+  transition: transform 0.4s ease, border-color 0.4s ease;
+}
+.gif-frame:hover {
+  transform: translateY(-5px);
+  border-color: rgba(242, 225, 194, 0.3);
+}
+.gif-frame img {
+  width: 100%;
+  border-radius: 10px;
+  display: block;
+}
+
+/* Typography Sync */
+.f-label {
+  font-weight: 950;
+  letter-spacing: .30em;
+  text-transform: uppercase;
+  font-size: .62rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  display: block;
+}
+.f-title {
+  font-family: "Cinzel", serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: #fff;
+  margin-bottom: 1.2rem;
+}
+.f-desc {
+  font-size: 1.06rem;
+  line-height: 1.85;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  border-left: 2px solid var(--gold);
+  padding-left: 1.5rem;
+}
+
+@media (max-width: 991px) {
+  .feature-row, .feature-row:nth-child(even) {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+  .f-desc { border-left: none; padding-left: 0; }
+}
+/* --- FEATURE BUTTON STYLING --- */
+.btn-feature {
+  padding: 14px 28px;
+  font-size: 0.75rem;
+  border-radius: 999px; /* Pill shape to match nav links */
+  display: inline-block;
+}
+
+.btn-outline-gold {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-outline-gold:hover {
+  background: rgba(197, 160, 89, 0.12); /* Subtle gold tint */
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(197, 160, 89, 0.25); /* Celestial glow */
+}
+
+/* Active state for a tactile feel */
+.btn-outline-gold:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(197, 160, 89, 0.15);
+}
+
+/* Optional: Subtle icon animation if you add icons to buttons */
+.btn-outline-gold i {
+  transition: transform 0.3s ease;
+}
+
+.btn-outline-gold:hover i {
+  transform: translateX(4px);
+}
+</style>
+
 </head>
 
 <body>
   <!-- NAVBAR -->
-  <nav class="navbar nav-glass navbar-expand-lg sticky-top">
+  <nav class="navbar nav-glass navbar-expand-lg sticky-top"
+       data-aos="fade-down" data-aos-duration="700" data-aos-once="true">
     <div class="container">
-      <a class="navbar-brand" href="/">AETHERA</a>
+      <a class="navbar-brand" href="/" data-aos="fade-down" data-aos-delay="80" data-aos-duration="700" data-aos-once="true">AETHERA</a>
 
-      <button class="navbar-toggler text-light border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navAethera">
+      <button class="navbar-toggler text-light border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navAethera"
+              data-aos="fade-down" data-aos-delay="120" data-aos-duration="700" data-aos-once="true">
         <span class="navbar-toggler-icon" style="filter: invert(1); opacity:.85;"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navAethera">
-        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
-          <li class="nav-item">
-            <a class="nav-link nav-link-aethera" href="#howto">User Guide</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link nav-link-aethera" href="#audio">Audio Stars</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link nav-link-aethera" href="/constellations">Constellations</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link nav-link-aethera" href="#contact">Contact</a>
-          </li>
-          <li class="nav-item ms-lg-2">
-            <a href="#sky" class="btn-gold">Open Sky</a>
-          </li>
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1"
+            data-aos="fade-down" data-aos-delay="160" data-aos-duration="700" data-aos-once="true">
+          <li class="nav-item"><a class="nav-link nav-link-aethera" href="/sky">Interactive Sky</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-aethera" href="/sonification">Sonification</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-aethera" href="/constellations">Constellations</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-aethera" href="#contact">Contact</a></li>
         </ul>
       </div>
     </div>
@@ -869,25 +1088,43 @@
 
     <div class="container hero-container">
       <div class="row align-items-center g-5">
-        <div class="col-lg-6">
-          <span class="hero-label">Sonic Archive v1.0</span>
-          <h1 class="hero-title">Behold The<br>Sonic Sky.</h1>
-          <p class="hero-description">
+        <div class="col-lg-6"
+             data-aos="fade-up" data-aos-duration="900" data-aos-delay="80" data-aos-once="true">
+          <span class="hero-label"
+                data-aos="fade-up" data-aos-duration="850" data-aos-delay="120" data-aos-once="true">Sonic Archive v1.0</span>
+          <h1 class="hero-title"
+              data-aos="fade-up" data-aos-duration="900" data-aos-delay="180" data-aos-once="true">
+            Behold The<br>Sonic Sky.
+          </h1>
+
+          <p class="hero-description"
+             data-aos="fade-up" data-aos-duration="900" data-aos-delay="260" data-aos-once="true">
             Aethera maps high-fidelity celestial coordinates into a generative audio engine, turning the geometry of the stars into a living ambient instrument.
           </p>
 
-          <div class="d-flex gap-3 flex-wrap">
-            <a href="#sky" class="btn-gold">Enter Sky</a>
-            <a href="/constellations" class="btn-outline-gold">Constellations</a>
+          <div class="d-flex gap-3 flex-wrap"
+               data-aos="fade-up" data-aos-duration="900" data-aos-delay="340" data-aos-once="true">
+            <a href="#about" class="btn-gold">Learn More</a>
           </div>
         </div>
 
-        <div class="col-lg-6">
+        <div class="col-lg-6"
+             data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="180" data-aos-once="true">
           <div class="stage-wrapper">
             <div class="stage-frame">
               <div class="corner tl"></div><div class="corner tr"></div>
               <div class="corner bl"></div><div class="corner br"></div>
-              <svg id="heroOrionSvg" class="orion-svg" viewBox="0 0 800 800">
+
+              <!-- Small label INSIDE the frame -->
+              <div class="stage-hud" aria-label="Constellation label">
+                <span class="hud-dot"></span>
+                <div class="hud-text">
+                  <div class="hud-kicker">Constellation</div>
+                  <div class="hud-name" id="heroConstName">Orion</div>
+                </div>
+              </div>
+
+              <svg id="heroOrionSvg" class="orion-svg" viewBox="0 0 800 800" aria-label="Orion preview">
                 <g id="heroOrionLayer"></g>
               </svg>
             </div>
@@ -897,227 +1134,240 @@
     </div>
   </header>
 
-  <!-- USER GUIDE -->
-  <section class="howto-section" id="howto">
-    <div class="container">
-      <div class="howto-top">
-        <div>
-          <h2 class="howto-title"><i class="bi bi-compass"></i>User Guide</h2>
-          <p class="howto-sub">
-            Follow these steps in order. Explore live in the Sky first, then use the Archive to read myths and replay constellation audio.
-          </p>
-        </div>
-        <div class="d-flex gap-2 flex-wrap">
-          <a href="#sky" class="btn-outline-gold">Go to Sky</a>
-          <a href="/constellations" class="btn-outline-gold" style="border-color: rgba(242,225,194,0.30);">
-            <i class="bi bi-grid-3x3-gap me-2"></i>Open Archive
-          </a>
-        </div>
-      </div>
+  <section class="about-section" id="about">
+  <div class="container">
 
-      <div class="timeline">
-        <div class="t-node">
-          <div class="t-step">Step 01</div>
-          <div class="t-num">01</div>
-        </div>
-        <div class="t-card">
-          <h3 class="t-head">Choose location + time</h3>
-          <p class="t-body">
-            Inside the Sky panel, enter <span class="kbd">Lat</span> and <span class="kbd">Lon</span> or click <span class="kbd">Use my location</span>.
-            Pick a season and hour, then press <span class="kbd">Show sky</span>.
-          </p>
-        </div>
-
-        <div class="t-node">
-          <div class="t-step">Step 02</div>
-          <div class="t-num">02</div>
-        </div>
-        <div class="t-card">
-          <h3 class="t-head">Find a constellation</h3>
-          <p class="t-body">
-            Use the Finder search (top-left) to locate a constellation. Hover a result to highlight it.
-            Click to zoom and center the shape.
-          </p>
-        </div>
-
-        <div class="t-node">
-          <div class="t-step">Step 03</div>
-          <div class="t-num">03</div>
-        </div>
-        <div class="t-card">
-          <h3 class="t-head">Play audio stars</h3>
-          <p class="t-body">
-            Click a bright audio star to open the sidebar. The audio player loads automatically.
-            Dim line-stars stay visible to preserve the constellation geometry.
-          </p>
-        </div>
-
-        <div class="t-node last">
-          <div class="t-step">Step 04</div>
-          <div class="t-num">04</div>
-        </div>
-        <div class="t-card">
-          <h3 class="t-head">Open the Constellations Archive</h3>
-          <p class="t-body">
-            Visit the Archive to browse constellation cards, read full myth stories, and press <span class="kbd">Play</span> to listen again.
-            This is the best place to explore everything in one list.
-          </p>
-          <div class="mt-3 d-flex gap-2 flex-wrap">
-            <a href="/constellations" class="btn-outline-gold" style="border-color: rgba(242,225,194,0.32); color: rgba(242,225,194,0.98);">
-              <i class="bi bi-grid-3x3-gap me-2"></i>Open Constellations Archive
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div class="how-mini">
-        Quick controls:
-        <span class="kbd">Drag</span> to pan ·
-        <span class="kbd">Wheel</span> to zoom ·
-        <span class="kbd">Hover</span> to highlight ·
-        <span class="kbd">Click</span> audio stars to play ·
-        <span class="kbd">Archive</span> to read myths & replay
+    <div class="about-head">
+      <div data-aos="fade-up" data-aos-duration="850" data-aos-once="true">
+        <h2 class="about-title">
+          <i class="bi bi-stars"></i>About Aethera
+        </h2>
+        <p class="about-desc">
+          Aethera is a cinematic, interactive sky atlas that transforms celestial geometry into layered sound.
+          Explore constellation topology, browse myth archives, and replay sonification linked to real star data.
+        </p>
       </div>
     </div>
-  </section>
 
-  <!-- NEW: AUDIO STARS DIRECTORY -->
-  <section class="audio-section" id="audio">
-    <div class="container">
-      <div class="audio-head">
-        <div>
-          <span class="hero-label">Directory</span>
-          <h2 class="audio-title">Audio Stars</h2>
-          <p class="audio-sub">
-            Search and filter the full audio-star library (from <span class="kbd">star_map.csv</span>). Pick a star to preview, then jump into the Sky when you want the full context.
-          </p>
-        </div>
-        <div class="d-flex gap-2 flex-wrap">
-          <a href="#sky" class="btn-outline-gold">Go to Sky</a>
-          <a href="/constellations" class="btn-outline-gold" style="border-color: rgba(242,225,194,0.30);">
-            Open Archive
-          </a>
-        </div>
+    <div class="feature-row" data-aos="fade-up">
+      <div class="feature-content">
+        <span class="f-label">Feature 01 - VIRTUAL FOOTPRINT</span>
+        <h2 class="f-title">Interactive Live Sky</h2>
+        <p class="f-desc">
+          Experience the firmament exactly as it appears from your coordinates. Our real-time projection engine maps RA and Dec into a fluid, interactive canvas. Tap stars to trigger unique synthesis profiles or reveal mythic geometry.
+        </p>
+        <a href="/sky" class="btn-outline-gold btn-feature">Explore the Sky</a>
       </div>
-
-      <div class="audio-panel">
-        <div class="searchbar">
-          <span class="chip"><i class="bi bi-search"></i> search</span>
-          <input id="q" class="form-control flex-grow-1" placeholder="Search star name, constellation, file..." autocomplete="off"/>
-
-          <span class="chip"><i class="bi bi-funnel"></i> filters</span>
-          <select id="constFilter" class="form-select" style="min-width: 220px;">
-            <option value="">All constellations</option>
-          </select>
-
-          <select id="hasAudioFilter" class="form-select d-none" style="min-width: 190px;">
-            <option value="1">Audio only</option>
-            <option value="0">Include missing audio</option>
-          </select>
-
-          <select id="sortBy" class="form-select" style="min-width: 220px;">
-            <option value="mag_asc">Sort: brightness (mag ↑)</option>
-            <option value="mag_desc">Sort: dimmer (mag ↓)</option>
-            <option value="name_asc">Sort: name (A→Z)</option>
-            <option value="const_asc">Sort: constellation (A→Z)</option>
-          </select>
-
-          <button id="resetBtn" class="btn-outline-gold" style="border-radius:999px; padding: 12px 16px;">
-            Reset
-          </button>
-        </div>
-
-        <div class="audio-grid">
-          <div class="audio-list">
-            <div class="audio-list-head">
-              <p class="audio-count mb-0" id="countText">Loading…</p>
-              <span class="chip"><i class="bi bi-music-note-beamed"></i> click to play</span>
-            </div>
-            <div class="audio-list-body" id="list"></div>
-          </div>
-
-          <div class="player-card">
-            <div class="player-top">
-              <div>
-                <p class="player-title mb-0" id="playerTitle">Select a star</p>
-                <p class="player-sub" id="playerSub">
-                  Choose a row on the left to preview audio and view RA/Dec + magnitude.
-                </p>
-              </div>
-              <div class="player-actions">
-                <span class="mini" id="playerConst">—</span>
-                <span class="mini" id="playerMag">MAG —</span>
-              </div>
-            </div>
-
-            <div class="viz" id="viz">
-              <div class="bars" id="bars">
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-              </div>
-              <div class="player-footer">
-                <div>
-                  <div><span class="kbd">RA</span> <span id="playerRA">—</span></div>
-                  <div><span class="kbd">Dec</span> <span id="playerDec">—</span></div>
-                </div>
-                <div class="text-end">
-                  <div><span class="kbd">File</span> <span id="playerFile">—</span></div>
-                  <div id="playerErr" class="errorline" style="display:none;"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-3 d-flex gap-2 flex-wrap align-items-center">
-              <button id="playBtn" class="btn-gold" style="padding: 12px 18px; letter-spacing:.18em;">
-                <i class="bi bi-play-fill me-1"></i> Play
-              </button>
-              <button id="pauseBtn" class="btn-outline-gold" style="padding: 12px 18px; border-radius:0;">
-                <i class="bi bi-pause-fill me-1"></i> Pause
-              </button>
-              <div class="flex-grow-1"></div>
-              <a href="/sky" class="btn-outline-gold" style="padding: 12px 18px; border-radius:0;">
-                Open Sky
-              </a>
-            </div>
-
-            <p class="hint mt-3 mb-0">
-              Tip: use <span class="kbd">Sort: brightness</span> to quickly find your most prominent audio stars.
-            </p>
-
-            <audio id="audioEl" preload="none"></audio>
-          </div>
+      <div class="feature-visual">
+        <div class="gif-frame" data-aos="zoom-in-left">
+          <img src="../static/gif/feature1.gif" alt="Interactive Sky Preview">
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- SKY MAIN -->
-  <section class="sky-section" id="sky">
-    <div class="container-sky">
-      <div class="sky-head">
+    <div class="feature-row" data-aos="fade-up">
+      <div class="feature-content">
+        <span class="f-label">Feature 02 - NEURAL AUDIO</span>
+        <h2 class="f-title">Sonification Library</h2>
+        <p class="f-desc">
+          A dedicated archive for the voice of the stars. Powered by ElevenLabs, each track is a generative blend of mythological narrative and astronomical data. Search and play high-fidelity MP3s generated by our Synthesis Engine.
+        </p>
+        <a href="/sonification" class="btn-outline-gold btn-feature">Listen to Library</a>
+      </div>
+      <div class="feature-visual">
+        <div class="gif-frame" data-aos="zoom-in-right">
+          <img src="../static/gif/feature2.gif" alt="Sonification Library Preview">
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-row" data-aos="fade-up">
+      <div class="feature-content">
+        <span class="f-label">Feature 03 - MYTHIC ARCHIVE</span>
+        <h2 class="f-title">Celestial Index</h2>
+        <p class="f-desc">
+          Dive deep into the stories that have shaped humanity's view of the night sky. Our index provides cinematic constellation cards, detailed mythic backgrounds, and featured star lists for every set of coordinates.
+        </p>
+        <a href="/constellations" class="btn-outline-gold btn-feature">View Constellation & Myth</a>
+      </div>
+      <div class="feature-visual">
+        <div class="gif-frame" data-aos="zoom-in-left">
+          <img src="../static/gif/feature3.gif" alt="Constellation Index Preview">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section id="sonification-mapping" class="mapsec">
+  <div class="container">
+
+    <div class="about-head" data-aos="fade-up">
+      <div>
+        <h2 class="about-title">
+          <i class="bi bi-cpu"></i>Mapping Algorithm
+        </h2>
+        <p class="about-desc">
+          Aethera processes astronomical coordinates and spectral data through a deterministic synthesis matrix,
+          calculating sentiment values to drive neural narration and harmonic density.
+        </p>
+      </div>
+    </div>
+
+    <div class="schematic-container mt-5">
+
+      <div class="schematic-card" data-aos="fade-right">
+        <span class="tech-num">ASTROPHYSICAL_INPUTS</span>
+        <h3 class="tech-header"><i class="bi bi-compass"></i> Raw Physics</h3>
+
+        <div class="map-list">
+          <div class="map-item">
+            <span class="map-input">Right Ascension (RA)</span>
+            <span class="map-op">Hz</span>
+            <span class="map-output">220Hz — 880Hz</span>
+          </div>
+          <div class="map-item">
+            <span class="map-input">Declination (Dec)</span>
+            <span class="map-op">PAN</span>
+            <span class="map-output">-1.0 (L) — +1.0 (R)</span>
+          </div>
+          <div class="map-item">
+            <span class="map-input">Apparent Magnitude</span>
+            <span class="map-op">GAIN</span>
+            <span class="map-output">0.2 — 1.0 Amp</span>
+          </div>
+          <div class="map-item">
+            <span class="map-input">Spectral [O, B, A, F, G, K, M]</span>
+            <span class="map-op">COLOR</span>
+            <span class="map-output">Timbre Selection</span>
+          </div>
+          <div class="map-item">
+            <span class="map-input">Binary / Cluster Count</span>
+            <span class="map-op">TONE</span>
+            <span class="map-output">1 — 4 Harmonic Layers</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-none d-lg-flex flex-column align-items-center" data-aos="zoom-in">
+        <div class="core-logic">
+          <i class="bi bi-reception-4"></i>
+          <span class="glitch-text">Processing Logic...</span>
+        </div>
+        <div style="width: 1px; height: 160px; background: linear-gradient(to bottom, var(--gold), transparent); margin-top: 40px;"></div>
+      </div>
+
+      <div class="schematic-card" data-aos="fade-left">
+        <span class="tech-num">NEURAL_SENTIMENT_CORE</span>
+        <h3 class="tech-header"><i class="bi bi-magic"></i> Aural Narrative</h3>
+
+        <div class="ai-badge">
+          <i class="bi bi-cpu-fill"></i> Voice Engine: ElevenLabs AI
+        </div>
+
+        <div class="neural-node">
+          <div class="map-list">
+            <div class="map-item">
+              <span class="map-input">Mythic Identity Summary</span>
+              <span class="map-op">VOICE</span>
+              <span class="map-output">Neural Narration</span>
+            </div>
+            <div class="map-item">
+              <span class="map-input">Sentiment Score ≤ 0.3</span>
+              <span class="map-op">MOOD</span>
+              <span class="map-output">Dark / Ambient</span>
+            </div>
+            <div class="map-item">
+              <span class="map-input">Sentiment Score ≥ 0.7</span>
+              <span class="map-op">MOOD</span>
+              <span class="map-output">Dynamic / Bright</span>
+            </div>
+            <div class="map-item">
+              <span class="map-input">Constellation Mood Tags</span>
+              <span class="map-op">FX</span>
+              <span class="map-output">Atmospheric Vibe</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+
+  </div>
+</section>
+  <!-- STEPS (vertical timeline stars) -->
+  <section class="steps-section" id="steps">
+    <div class="container">
+      <div class="steps-head" data-aos="fade-up" data-aos-duration="850" data-aos-delay="60" data-aos-once="true">
         <div>
-          <span class="hero-label">Live view</span>
-          <h2 class="sky-title">Interactive Sky</h2>
-          <p class="sky-desc">
-            This is the full constellation map experience. Use the controls inside the panel to select time/location and explore the visible sky.
+          <h2 class="steps-title"><i class="bi bi-compass"></i>How Interactive Sky works</h2>
+          <p class="steps-sub">
+            Three quick steps. Click a step to swap the preview GIF on the right.
           </p>
         </div>
-        <div class="d-flex gap-2">
-          <a class="btn-outline-gold" href="/sky">Open in new page</a>
+      </div>
+
+      <div class="steps-wrap" data-aos="fade-up" data-aos-duration="900" data-aos-delay="90" data-aos-once="true">
+        <div class="timeline">
+
+          <!-- LEFT: vertical timeline -->
+          <div class="rail" aria-label="Step timeline">
+            <div class="step active" data-step="1" data-title="Step 01 · Browse the Archive" data-gif="../static/gif/sky1.gif">
+              <span class="node" aria-hidden="true"></span>
+              <div class="step-kicker">Step 01</div>
+              <h3 class="step-title">Browse the Constellation</h3>
+              <p class="step-text">Open constellation cards, read the myth, and pick a constellation to explore.</p>
+            </div>
+
+            <div class="step" data-step="2" data-title="Step 02 · Render Your Sky" data-gif="../static/gif/sky3.gif">
+              <span class="node" aria-hidden="true"></span>
+              <div class="step-kicker">Step 02</div>
+              <h3 class="step-title">Render Your Sky</h3>
+              <p class="step-text">Set location/time to project lines and stars into a live interactive sky map.</p>
+            </div>
+
+            <div class="step" data-step="3" data-title="Step 03 · Play the Stars" data-gif="../static/gif/sky2.gif">
+              <span class="node" aria-hidden="true"></span>
+              <div class="step-kicker">Step 03</div>
+              <h3 class="step-title">Play the Stars</h3>
+              <p class="step-text">Tap an audio star to hear its sonic signature and build an ambient constellation.</p>
+            </div>
+          </div>
+
+          <!-- RIGHT: preview panel -->
+          <div class="step-preview" aria-label="Step preview">
+            <div class="preview-head">
+              <p class="preview-title" id="previewTitle">Step 01 · Browse the Archive</p>
+            </div>
+
+            <div class="preview-body">
+              <div class="gif-box" id="gifBox">
+                <!-- Put your GIF here. We default to placeholder. -->
+                <div class="gif-placeholder" id="gifPlaceholder">
+                  <b>Drop your GIF</b>
+                  Replace <code>PATH_TO_GIF_1.gif</code> etc. in the HTML, or set the <code>data-gif</code> attribute to your file path.
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div class="sky-frame">
-        <iframe class="sky-iframe" src="/sky" title="Aethera Sky"></iframe>
-      </div>
     </div>
   </section>
 
   <!-- CONTACT -->
   <section class="contact-section" id="contact">
     <div class="container">
-      <div class="contact-card">
+      <div class="contact-card"
+           data-aos="fade-up" data-aos-duration="900" data-aos-delay="80" data-aos-once="true">
         <h2 class="contact-title">Contact</h2>
         <p class="contact-sub">
           Questions, collaborations, or feedback about Aethera? Send an email and include your device/browser and a short description of what you were trying to do.
@@ -1132,6 +1382,17 @@
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- AOS -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      once: true,
+      duration: 900,
+      easing: 'ease-out-cubic',
+      offset: 90
+    });
+  </script>
 
   <script>
     /* --- STARFIELD --- */
@@ -1162,6 +1423,8 @@
       requestAnimationFrame(drawStars);
     }
 
+    window.addEventListener("resize", () => initCanvas());
+
     /* --- HERO ORION PREVIEW --- */
     let ALL = [];
     async function loadHero(){
@@ -1191,6 +1454,9 @@
         ALL.find(c => String(c.name || "").toLowerCase() === "orion") ||
         ALL.find(c => String(c.name || "").toLowerCase().includes("orion")) ||
         ALL[0];
+
+      const nameEl = document.getElementById("heroConstName");
+      if(nameEl) nameEl.textContent = (orion && orion.name) ? orion.name : "Orion";
 
       if(!orion || !orion.polylines || !orion.polylines.length) return;
 
@@ -1223,258 +1489,46 @@
       });
     }
 
-    /* --- AUDIO STARS DIRECTORY (NEW) --- */
-    const state = {
-      all: [],
-      filtered: [],
-      selectedId: null,
-      selected: null
-    };
+    /* --- STEPS: click to swap GIF --- */
+    const steps = Array.from(document.querySelectorAll(".step"));
+    const previewTitle = document.getElementById("previewTitle");
+    const gifBox = document.getElementById("gifBox");
 
-    const el = {
-      q: document.getElementById('q'),
-      constFilter: document.getElementById('constFilter'),
-      hasAudioFilter: document.getElementById('hasAudioFilter'),
-      sortBy: document.getElementById('sortBy'),
-      resetBtn: document.getElementById('resetBtn'),
-      list: document.getElementById('list'),
-      countText: document.getElementById('countText'),
+    function setStepActive(stepEl){
+      steps.forEach(s => s.classList.toggle("active", s === stepEl));
 
-      playerTitle: document.getElementById('playerTitle'),
-      playerSub: document.getElementById('playerSub'),
-      playerConst: document.getElementById('playerConst'),
-      playerMag: document.getElementById('playerMag'),
-      playerRA: document.getElementById('playerRA'),
-      playerDec: document.getElementById('playerDec'),
-      playerFile: document.getElementById('playerFile'),
-      playerErr: document.getElementById('playerErr'),
+      const title = stepEl.getAttribute("data-title") || "Step";
+      const gif = stepEl.getAttribute("data-gif") || "";
 
-      playBtn: document.getElementById('playBtn'),
-      pauseBtn: document.getElementById('pauseBtn'),
-      audio: document.getElementById('audioEl'),
-      viz: document.getElementById('viz'),
-    };
+      previewTitle.textContent = title;
 
-    const fmt = {
-      mag(m){
-        if(m === null || m === undefined || Number.isNaN(+m)) return "—";
-        const v = +m;
-        return (Math.round(v * 100) / 100).toFixed(2);
-      }
-    };
-
-    function normalize(s){ return String(s || "").toLowerCase().trim(); }
-
-    function buildConstOptions(rows){
-      const set = new Set();
-      rows.forEach(r => { if(r.const_name) set.add(r.const_name); });
-      const arr = Array.from(set).sort((a,b)=>a.localeCompare(b));
-      el.constFilter.innerHTML = `<option value="">All constellations</option>` + arr.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-    }
-
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    }
-
-    function applyFilters(){
-      const q = normalize(el.q.value);
-      const c = el.constFilter.value;
-      const audioOnly = el.hasAudioFilter.value === "1";
-
-      let rows = state.all.slice();
-
-      if(audioOnly){
-        rows = rows.filter(r => !!r.audio);
-      }
-      if(c){
-        rows = rows.filter(r => r.const_name === c);
-      }
-      if(q){
-        rows = rows.filter(r => {
-          const hay = `${r.name} ${r.const_name} ${r.audio_file || ""} ${r.ra || ""} ${r.dec || ""}`.toLowerCase();
-          return hay.includes(q);
-        });
-      }
-
-      const sort = el.sortBy.value;
-      if(sort === "mag_asc"){
-        rows.sort((a,b)=> (a.mag ?? 999) - (b.mag ?? 999) || (a.name||"").localeCompare(b.name||""));
-      } else if(sort === "mag_desc"){
-        rows.sort((a,b)=> (b.mag ?? -999) - (a.mag ?? -999) || (a.name||"").localeCompare(b.name||""));
-      } else if(sort === "name_asc"){
-        rows.sort((a,b)=> (a.name||"").localeCompare(b.name||"") || (a.const_name||"").localeCompare(b.const_name||""));
-      } else if(sort === "const_asc"){
-        rows.sort((a,b)=> (a.const_name||"").localeCompare(b.const_name||"") || (a.name||"").localeCompare(b.name||""));
-      }
-
-      state.filtered = rows;
-      renderList();
-    }
-
-    function renderList(){
-      const rows = state.filtered;
-      el.countText.textContent = `${rows.length.toLocaleString()} stars`;
-
-      if(!rows.length){
-        el.list.innerHTML = `<div class="p-3">
-          <p class="mb-1" style="color: rgba(255,255,255,0.84); font-weight:800; letter-spacing:.06em;">No matches</p>
-          <p class="mb-0" style="color: rgba(255,255,255,0.70);">Try removing filters or searching a shorter keyword.</p>
-        </div>`;
-        return;
-      }
-
-      el.list.innerHTML = rows.map(r => {
-        const active = (state.selectedId === r.id) ? "active" : "";
-        const mag = fmt.mag(r.mag);
-        const sub = `${r.const_name || "Unknown"} · RA ${r.ra || "—"} · Dec ${r.dec || "—"}`;
-        return `
-          <div class="star-row ${active}" data-id="${escapeHtml(r.id)}">
-            <div class="star-left">
-              <div class="star-dot"></div>
-              <div class="star-meta">
-                <p class="star-name">${escapeHtml(r.name || "Unnamed")}</p>
-                <p class="star-sub">${escapeHtml(sub)}</p>
-              </div>
-            </div>
-            <div class="star-right">
-              <span class="badge-mag">MAG ${escapeHtml(mag)}</span>
-              <span class="btn-play" title="Play">
-                <i class="bi bi-play-fill"></i>
-              </span>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      el.list.querySelectorAll('.star-row').forEach(node => {
-        node.addEventListener('click', () => {
-          const id = node.getAttribute('data-id');
-          const r = state.filtered.find(x => x.id === id);
-          if(!r) return;
-          selectStar(r);
-        });
-      });
-    }
-
-    function setErr(msg){
-      if(!msg){
-        el.playerErr.style.display = "none";
-        el.playerErr.textContent = "";
-        return;
-      }
-      el.playerErr.style.display = "block";
-      el.playerErr.textContent = msg;
-    }
-
-    function selectStar(r){
-      state.selectedId = r.id;
-      state.selected = r;
-
-      // UI
-      el.playerTitle.textContent = r.name || "Unnamed";
-      el.playerSub.textContent = `${r.const_name || "Unknown"} audio star`;
-      el.playerConst.textContent = (r.const_name || "—");
-      el.playerMag.textContent = `MAG ${fmt.mag(r.mag)}`;
-      el.playerRA.textContent = (r.ra || "—");
-      el.playerDec.textContent = (r.dec || "—");
-      el.playerFile.textContent = (r.audio_file || "—");
-
-      // audio
-      el.audio.pause();
-      el.audio.currentTime = 0;
-      el.viz.classList.remove('playing');
-      setErr("");
-
-      if(!r.audio){
-        setErr("No audio file linked for this star.");
-        el.audio.removeAttribute('src');
+      // if a GIF path is set, show it. Otherwise show placeholder.
+      gifBox.innerHTML = "";
+      if(gif && !gif.startsWith("PATH_TO_GIF")){
+        const img = document.createElement("img");
+        img.src = gif;
+        img.alt = title;
+        img.loading = "lazy";
+        gifBox.appendChild(img);
       } else {
-        el.audio.src = r.audio;
-      }
-
-      // rerender list to mark active
-      renderList();
-    }
-
-    function playSelected(){
-      const r = state.selected;
-      if(!r){
-        setErr("Select a star first.");
-        return;
-      }
-      if(!r.audio){
-        setErr("No audio file linked for this star.");
-        return;
-      }
-      setErr("");
-      el.audio.play().then(()=>{
-        el.viz.classList.add('playing');
-      }).catch(()=>{
-        setErr("Audio playback blocked by browser. Click play again after interacting.");
-      });
-    }
-
-    function pauseSelected(){
-      el.audio.pause();
-      el.viz.classList.remove('playing');
-    }
-
-    el.audio.addEventListener('ended', ()=> el.viz.classList.remove('playing'));
-    el.audio.addEventListener('pause', ()=> el.viz.classList.remove('playing'));
-
-    el.playBtn.addEventListener('click', playSelected);
-    el.pauseBtn.addEventListener('click', pauseSelected);
-
-    ['input','change'].forEach(evt => el.q.addEventListener(evt, applyFilters));
-    el.constFilter.addEventListener('change', applyFilters);
-    el.hasAudioFilter.addEventListener('change', applyFilters);
-    el.sortBy.addEventListener('change', applyFilters);
-
-    el.resetBtn.addEventListener('click', ()=>{
-      el.q.value = "";
-      el.constFilter.value = "";
-      el.hasAudioFilter.value = "1";
-      el.sortBy.value = "mag_asc";
-      applyFilters();
-    });
-
-    async function loadAudioStars(){
-      try{
-        const r = await fetch('/api/audio_stars');
-        const d = await r.json();
-        state.all = (d.items || []).map(x => ({
-          id: String(x.id || ""),
-          name: x.name || "",
-          const_name: x.const || x.const_name || "",
-          ra: x.ra || "",
-          dec: x.dec || "",
-          mag: (x.mag === null || x.mag === undefined) ? null : +x.mag,
-          audio: x.audio || null,
-          audio_file: x.audio_file || ""
-        }));
-
-        buildConstOptions(state.all);
-        applyFilters();
-
-        // auto-select first row if exists
-        if(state.filtered.length){
-          selectStar(state.filtered[0]);
-        }
-      }catch(e){
-        console.error(e);
-        el.list.innerHTML = `<div class="p-3">
-          <p class="mb-1 errorline">Failed to load /api/audio_stars</p>
-          <p class="mb-0" style="color: rgba(255,255,255,0.70);">Check your Flask route and console output.</p>
-        </div>`;
-        el.countText.textContent = "Error";
+        const div = document.createElement("div");
+        div.className = "gif-placeholder";
+        div.innerHTML = `<b>Drop your GIF</b>
+          Set <code>data-gif="/static/gif/yourfile.gif"</code> on this step.<br>
+          Current: <code>${gif || "not set"}</code>`;
+        gifBox.appendChild(div);
       }
     }
 
-    window.addEventListener('resize', initCanvas);
+    steps.forEach(s => s.addEventListener("click", ()=> setStepActive(s)));
+
     initCanvas();
     drawStars();
     loadHero();
-    loadAudioStars();
+
+    // init preview to Step 1
+    const first = document.querySelector('.step[data-step="1"]');
+    if(first) setStepActive(first);
   </script>
 </body>
 </html>

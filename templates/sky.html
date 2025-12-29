@@ -16,6 +16,7 @@
       --glow: rgba(255,255,255,.55);
       --line: rgba(197,160,89,.65);
       --lineSoft: rgba(197,160,89,.18);
+      --gold: rgba(197,160,89,.92);
     }
 
     html,body{height:100%; margin:0; background:#000; overflow:hidden; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;}
@@ -28,14 +29,13 @@
     #sky-container.dragging{ cursor:grabbing; }
     svg{ width:100%; height:100%; display:block; }
 
-    /* Only stars we use */
+    /* Stars */
     .star.line{
       fill: rgba(255,255,255,.88);
       filter: drop-shadow(0 0 8px rgba(255,255,255,.18));
       opacity:.72;
       pointer-events:none;
     }
-
     .star.major{
       fill:#fff;
       filter: drop-shadow(0 0 10px var(--glow));
@@ -45,6 +45,7 @@
       pointer-events:auto;
     }
 
+    /* Focus dimming */
     #view-port.has-focus .const-group:not(.is-focus) .const-line{ opacity:.08; }
     #view-port.has-focus .const-group:not(.is-focus) .const-label{ opacity:.10; }
     #view-port.has-focus .const-group:not(.is-focus) .star.major{ opacity:.10; }
@@ -88,38 +89,163 @@
       cursor: pointer;
     }
 
-    /* Finder + Sidebar */
+    /* =========================
+       TOP RIGHT CONTROLS (compact)
+       ========================= */
+    #ui-overlay{
+      position:fixed;
+      top:12px;
+      right:12px;
+      z-index:2100;
+      background: var(--panel);
+      backdrop-filter: blur(16px);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      padding: 7px 8px;
+      display:flex;
+      gap:6px;
+      align-items:center;
+      flex-wrap: nowrap;
+      justify-content:flex-end;
+      box-shadow: 0 10px 40px rgba(0,0,0,.45);
+      max-width: calc(100vw - 24px);
+    }
+    #ui-overlay .ctl{
+      background: rgba(255,255,255,.06) !important;
+      border:1px solid rgba(255,255,255,.12) !important;
+      color:#fff !important;
+      border-radius: 999px !important;
+      padding: 6px 9px;
+      font-size: .84rem;
+      line-height: 1.05;
+      height: 32px;
+      box-shadow: none !important;
+    }
+    #ui-overlay .btn{
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-weight: 900;
+      letter-spacing:.01em;
+      white-space:nowrap;
+      font-size: .84rem;
+      line-height: 1.05;
+      height: 32px;
+    }
+    #ui-overlay #lat, #ui-overlay #lon{ width: 112px; }
+    #ui-overlay #season{ width: 148px; }
+
+    @media (max-width: 560px){
+      #ui-overlay{ flex-wrap: wrap; border-radius: 16px; padding: 10px; }
+      #ui-overlay #lat, #ui-overlay #lon{ width: 44vw; min-width: 120px; }
+      #ui-overlay #season{ width: 52vw; min-width: 150px; }
+    }
+
+    /* =========================
+       Finder -> LEFT (compact) + toggle button
+       ========================= */
+    #finder-toggle{
+      position:fixed;
+      top:12px;
+      left:12px;
+      z-index:2050;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:7px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.32);
+      backdrop-filter: blur(14px);
+      color: rgba(255,255,255,.92);
+      box-shadow: 0 10px 40px rgba(0,0,0,.40);
+      cursor:pointer;
+      user-select:none;
+      font-weight: 950;
+      letter-spacing:.01em;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      height: 32px;
+      font-size: .84rem;
+      line-height: 1;
+    }
+    #finder-toggle:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    #finder-toggle .pill{
+      width:9px; height:9px; border-radius:999px;
+      background: var(--gold);
+      box-shadow: 0 0 14px rgba(197,160,89,.45);
+      flex: 0 0 auto;
+    }
+
     #finder{
-      position:fixed; top:18px; left:18px;
-      width:300px; max-width: calc(100vw - 36px);
+      position:fixed;
+      top:48px; left:12px;
+      width:270px;
+      max-width: calc(100vw - 24px);
       background: var(--panel);
       backdrop-filter: blur(18px);
       border: 1px solid rgba(255,255,255,.12);
-      border-radius: 18px;
+      border-radius: 16px;
       z-index:2000;
       overflow:hidden;
       box-shadow: 0 10px 40px rgba(0,0,0,.45);
+      transition: transform .55s cubic-bezier(.16,1,.3,1), opacity .25s ease;
+      transform-origin: top left;
     }
-    #finder .head{ padding:14px 14px 10px 14px; border-bottom:1px solid rgba(255,255,255,.10); }
+    #finder.is-hidden{
+      opacity: 0;
+      transform: translateX(-10px) scale(.95);
+      pointer-events:none;
+    }
+
+    #finder .head{
+      padding:10px 10px 8px 10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
     #finder .title{
-      color:var(--text); font-weight:950; letter-spacing:.02em; font-size:1.02rem;
-      margin:0 0 10px 0; display:flex; align-items:center; justify-content:space-between; gap:10px;
+      color:var(--text);
+      font-weight:950;
+      letter-spacing:.01em;
+      font-size:.95rem;
+      margin:0 0 8px 0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
     }
-    #finder .smallhint{ color:var(--muted); font-size:.82rem; margin:8px 0 0 0; }
-    #finder .body{ padding: 12px; max-height: calc(100vh - 220px); overflow:auto; }
+    #finder .smallhint{
+      color:var(--muted);
+      font-size:.78rem;
+      margin:6px 0 0 0;
+      line-height:1.25;
+    }
+    #finder .body{
+      padding: 8px 10px 10px;
+      max-height: calc(100vh - 180px);
+      overflow:auto;
+    }
     #finder input{
       background: rgba(255,255,255,.06) !important;
       border: 1px solid rgba(255,255,255,.12) !important;
       color:#fff !important;
+      height: 32px;
+      padding: 6px 10px;
+      font-size:.84rem;
+      border-radius: 12px;
     }
     #finder input::placeholder{ color: rgba(255,255,255,.55); }
 
     .const-item{
       display:flex; align-items:center; justify-content:space-between;
-      gap:10px; padding:10px 10px; border-radius:12px;
+      gap:10px;
+      padding:8px 9px;
+      border-radius:12px;
       border:1px solid rgba(255,255,255,.08);
       background: rgba(0,0,0,.18);
-      margin:8px 0; cursor:pointer;
+      margin:7px 0;
+      cursor:pointer;
       transition: transform .08s ease, background .12s ease, border-color .12s ease;
     }
     .const-item:hover{
@@ -131,9 +257,97 @@
       background: rgba(255,255,255,.08);
       border-color: rgba(255,255,255,.22);
     }
-    .const-name{ color:var(--text); font-weight:900; letter-spacing:.02em; }
-    .const-count{ color:var(--muted); font-size:.85rem; }
+    .const-name{ color:var(--text); font-weight:900; letter-spacing:.01em; font-size:.90rem; }
+    .const-count{ color:var(--muted); font-size:.80rem; }
 
+    /* =========================
+       MINIMAP (right bottom) + toggle button
+       ========================= */
+    #minimap-toggle{
+      position:fixed;
+      right:12px;
+      bottom:12px;
+      z-index:2150;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.32);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 40px rgba(0,0,0,.40);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      color: rgba(255,255,255,.92);
+      font-weight: 950;
+      line-height: 1;
+    }
+    #minimap-toggle:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+
+    #minimap{
+      position:fixed;
+      right:12px;
+      bottom:54px; /* above the toggle */
+      width: 220px;
+      height: 160px;
+      max-width: calc(100vw - 24px);
+      background: rgba(0,0,0,.34);
+      backdrop-filter: blur(14px);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      z-index:2140;
+      box-shadow: 0 10px 40px rgba(0,0,0,.45);
+      overflow:hidden;
+      transform-origin: bottom right;
+      transition: transform .55s cubic-bezier(.16,1,.3,1), opacity .25s ease;
+    }
+    #minimap.is-hidden{
+      opacity: 0;
+      transform: translateY(10px) scale(.95);
+      pointer-events:none;
+    }
+    #minimap svg{ width:100%; height:100%; display:block; }
+    .mm-bg{ fill: rgba(0,0,0,.12); }
+
+    /* Only ONE gold dot per constellation */
+    .mm-const{
+      fill: rgba(197,160,89,.86);
+      opacity: .98;
+      filter: drop-shadow(0 0 10px rgba(197,160,89,.25));
+    }
+    .mm-const.focus{
+      fill: rgba(255,255,255,.95);
+      opacity: 1;
+      filter: drop-shadow(0 0 14px rgba(255,255,255,.25));
+    }
+
+    .mm-rect{
+      fill: rgba(127,211,255,.08);
+      stroke: rgba(127,211,255,.55);
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+      rx: 6; ry: 6;
+    }
+    .mm-hint{
+      position:absolute;
+      left:10px;
+      bottom:8px;
+      font-size:.74rem;
+      color: rgba(255,255,255,.72);
+      letter-spacing:.01em;
+      user-select:none;
+      pointer-events:none;
+      text-shadow: 0 2px 10px rgba(0,0,0,.55);
+    }
+
+    /* Sidebar */
     #sidebar{
       position:fixed; right:-520px; top:0; bottom:0;
       width:480px; max-width: calc(100vw - 36px);
@@ -164,39 +378,9 @@
     #s-meta .rowish b{ font-weight:950; }
     #s-audio{ width:100%; filter: invert(1); margin-top:12px; }
 
-    /* Controls (move to right) */
-    #ui-overlay{
-      position:fixed; bottom:18px; right:18px;
-      z-index:2100;
-      width:min(980px, calc(100vw - 36px));
-      background: var(--panel);
-      backdrop-filter: blur(18px);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius: 999px;
-      padding: 10px 12px;
-      display:flex; gap:10px; align-items:center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      box-shadow: 0 10px 40px rgba(0,0,0,.45);
-    }
-    #ui-overlay .ctl{
-      background: rgba(255,255,255,.06) !important;
-      border:1px solid rgba(255,255,255,.12) !important;
-      color:#fff !important;
-      border-radius: 999px !important;
-      padding: 10px 14px;
-    }
-    #ui-overlay .btn{
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-weight: 900;
-      letter-spacing:.02em;
-      white-space:nowrap;
-    }
-
-    /* Toast popup */
+    /* Toast */
     #toast-wrap{
-      position:fixed; top:18px; right:18px;
+      position:fixed; top:60px; right:12px;
       z-index:2300;
       display:flex; flex-direction:column; gap:10px;
       pointer-events:none;
@@ -213,7 +397,7 @@
       transform: translateY(-6px);
       opacity: 0;
       transition: opacity .22s ease, transform .22s ease;
-      max-width: min(520px, calc(100vw - 36px));
+      max-width: min(520px, calc(100vw - 24px));
       line-height: 1.35;
     }
     .toastish.show{ opacity: 1; transform: translateY(0); }
@@ -231,16 +415,51 @@
     </svg>
   </div>
 
+  <!-- TOP RIGHT CONTROLS -->
+  <div id="ui-overlay">
+    <button id="btn-loc" class="btn btn-outline-light">Use my location</button>
+    <input id="lat" class="ctl form-control" placeholder="Lat" value="37.5665" />
+    <input id="lon" class="ctl form-control" placeholder="Lon" value="126.9780" />
+    <select id="season" class="ctl form-select">
+      <option value="spring">Spring (Mar 21)</option>
+      <option value="summer">Summer (Jun 21)</option>
+      <option value="fall">Fall (Sep 22)</option>
+      <option value="winter" selected>Winter (Dec 21)</option>
+    </select>
+    <input id="hour" type="number" min="0" max="23" class="ctl form-control d-none" value="21" title="Local hour" />
+    <button id="btn-go" class="btn btn-light">Show sky</button>
+  </div>
+
+  <!-- LEFT FINDER TOGGLE -->
+  <div id="finder-toggle" title="Toggle Finder" role="button" tabindex="0" aria-controls="finder" aria-expanded="true">
+    <span class="pill"></span>
+    <span>Finder</span>
+  </div>
+
+  <!-- LEFT FINDER -->
   <div id="finder">
     <div class="head">
       <div class="title">
         <span>Constellation Finder</span>
-        <button id="btn-reset" class="btn btn-sm btn-outline-light" style="border-radius:999px;">Reset</button>
+        <button id="btn-reset" class="btn btn-sm btn-outline-light" style="border-radius:999px; padding:4px 8px; height:28px; font-size:.78rem;">Reset</button>
       </div>
-      <input id="const-q" class="form-control" placeholder="Search constellation (e.g., Orion)" />
-      <p class="smallhint">Hover a constellation to highlight. Click audio stars.</p>
+      <input id="const-q" class="form-control" placeholder="Search (e.g., Orion)" />
+      <p class="smallhint">Hover to highlight · click to zoom · click audio stars.</p>
     </div>
     <div class="body" id="const-list"></div>
+  </div>
+
+  <!-- MINIMAP TOGGLE (right bottom) -->
+  <div id="minimap-toggle" title="Toggle minimap" role="button" tabindex="0" aria-controls="minimap" aria-expanded="false">◎</div>
+
+  <!-- MINIMAP PANEL -->
+  <div id="minimap" class="is-hidden" aria-hidden="true">
+    <svg id="mm-svg" viewBox="0 0 220 160" preserveAspectRatio="none">
+      <rect class="mm-bg" x="0" y="0" width="220" height="160"></rect>
+      <g id="mm-consts"></g>
+      <rect id="mm-rect" class="mm-rect" x="70" y="50" width="70" height="60"></rect>
+    </svg>
+    <div class="mm-hint">Minimap · dots = constellations</div>
   </div>
 
   <div id="sidebar">
@@ -253,26 +472,6 @@
     <div id="s-meta" class="mt-3"></div>
   </div>
 
-  <!-- Removed the status card completely -->
-  <!-- <div id="status">Loading…</div> -->
-
-  <div id="ui-overlay">
-    <button id="btn-loc" class="btn btn-outline-light">Use my location</button>
-    <input id="lat" class="ctl form-control" style="max-width: 170px" placeholder="Lat" value="37.5665" />
-    <input id="lon" class="ctl form-control" style="max-width: 170px" placeholder="Lon" value="126.9780" />
-
-    <select id="season" class="ctl form-select" style="max-width: 180px">
-      <option value="spring">Spring (Mar 21)</option>
-      <option value="summer">Summer (Jun 21)</option>
-      <option value="fall">Fall (Sep 22)</option>
-      <option value="winter" selected>Winter (Dec 21)</option>
-    </select>
-
-    <input id="hour" type="number" min="0" max="23" class="ctl form-control d-none" style="max-width: 120px" value="21" title="Local hour" />
-    <button id="btn-go" class="btn btn-light">Show sky</button>
-  </div>
-
-  <!-- Popup container -->
   <div id="toast-wrap" aria-live="polite" aria-atomic="true"></div>
 
 <script>
@@ -288,12 +487,12 @@
 
   const MIN_ALT = -8;
 
-  // Audio-star alignment rules:
-  // 1) If close to any constellation line, snap onto the line (so it sits exactly on the shape).
-  // 2) If far from the lines, remove it (prevents floating outliers like your Lyra screenshot).
   const SNAP_AUDIO_TO_LINES = true;
-  const SNAP_PX_AT_ZOOM1 = 26;          // snap if <= 26px (at zoom=1)
-  const KEEP_MAX_PX_AT_ZOOM1 = 36;      // keep only if <= 36px (at zoom=1)
+  const SNAP_PX_AT_ZOOM1 = 26;
+  const KEEP_MAX_PX_AT_ZOOM1 = 36;
+
+  // Initial view: MAX zoom-out
+  const INITIAL_ZOOM = ZOOM_MIN;
 
   // =========================
   // STATE
@@ -307,8 +506,62 @@
   const groupsLayer = document.getElementById("groups-layer");
   const sky = document.getElementById("sky-container");
 
+  // minimap
+  const mm = {
+    wrap: document.getElementById("minimap"),
+    toggle: document.getElementById("minimap-toggle"),
+    layer: document.getElementById("mm-consts"),
+    rect: document.getElementById("mm-rect"),
+    W: 220, H: 160
+  };
+  let MINIMAP_OPEN = false;
+  let WORLD_BOUNDS = null;
+
   // =========================
-  // Tiny toast popup
+  // Finder toggle
+  // =========================
+  const finder = document.getElementById("finder");
+  const finderToggle = document.getElementById("finder-toggle");
+
+  function setFinderOpen(open){
+    finder.classList.toggle("is-hidden", !open);
+    finderToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  setFinderOpen(true);
+
+  function toggleFinder(){ setFinderOpen(finder.classList.contains("is-hidden")); }
+  finderToggle.addEventListener("click", toggleFinder);
+  finderToggle.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter" || e.key === " "){ e.preventDefault(); toggleFinder(); }
+  });
+
+  // =========================
+  // Minimap toggle
+  // =========================
+  function setMinimapOpen(open){
+    MINIMAP_OPEN = open;
+    mm.wrap.classList.toggle("is-hidden", !open);
+    mm.wrap.setAttribute("aria-hidden", open ? "false" : "true");
+    mm.toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if(open) updateMinimapRect();
+  }
+  setMinimapOpen(false);
+
+  mm.toggle.addEventListener("click", ()=> setMinimapOpen(!MINIMAP_OPEN));
+  mm.toggle.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter" || e.key === " "){ e.preventDefault(); setMinimapOpen(!MINIMAP_OPEN); }
+  });
+
+  window.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape"){
+      setFinderOpen(false);
+      setMinimapOpen(false);
+      document.getElementById("sidebar").classList.remove("open");
+    }
+  });
+
+  // =========================
+  // Toast
   // =========================
   function showToast(title, detail, ms=1800){
     const wrap = document.getElementById("toast-wrap");
@@ -327,11 +580,12 @@
   // PAN & ZOOM
   // =========================
   let isDragging=false, lastX=0, lastY=0;
-  let tx=0, ty=0, zoom=1.0;
+  let tx=0, ty=0, zoom=INITIAL_ZOOM;
 
   function setTransform(){
     viewport.setAttribute("transform", `translate(${tx}, ${ty}) scale(${zoom})`);
     applyZoomVisibilityRules();
+    if(MINIMAP_OPEN) updateMinimapRect();
   }
 
   function zoomAbout(screenX, screenY, factor){
@@ -354,8 +608,11 @@
   function isInteractiveTarget(el){
     return !!(el.closest(".star.major") ||
               el.closest("#finder") ||
+              el.closest("#finder-toggle") ||
               el.closest("#sidebar") ||
-              el.closest("#ui-overlay"));
+              el.closest("#ui-overlay") ||
+              el.closest("#minimap") ||
+              el.closest("#minimap-toggle"));
   }
 
   sky.addEventListener("mousedown", (e)=>{
@@ -390,7 +647,8 @@
     const w = window.innerWidth, h = window.innerHeight;
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     if(tx === 0 && ty === 0){
-      tx = w/2; ty = h/2; zoom = 1.0;
+      tx = w/2; ty = h/2;
+      zoom = INITIAL_ZOOM;
       setTransform();
     }
   }
@@ -420,7 +678,7 @@
   }
 
   // =========================
-  // Hull for hit area
+  // Hull
   // =========================
   function cross(o, a, b){
     return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
@@ -477,10 +735,9 @@
   }
 
   // =========================
-  // Nearest point on line (for snapping + filtering outliers)
+  // Nearest point
   // =========================
   function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
-
   function nearestPointOnSegment(p, a, b){
     const abx = b.x - a.x, aby = b.y - a.y;
     const apx = p.x - a.x, apy = p.y - a.y;
@@ -490,7 +747,6 @@
     const dx = p.x - x, dy = p.y - y;
     return { x, y, d2: dx*dx + dy*dy };
   }
-
   function nearestPointOnPolylines(p, polylines){
     let best = null;
     for(const line of (polylines || [])){
@@ -518,6 +774,8 @@
     document.querySelectorAll(".const-item").forEach(el=>{
       el.classList.toggle("active", name && el.getAttribute("data-name") === name);
     });
+
+    if(MINIMAP_OPEN) updateMinimapFocus();
   }
 
   let blurTimer = null;
@@ -530,58 +788,50 @@
   // Sidebar
   // =========================
   const aud = document.getElementById("s-audio");
-function openStar(m){
-  document.getElementById("s-name").innerText = m.name || "Star";
-  document.getElementById("s-const").innerText = (m.const || "CONSTELLATION").toUpperCase();
+  function openStar(m){
+    document.getElementById("s-name").innerText = m.name || "Star";
+    document.getElementById("s-const").innerText = (m.const || "CONSTELLATION").toUpperCase();
 
-  // Hide sonification / audio-design / debug fields
-  const HIDE_KEYS = new Set([
-    // sonification + audio design
-    "Pitch_Hz","Pan","Loudness","Timbre","Extra_Layers","Mood_Tag",
-    "Emotion Code","Tempo (BPM)","Suggested Instrument Set",
-    // file-ish
-    "File","Audio_File","Audio file","Audio",
-    // internal-ish
-    "id","Star Name","Constellation",
-    // debug
-    "snap_d","_distToLine","snapped"
-  ]);
+    const HIDE_KEYS = new Set([
+      "Pitch_Hz","Pan","Loudness","Timbre","Extra_Layers","Mood_Tag",
+      "Emotion Code","Tempo (BPM)","Suggested Instrument Set",
+      "File","Audio_File","Audio file","Audio",
+      "id","Star Name","Constellation",
+      "snap_d","_distToLine","snapped"
+    ]);
 
-  // Allow-list (preferred): only show astronomy-related fields
-  const KEEP_KEYS = new Set([
-    "RA","Dec","RA (hh:mm:ss)","Dec (dd:mm:ss)",
-    "Magnitude","Mag",
-    "Spectral Type",
-    "Binary / Cluster Membership"
-  ]);
+    const KEEP_KEYS = new Set([
+      "RA","Dec","RA (hh:mm:ss)","Dec (dd:mm:ss)",
+      "Magnitude","Mag",
+      "Spectral Type",
+      "Binary / Cluster Membership"
+    ]);
 
-  const meta = Object.entries(m.meta || {})
-    .filter(([k,v]) => v !== null && v !== undefined && String(v).trim() !== "")
-    .filter(([k]) => !HIDE_KEYS.has(k))
-    .filter(([k]) => KEEP_KEYS.has(k))   // astronomy only
-    .map(([k,v]) => `<div class="rowish"><span>${escapeHtml(k)}</span><b>${escapeHtml(String(v))}</b></div>`)
-    .join("");
+    const meta = Object.entries(m.meta || {})
+      .filter(([k,v]) => v !== null && v !== undefined && String(v).trim() !== "")
+      .filter(([k]) => !HIDE_KEYS.has(k))
+      .filter(([k]) => KEEP_KEYS.has(k))
+      .map(([k,v]) => `<div class="rowish"><span>${escapeHtml(k)}</span><b>${escapeHtml(String(v))}</b></div>`)
+      .join("");
 
-  // Keep ONLY "Has audio" + the player (no Audio URL / exists / snap dist rows)
-  const audioRow = `<div class="rowish"><span>Has audio</span><b>${m.audio ? "Yes" : "No"}</b></div>`;
+    const audioRow = `<div class="rowish"><span>Has audio</span><b>${m.audio ? "Yes" : "No"}</b></div>`;
 
-  document.getElementById("s-meta").innerHTML =
-    (meta || `<div class="text-white-50">No astronomy metadata.</div>`) + audioRow;
+    document.getElementById("s-meta").innerHTML =
+      (meta || `<div class="text-white-50">No astronomy metadata.</div>`) + audioRow;
 
-  if(m.audio){
-    aud.src = m.audio;
-    aud.style.display = "";
-    aud.play().catch(()=>{});
-  } else {
-    aud.pause();
-    aud.removeAttribute("src");
-    aud.load();
-    aud.style.display = "none";
+    if(m.audio){
+      aud.src = m.audio;
+      aud.style.display = "";
+      aud.play().catch(()=>{});
+    } else {
+      aud.pause();
+      aud.removeAttribute("src");
+      aud.load();
+      aud.style.display = "none";
+    }
+
+    document.getElementById("sidebar").classList.add("open");
   }
-
-  document.getElementById("sidebar").classList.add("open");
-}
-
 
   function escapeHtml(s){
     return (s ?? "").replace(/[&<>"']/g, ch => ({
@@ -594,19 +844,23 @@ function openStar(m){
   };
 
   // =========================
-  // Finder list
+  // Finder list (HIDE 0 AUDIO)
   // =========================
   function buildConstellationList(){
     const list = document.getElementById("const-list");
     const q = (document.getElementById("const-q").value || "").trim().toLowerCase();
 
-    const names = Object.keys(CONST_INFO).sort().filter(n => !q || n.toLowerCase().includes(q));
+    const names = Object.keys(CONST_INFO)
+      .filter(n => (CONST_INFO[n]?.audioCount || 0) > 0)          // <-- hide 0 audio
+      .sort()
+      .filter(n => !q || n.toLowerCase().includes(q));
+
     list.innerHTML = names.map(n=>{
       const info = CONST_INFO[n];
       return `<div class="const-item" data-name="${escapeHtml(n)}">
         <div>
           <div class="const-name">${escapeHtml(n)}</div>
-          <div class="const-count">${info.audioCount} audio stars</div>
+          <div class="const-count">${info.audioCount} audio</div>
         </div>
         <div class="text-white-50" style="font-weight:950;">›</div>
       </div>`;
@@ -642,23 +896,133 @@ function openStar(m){
     setFocusConstellation(null);
     tx = window.innerWidth/2;
     ty = window.innerHeight/2;
-    zoom = 1.0;
+    zoom = INITIAL_ZOOM;          // MAX zoom-out
     setTransform();
   }
   document.getElementById("btn-reset").onclick = resetView;
 
   // =========================
-  // Render
+  // Render helpers
   // =========================
   function magToR_audio(mag){
     const t = Math.max(-1, Math.min(6, mag ?? 3));
     const r = 10.5 - (t * 1.0);
     return Math.max(3.2, Math.min(12.0, r));
   }
-  function lineStarR(){
-    return 4.2;
+  function lineStarR(){ return 4.2; }
+
+  // =========================
+  // MINIMAP mapping (ONLY constellation gold dots)
+  // =========================
+  function computeWorldBounds(){
+    let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+    document.querySelectorAll(".const-group").forEach(g=>{
+      g.querySelectorAll("line.const-line").forEach(ln=>{
+        const x1 = parseFloat(ln.getAttribute("x1")), y1 = parseFloat(ln.getAttribute("y1"));
+        const x2 = parseFloat(ln.getAttribute("x2")), y2 = parseFloat(ln.getAttribute("y2"));
+        if(Number.isFinite(x1)){ minX=Math.min(minX,x1); maxX=Math.max(maxX,x1); minY=Math.min(minY,y1); maxY=Math.max(maxY,y1); }
+        if(Number.isFinite(x2)){ minX=Math.min(minX,x2); maxX=Math.max(maxX,x2); minY=Math.min(minY,y2); maxY=Math.max(maxY,y2); }
+      });
+      g.querySelectorAll("text.const-label").forEach(t=>{
+        const x = parseFloat(t.getAttribute("x")), y = parseFloat(t.getAttribute("y"));
+        if(Number.isFinite(x)){ minX=Math.min(minX,x); maxX=Math.max(maxX,x); minY=Math.min(minY,y); maxY=Math.max(maxY,y); }
+      });
+    });
+    if(!Number.isFinite(minX)) return null;
+    const pad = 120;
+    return { minX:minX-pad, minY:minY-pad, maxX:maxX+pad, maxY:maxY+pad };
   }
 
+  function worldToMini(p){
+    if(!WORLD_BOUNDS) return {x:0,y:0};
+    const {minX,minY,maxX,maxY} = WORLD_BOUNDS;
+    const nx = (p.x - minX) / (maxX - minX || 1);
+    const ny = (p.y - minY) / (maxY - minY || 1);
+    return { x: nx * mm.W, y: ny * mm.H };
+  }
+
+  function updateMinimapConstDots(){
+    mm.layer.innerHTML = "";
+    if(!WORLD_BOUNDS) return;
+
+    const frag = document.createDocumentFragment();
+
+    // one gold dot per constellation (use label position as center)
+    document.querySelectorAll(".const-group").forEach(g=>{
+      const name = g.getAttribute("data-const") || "";
+      const lbl = g.querySelector("text.const-label");
+      if(!lbl) return;
+
+      const x = parseFloat(lbl.getAttribute("x"));
+      const y = parseFloat(lbl.getAttribute("y"));
+      if(!Number.isFinite(x) || !Number.isFinite(y)) return;
+
+      const p = worldToMini({x,y});
+      const c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+      c.setAttribute("cx", p.x);
+      c.setAttribute("cy", p.y);
+      c.setAttribute("r", 3.0);
+      c.setAttribute("class", "mm-const");
+      c.setAttribute("data-const", name);
+      frag.appendChild(c);
+    });
+
+    mm.layer.appendChild(frag);
+    updateMinimapFocus();
+  }
+
+  function updateMinimapFocus(){
+    mm.layer.querySelectorAll(".mm-const").forEach(n=>{
+      n.classList.toggle("focus", !!FOCUSED_CONST && n.getAttribute("data-const") === FOCUSED_CONST);
+    });
+  }
+
+  function currentViewWorldRect(){
+    const w = window.innerWidth, h = window.innerHeight;
+    const x0 = (0 - tx) / zoom;
+    const y0 = (0 - ty) / zoom;
+    const x1 = (w - tx) / zoom;
+    const y1 = (h - ty) / zoom;
+    return {
+      minX: Math.min(x0,x1), minY: Math.min(y0,y1),
+      maxX: Math.max(x0,x1), maxY: Math.max(y0,y1)
+    };
+  }
+
+  function updateMinimapRect(){
+    if(!WORLD_BOUNDS) return;
+    const r = currentViewWorldRect();
+    const a = worldToMini({x:r.minX, y:r.minY});
+    const b = worldToMini({x:r.maxX, y:r.maxY});
+    const x = Math.min(a.x,b.x), y = Math.min(a.y,b.y);
+    const w = Math.max(6, Math.abs(b.x - a.x));
+    const h = Math.max(6, Math.abs(b.y - a.y));
+    mm.rect.setAttribute("x", x);
+    mm.rect.setAttribute("y", y);
+    mm.rect.setAttribute("width", w);
+    mm.rect.setAttribute("height", h);
+  }
+
+  // click minimap to pan
+  mm.wrap.addEventListener("click", (e)=>{
+    const rect = mm.wrap.getBoundingClientRect();
+    const sx = e.clientX - rect.left;
+    const sy = e.clientY - rect.top;
+    if(!WORLD_BOUNDS) return;
+
+    const {minX,minY,maxX,maxY} = WORLD_BOUNDS;
+    const wx = minX + (sx / rect.width) * (maxX - minX);
+    const wy = minY + (sy / rect.height) * (maxY - minY);
+
+    const W = window.innerWidth, H = window.innerHeight;
+    tx = (W/2) - wx * zoom;
+    ty = (H/2) - wy * zoom;
+    setTransform();
+  });
+
+  // =========================
+  // Main render
+  // =========================
   function renderConstellations(){
     groupsLayer.innerHTML = "";
     CONST_INFO = {};
@@ -669,7 +1033,9 @@ function openStar(m){
       const lineStars = c.line_stars || [];
       let audioStars = c.audio_stars || [];
 
-      // project lines
+      // SAFETY: if backend ever sends 0-audio constellations, skip
+      if(!audioStars || audioStars.length === 0) continue;
+
       const allLinePts = [];
       const projLines = polylines.map(line=>{
         const pts = line.map(pt=>{
@@ -680,7 +1046,6 @@ function openStar(m){
         return pts;
       });
 
-      // project line stars and audio stars (for hull + centroid)
       const projLineStars = lineStars.map(s => project(s.alt, s.az));
       const projAudioBase = audioStars.map(s => project(s.alt, s.az));
 
@@ -699,13 +1064,11 @@ function openStar(m){
       const spreadLines = projLines.map(line => line.map(spreadPoint));
       const spreadLineStars = projLineStars.map(spreadPoint);
 
-      // spread audio stars
       let spreadAudio = audioStars.map(s=>{
         const p = spreadPoint(project(s.alt, s.az));
         return {...s, x:p.x, y:p.y};
       });
 
-      // SNAP + FILTER OUTLIERS (IMPORTANT)
       if(SNAP_AUDIO_TO_LINES && spreadLines.length){
         const snapDist = SNAP_PX_AT_ZOOM1;
         const keepDist = KEEP_MAX_PX_AT_ZOOM1;
@@ -715,9 +1078,7 @@ function openStar(m){
             const p = {x:s.x, y:s.y};
             const best = nearestPointOnPolylines(p, spreadLines);
             if(!best) return { ...s, _distToLine: Infinity };
-
             const d = Math.sqrt(best.d2);
-
             if(best.d2 <= snapDist*snapDist){
               return { ...s, x: best.x, y: best.y, snapped: true, snap_d: d, _distToLine: d };
             }
@@ -726,7 +1087,9 @@ function openStar(m){
           .filter(s => (s._distToLine ?? Infinity) <= keepDist);
       }
 
-      // bounds
+      // after snapping/keeping, if constellation ends up 0 audio stars, skip it
+      if(!spreadAudio || spreadAudio.length === 0) continue;
+
       let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
       const allPtsForBounds = [
         ...spreadLines.flat(),
@@ -751,7 +1114,6 @@ function openStar(m){
       g.setAttribute("class", "const-group");
       g.setAttribute("data-const", name);
 
-      // hit hull
       const hullPts = [];
       spreadLines.forEach(line=> line.forEach(p=> hullPts.push(p)));
       spreadLineStars.forEach(p=> hullPts.push(p));
@@ -767,7 +1129,6 @@ function openStar(m){
       hit.addEventListener("click", ()=> focusConstellation(name));
       g.appendChild(hit);
 
-      // draw lines
       for(const line of spreadLines){
         for(let i=0; i<line.length-1; i++){
           const a = line[i], b = line[i+1];
@@ -779,7 +1140,6 @@ function openStar(m){
         }
       }
 
-      // label
       const lbl = document.createElementNS("http://www.w3.org/2000/svg", "text");
       lbl.setAttribute("text-anchor", "middle");
       lbl.setAttribute("class", "const-label");
@@ -788,7 +1148,6 @@ function openStar(m){
       lbl.textContent = name;
       g.appendChild(lbl);
 
-      // draw constellation line-stars
       for(const p of spreadLineStars){
         const cc = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         cc.setAttribute("cx", p.x);
@@ -798,7 +1157,6 @@ function openStar(m){
         g.appendChild(cc);
       }
 
-      // draw audio stars
       for(const s of spreadAudio){
         const cc = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         cc.setAttribute("cx", s.x);
@@ -807,7 +1165,6 @@ function openStar(m){
         cc.setAttribute("class", "star major");
         cc.addEventListener("pointerdown", (e)=> e.stopPropagation());
         cc.addEventListener("mousedown", (e)=> e.stopPropagation());
-        cc.style.cursor = "pointer";
         cc.addEventListener("click", (e)=>{
           e.stopPropagation();
           openStar(s);
@@ -820,6 +1177,12 @@ function openStar(m){
 
     buildConstellationList();
     applyZoomVisibilityRules();
+
+    WORLD_BOUNDS = computeWorldBounds();
+    if(WORLD_BOUNDS){
+      updateMinimapConstDots();
+      if(MINIMAP_OPEN) updateMinimapRect();
+    }
   }
 
   // =========================
@@ -853,7 +1216,6 @@ function openStar(m){
       renderConstellations();
       resetView();
 
-      // popup when done
       const cCount = d.counts?.constellations_sent ?? CONSTS.length;
       const aRows  = d.counts?.audio_csv_rows ?? "";
       showToast("Sky updated", `Constellations: ${cCount}${aRows!=="" ? ` · Audio rows: ${aRows}` : ""}`, 1700);

@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Aethera | Audio Library</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../static/images/apple-touch-icon.png">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- AOS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"/>
+
+  <style>
+    :root {
+      --bg-deep: #020305;
+      --ink: #f4f4f6;
+      --muted: rgba(255,255,255,0.78);
+      --gold: #c5a059;
+      --gold-bright: #f2e1c2;
+      --border: rgba(197, 160, 89, 0.2);
+
+      --chip: rgba(255,255,255,0.06);
+      --chip-b: rgba(242,225,194,0.18);
+      --danger: rgba(255, 120, 120, 0.92);
+    }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--ink);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    [data-aos]{ will-change: transform, opacity; }
+
+    .nav-glass {
+      background: rgba(2, 3, 5, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 0;
+      z-index: 1000;
+    }
+    .navbar-brand {
+      font-family: "Cinzel", serif;
+      letter-spacing: .4em;
+      color: var(--gold-bright) !important;
+      font-weight: 700;
+    }
+    .nav-link-aethera{
+      color: rgba(255,255,255,0.78) !important;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-size: .72rem;
+      padding: .55rem .70rem !important;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: .2s ease;
+    }
+    .nav-link-aethera:hover{
+      color: rgba(242,225,194,0.96) !important;
+      border-color: rgba(242,225,194,0.18);
+      background: rgba(255,255,255,0.04);
+      transform: translateY(-1px);
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: var(--bg-deep);
+      padding: 12px 22px;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      text-decoration: none;
+      transition: 0.3s ease;
+      display: inline-block;
+      border: 0;
+      border-radius: 0;
+      white-space: nowrap;
+    }
+    .btn-gold:hover {
+      background: var(--gold-bright);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(197, 160, 89, 0.4);
+    }
+
+    .btn-outline-gold{
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: rgba(255,255,255,0.92);
+      padding: 12px 22px;
+      border-radius: 0;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      text-decoration: none;
+      display:inline-block;
+      transition: .22s ease;
+      white-space: nowrap;
+    }
+    .btn-outline-gold:hover{
+      color: var(--gold-bright);
+      border-color: var(--gold-bright);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(197,160,89,.18);
+    }
+
+    .page-hero{
+      position: relative;
+      padding: 78px 0 32px;
+      background:
+        radial-gradient(1100px 520px at 70% 0%, rgba(197,160,89,0.14), transparent 60%),
+        radial-gradient(900px 520px at 20% 35%, rgba(110,140,210,0.12), transparent 62%),
+        #050608;
+      overflow:hidden;
+    }
+    .hero-label {
+      font-weight: 900;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6em;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .page-title{
+      font-family: "Cinzel", serif;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: #fff;
+      margin: 0;
+      font-size: clamp(2.0rem, 3.4vw, 3.0rem);
+      line-height: 1.1;
+    }
+    .page-sub{
+      margin: 12px 0 0;
+      color: rgba(255,255,255,0.86);
+      max-width: 76ch;
+      line-height: 1.9;
+      font-size: 1.06rem;
+      border-left: 2px solid var(--gold);
+      padding-left: 1.2rem;
+    }
+
+    .audio-section{
+      padding: 44px 0 92px;
+      background:
+        radial-gradient(920px 420px at 75% 0%, rgba(197,160,89,0.14), transparent 60%),
+        radial-gradient(860px 420px at 15% 30%, rgba(110,140,210,0.12), transparent 62%),
+        #050608;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow:hidden;
+    }
+
+    .audio-panel{
+      border: 1px solid rgba(242,225,194,0.18);
+      background: rgba(0,0,0,0.24);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.50);
+    }
+
+    .searchbar{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+    .searchbar .form-control, .searchbar .form-select{
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(242,225,194,0.18);
+      color: rgba(255,255,255,0.92);
+      border-radius: 999px;
+      padding: 12px 14px;
+      box-shadow: none !important;
+    }
+    .searchbar .form-control::placeholder{ color: rgba(255,255,255,0.55); }
+    .searchbar .form-control:focus, .searchbar .form-select:focus{
+      border-color: rgba(242,225,194,0.34);
+      background: rgba(255,255,255,0.06);
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--chip-b);
+      background: var(--chip);
+      color: rgba(255,255,255,0.90);
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: .70rem;
+      white-space: nowrap;
+    }
+    .chip i{ color: rgba(242,225,194,0.92); }
+
+    .audio-grid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 992px){
+      .audio-grid{ grid-template-columns: 1.2fr .8fr; }
+    }
+
+    .audio-list{
+      border: 1px solid rgba(242,225,194,0.14);
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      overflow: hidden;
+      max-height: 540px;
+    }
+    .audio-list-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(242,225,194,0.12);
+      background: rgba(0,0,0,0.18);
+    }
+    .audio-count{
+      color: rgba(255,255,255,0.82);
+      font-weight: 800;
+      letter-spacing: .06em;
+      font-size: .85rem;
+      text-transform: uppercase;
+      margin: 0;
+    }
+    .audio-list-body{
+      overflow:auto;
+      max-height: 486px;
+    }
+
+    .star-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(242,225,194,0.10);
+      cursor: pointer;
+      transition: .18s ease;
+    }
+    .star-row:hover{
+      background: rgba(197,160,89,0.08);
+      transform: translateY(-1px);
+    }
+    .star-row.active{
+      background: rgba(197,160,89,0.14);
+      border-bottom-color: rgba(242,225,194,0.18);
+    }
+
+    .star-left{
+      min-width: 0;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .star-dot{
+      width: 10px; height: 10px;
+      border-radius: 999px;
+      background: rgba(242,225,194,0.80);
+      box-shadow: 0 0 18px rgba(197,160,89,0.35);
+      flex: 0 0 auto;
+    }
+    .star-meta{
+      min-width: 0;
+      display:flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .star-name{
+      margin:0;
+      font-weight: 950;
+      color: rgba(255,255,255,0.96);
+      letter-spacing: .02em;
+      font-size: 1.02rem;
+      line-height: 1.15;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 520px;
+    }
+    .star-sub{
+      margin:0;
+      color: rgba(255,255,255,0.70);
+      font-size: .90rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 520px;
+    }
+    .star-right{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+    .badge-mag{
+      border: 1px solid rgba(242,225,194,0.20);
+      background: rgba(255,255,255,0.04);
+      color: rgba(242,225,194,0.92);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      font-size: .70rem;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .btn-play{
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(242,225,194,0.22);
+      background: rgba(255,255,255,0.05);
+      color: rgba(242,225,194,0.95);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      transition:.18s ease;
+    }
+    .btn-play:hover{
+      border-color: rgba(242,225,194,0.36);
+      background: rgba(197,160,89,0.14);
+      transform: translateY(-1px);
+    }
+
+    .player-card{
+      border: 1px solid rgba(242,225,194,0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border-radius: 16px;
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+      min-height: 280px;
+    }
+    .player-card:before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background:
+        radial-gradient(520px 260px at 20% 25%, rgba(197,160,89,0.18), transparent 60%),
+        radial-gradient(520px 260px at 85% 70%, rgba(110,140,210,0.12), transparent 62%);
+      opacity:.80;
+      pointer-events:none;
+    }
+    .player-card > *{ position: relative; z-index: 1; }
+
+    .player-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .player-title{
+      margin:0;
+      font-weight: 950;
+      letter-spacing: .01em;
+      font-size: 1.25rem;
+      color: rgba(255,255,255,0.96);
+    }
+    .player-sub{
+      margin:6px 0 0;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.7;
+      font-size: .98rem;
+      max-width: 52ch;
+    }
+    .player-actions{
+      display:flex;
+      gap: 8px;
+      align-items:center;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+    .mini{
+      border: 1px solid rgba(242,225,194,0.20);
+      background: rgba(0,0,0,0.22);
+      color: rgba(242,225,194,0.95);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-weight: 900;
+      font-size: .72rem;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .viz{
+      margin-top: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(242,225,194,0.14);
+      background: rgba(0,0,0,0.22);
+      padding: 14px 14px 10px;
+    }
+    .bars{
+      height: 74px;
+      display:flex;
+      align-items:flex-end;
+      gap: 6px;
+      padding: 6px 4px 2px;
+    }
+    .bar{
+      width: 10px;
+      border-radius: 10px;
+      background: rgba(242,225,194,0.92);
+      height: 10px;
+      opacity: .8;
+      transform-origin: bottom;
+      animation: idle 1.6s ease-in-out infinite;
+    }
+    .bar:nth-child(2){ animation-delay: .12s; }
+    .bar:nth-child(3){ animation-delay: .24s; }
+    .bar:nth-child(4){ animation-delay: .36s; }
+    .bar:nth-child(5){ animation-delay: .48s; }
+    .bar:nth-child(6){ animation-delay: .60s; }
+    .bar:nth-child(7){ animation-delay: .72s; }
+    .bar:nth-child(8){ animation-delay: .84s; }
+    .bar:nth-child(9){ animation-delay: .96s; }
+    .bar:nth-child(10){ animation-delay: 1.08s; }
+    .bar:nth-child(11){ animation-delay: 1.20s; }
+    .bar:nth-child(12){ animation-delay: 1.32s; }
+
+    @keyframes idle{
+      0%,100%{ height: 10px; opacity:.55; }
+      50%{ height: 38px; opacity:.85; }
+    }
+    .playing .bar{
+      animation-name: play;
+      animation-duration: .9s;
+      opacity: .9;
+    }
+    @keyframes play{
+      0%,100%{ height: 14px; }
+      25%{ height: 58px; }
+      55%{ height: 28px; }
+      75%{ height: 70px; }
+    }
+
+    .player-footer{
+      margin-top: 10px;
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: rgba(255,255,255,0.72);
+      font-size: .92rem;
+    }
+
+    .hint{
+      color: rgba(255,255,255,0.72);
+      font-size: .92rem;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .errorline{
+      color: var(--danger);
+      font-weight: 800;
+      letter-spacing: .04em;
+      font-size: .90rem;
+    }
+
+    .audio-list-body::-webkit-scrollbar{ width: 10px; }
+    .audio-list-body::-webkit-scrollbar-track{ background: rgba(255,255,255,0.03); }
+    .audio-list-body::-webkit-scrollbar-thumb{
+      background: rgba(242,225,194,0.16);
+      border-radius: 999px;
+      border: 2px solid rgba(0,0,0,0.24);
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar nav-glass navbar-expand-lg sticky-top"
+       data-aos="fade-down" data-aos-duration="700" data-aos-once="true">
+    <div class="container">
+      <a class="navbar-brand" href="/">AETHERA</a>
+
+      <button class="navbar-toggler text-light border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navAethera">
+        <span class="navbar-toggler-icon" style="filter: invert(1); opacity:.85;"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navAethera">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1"
+            data-aos="fade-down" data-aos-delay="160" data-aos-duration="700" data-aos-once="true">
+          <li class="nav-item"><a class="nav-link nav-link-aethera" href="/sky">Interactive Sky</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-aethera" href="/sonification">Sonification</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-aethera" href="/constellations">Constellations</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-aethera" href="/#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+<header class="page-hero">
+  <div class="container">
+    <div class="row g-4 align-items-end">
+      <div class="col-lg-8" data-aos="fade-up" data-aos-duration="900" data-aos-delay="80" data-aos-once="true">
+        <span class="hero-label">Directory</span>
+        <h1 class="page-title">Audio Files</h1>
+        <p class="page-sub">
+          Browse your sound archive in one place. Use search and sorting to find a track fast, then preview it instantly with the built-in player.
+          For full immersion, open the Sky and experience audio in context.
+        </p>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  <section class="audio-section" id="audio">
+    <div class="container">
+      <div class="audio-panel" data-aos="fade-up" data-aos-duration="900" data-aos-delay="80" data-aos-once="true">
+        <div class="searchbar" data-aos="fade-up" data-aos-duration="850" data-aos-delay="120" data-aos-once="true">
+<!--          <span class="chip"><i class="bi bi-search"></i> search</span>-->
+          <input id="q" class="form-control flex-grow-1" placeholder="Search filename..." autocomplete="off"/>
+
+          <select id="sortBy" class="form-select d-none" style="min-width: 220px;">
+            <option value="name_asc">Sort: name (A→Z)</option>
+          </select>
+
+          <button id="resetBtn" class="btn-outline-gold d-none" style="border-radius:999px; padding: 12px 16px;">
+            Reset
+          </button>
+        </div>
+
+        <div class="audio-grid">
+          <div class="audio-list" data-aos="fade-up" data-aos-duration="900" data-aos-delay="120" data-aos-once="true">
+            <div class="audio-list-head">
+              <p class="audio-count mb-0" id="countText">Loading…</p>
+            </div>
+            <div class="audio-list-body" id="list"></div>
+          </div>
+
+          <div class="player-card" data-aos="fade-up" data-aos-duration="900" data-aos-delay="160" data-aos-once="true">
+            <div class="player-top">
+              <div>
+                <p class="player-title mb-0" id="playerTitle">Select an audio file</p>
+                <p class="player-sub" id="playerSub">Click a row to select. Click the play bubble to start playback.</p>
+              </div>
+            </div>
+
+            <div class="viz" id="viz">
+              <div class="bars" id="bars">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+              </div>
+              <div class="player-footer">
+                <div>
+                  <div><span class="kbd" style="border-color: rgba(255,255,255,0.14); background: rgba(255,255,255,0.06); padding:2px 8px; border-radius:999px;">Folder</span> static/audio</div>
+                  <div><span class="kbd" style="border-color: rgba(255,255,255,0.14); background: rgba(255,255,255,0.06); padding:2px 8px; border-radius:999px;">Status</span> <span id="playerRA">—</span></div>
+                </div>
+                <div class="text-end">
+                  <div><span class="kbd" style="border-color: rgba(255,255,255,0.14); background: rgba(255,255,255,0.06); padding:2px 8px; border-radius:999px;">File</span> <span id="playerFile">—</span></div>
+                  <div id="playerErr" class="errorline" style="display:none;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 d-flex gap-2 flex-wrap align-items-center">
+              <button id="playBtn" class="btn-gold" style="padding: 12px 18px; letter-spacing:.18em;">
+                <i class="bi bi-play-fill me-1"></i> Play
+              </button>
+              <button id="pauseBtn" class="btn-outline-gold" style="padding: 12px 18px; border-radius:0;">
+                <i class="bi bi-pause-fill me-1"></i> Pause
+              </button>
+              <div class="flex-grow-1"></div>
+            </div>
+
+            <p class="hint mt-3 mb-0">Tip: click the circular play bubble on a row to immediately play that file.</p>
+
+            <audio id="audioEl" preload="none"></audio>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ once:true, duration:900, easing:'ease-out-cubic', offset:90 });
+  </script>
+
+  <script>
+    /*
+      IMPORTANT:
+      Browsers cannot list files in /static/audio by themselves.
+      So you MUST provide one of these:
+      (A) /api/audio_files endpoint that lists mp3 filenames (recommended)
+      OR
+      (B) a static manifest file like /static/audio/manifest.json
+
+      This HTML assumes you already created:
+      GET /api/audio_files -> { items: [{file:"x.mp3", url:"/static/audio/x.mp3"}, ...] }
+    */
+
+    const state = { all: [], filtered: [], selectedId: null, selected: null };
+
+    const el = {
+      q: document.getElementById('q'),
+      sortBy: document.getElementById('sortBy'),
+      resetBtn: document.getElementById('resetBtn'),
+      list: document.getElementById('list'),
+      countText: document.getElementById('countText'),
+
+      playerTitle: document.getElementById('playerTitle'),
+      playerSub: document.getElementById('playerSub'),
+      playerFile: document.getElementById('playerFile'),
+      playerErr: document.getElementById('playerErr'),
+      playerRA: document.getElementById('playerRA'),
+
+      playBtn: document.getElementById('playBtn'),
+      pauseBtn: document.getElementById('pauseBtn'),
+      audio: document.getElementById('audioEl'),
+      viz: document.getElementById('viz'),
+    };
+
+    function normalize(s){ return String(s || "").toLowerCase().trim(); }
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+    function setErr(msg){
+      if(!msg){
+        el.playerErr.style.display = "none";
+        el.playerErr.textContent = "";
+        el.playerRA.textContent = "Ready";
+        return;
+      }
+      el.playerErr.style.display = "block";
+      el.playerErr.textContent = msg;
+      el.playerRA.textContent = "Error";
+    }
+
+    function fileToTitle(filename){
+      return filename
+        .replace(/\.mp3$/i, "")
+        .replace(/[_-]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function applyFilters(){
+      const q = normalize(el.q.value);
+      let rows = state.all.slice();
+
+      if(q){
+        rows = rows.filter(r => (`${r.name} ${r.file}`).toLowerCase().includes(q));
+      }
+
+      rows.sort((a,b)=> (a.name||"").localeCompare(b.name||"") || (a.file||"").localeCompare(b.file||""));
+      state.filtered = rows;
+      renderList();
+    }
+
+    function renderList(){
+      const rows = state.filtered;
+      el.countText.textContent = `${rows.length.toLocaleString()} mp3 files`;
+
+      if(!rows.length){
+        el.list.innerHTML = `<div class="p-3">
+          <p class="mb-1" style="color: rgba(255,255,255,0.84); font-weight:800; letter-spacing:.06em;">No matches</p>
+          <p class="mb-0" style="color: rgba(255,255,255,0.70);">Try a shorter keyword.</p>
+        </div>`;
+        return;
+      }
+
+      el.list.innerHTML = rows.map((r) => {
+        const active = (state.selectedId === r.id) ? "active" : "";
+        return `
+          <div class="star-row ${active}" data-id="${escapeHtml(r.id)}">
+            <div class="star-left">
+              <div class="star-dot"></div>
+              <div class="star-meta">
+                <p class="star-name">${escapeHtml(r.name || "Untitled")}</p>
+                <p class="star-sub">File · ${escapeHtml(r.file)}</p>
+              </div>
+            </div>
+            <div class="star-right">
+              <span class="badge-mag">MP3</span>
+              <span class="btn-play" role="button" tabindex="0" title="Play"><i class="bi bi-play-fill"></i></span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      el.list.querySelectorAll('.star-row').forEach(row => {
+        const id = row.getAttribute('data-id');
+        const r = state.filtered.find(x => x.id === id);
+        if(!r) return;
+
+        row.addEventListener('click', (e) => {
+          const playBtn = e.target.closest('.btn-play');
+          if(playBtn){
+            selectAudio(r);
+            playSelected();
+            e.stopPropagation();
+            return;
+          }
+          selectAudio(r);
+        });
+
+        const btn = row.querySelector('.btn-play');
+        if(btn){
+          btn.addEventListener('keydown', (e) => {
+            if(e.key === "Enter" || e.key === " "){
+              e.preventDefault();
+              selectAudio(r);
+              playSelected();
+            }
+          });
+        }
+      });
+
+      if(window.AOS) AOS.refresh();
+    }
+
+    function selectAudio(r){
+      state.selectedId = r.id;
+      state.selected = r;
+
+      el.playerTitle.textContent = r.name || "Untitled";
+      el.playerSub.textContent = "MP3 file";
+      el.playerFile.textContent = r.file || "—";
+
+      el.audio.pause();
+      el.audio.currentTime = 0;
+      el.viz.classList.remove('playing');
+      setErr("");
+
+      if(!r.url){
+        setErr("No URL found for this mp3.");
+        el.audio.removeAttribute('src');
+      } else {
+        el.audio.src = r.url;
+      }
+
+      renderList();
+    }
+
+    function playSelected(){
+      const r = state.selected;
+      if(!r) return setErr("Select an mp3 first.");
+      if(!r.url) return setErr("No URL found for this mp3.");
+      setErr("");
+      el.audio.play()
+        .then(()=> el.viz.classList.add('playing'))
+        .catch(()=> setErr("Playback blocked by browser. Click play again after interacting."));
+    }
+
+    function pauseSelected(){
+      el.audio.pause();
+      el.viz.classList.remove('playing');
+    }
+
+    el.audio.addEventListener('ended', ()=> el.viz.classList.remove('playing'));
+    el.audio.addEventListener('pause', ()=> el.viz.classList.remove('playing'));
+    el.playBtn.addEventListener('click', playSelected);
+    el.pauseBtn.addEventListener('click', pauseSelected);
+
+    ['input','change'].forEach(evt => el.q.addEventListener(evt, applyFilters));
+    el.sortBy.addEventListener('change', applyFilters);
+
+    el.resetBtn.addEventListener('click', ()=>{
+      el.q.value = "";
+      applyFilters();
+    });
+
+    async function loadMp3Files(){
+      try{
+        const r = await fetch('/api/audio_files');
+        const d = await r.json();
+
+        // only mp3
+        const items = (d.items || []).filter(x => String(x.file || "").toLowerCase().endsWith(".mp3"));
+
+        state.all = items.map(x => ({
+          id: String(x.file || x.id || ""),
+          file: x.file || "",
+          name: fileToTitle(x.file || ""),
+          url: x.url || null
+        }));
+
+        applyFilters();
+
+        if(state.filtered.length){
+          selectAudio(state.filtered[0]); // select only, no auto-play
+        }
+      }catch(e){
+        console.error(e);
+        el.list.innerHTML = `<div class="p-3">
+          <p class="mb-1 errorline">Failed to load mp3 list</p>
+          <p class="mb-0" style="color: rgba(255,255,255,0.70);">You need /api/audio_files (server-side) to list static/audio/*.mp3.</p>
+        </div>`;
+        el.countText.textContent = "Error";
+      }
+    }
+
+    loadMp3Files();
+  </script>
+</body>
+</html>

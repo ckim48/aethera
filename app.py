@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from urllib.parse import quote
 
 import pandas as pd
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, url_for
 
 app = Flask(__name__)
 
@@ -419,6 +419,11 @@ def home():
     return render_template("index.html")
 
 
+@app.route("/sonification")
+def sonification():
+    return render_template("sonification.html")
+
+
 @app.route("/sky")
 def sky_page():
     return render_template("sky.html")
@@ -639,6 +644,11 @@ def api_sky():
         if _norm_key(name) not in CSV_CONST_KEYS:
             continue
 
+        # IMPORTANT: HIDE constellations with 0 audio (after altitude filtering)
+        audio_stars = audio_by_const.get(name, [])
+        if not audio_stars:
+            continue
+
         poly_altaz = []
         line_star_points = []
 
@@ -670,7 +680,7 @@ def api_sky():
                 "name": name,
                 "polylines": poly_altaz,
                 "line_stars": unique_line_stars,
-                "audio_stars": audio_by_const.get(name, []),
+                "audio_stars": audio_stars,  # already guaranteed non-empty
             }
         )
 
@@ -767,6 +777,25 @@ def api_constellations():
             },
         }
     )
+
+@app.get("/api/audio_files")
+def api_audio_files():
+    audio_dir = os.path.join(app.static_folder, "audio")  # static/audio
+    exts = {".mp3", ".wav", ".ogg", ".m4a", ".aac", ".flac"}
+
+    items = []
+    if os.path.isdir(audio_dir):
+        for name in sorted(os.listdir(audio_dir)):
+            path = os.path.join(audio_dir, name)
+            _, ext = os.path.splitext(name.lower())
+            if os.path.isfile(path) and ext in exts:
+                items.append({
+                    "id": name,                      # unique enough
+                    "file": name,
+                    "url": url_for("static", filename=f"audio/{name}")
+                })
+
+    return jsonify({"items": items})
 
 @app.route("/api/audio_stars")
 def api_audio_stars():
