@@ -24,6 +24,141 @@ MAJOR_CSV = os.path.join(DATA_DIR, "star_map.csv")  # your audio subset CSV
 CONSTELLATIONS_JSON = os.path.join(DATA_DIR, "constellations.json")  # GeoJSON abbr->name
 CONST_LINES_JSON = os.path.join(DATA_DIR, "constellations.lines.json")  # GeoJSON polylines in RA/Dec
 
+# Optional GPT summary (won't affect visibility filtering)
+try:
+    from openai import OpenAI
+    _OPENAI_OK = True
+except Exception:
+    OpenAI = None
+    _OPENAI_OK = False
+
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4.1-mini")
+
+_openai_client = OpenAI(api_key=OPENAI_API_KEY) if (_OPENAI_OK and OPENAI_API_KEY) else None
+def compute_visible_constellations(
+    lat: float,
+    lon: float,
+    dt: datetime,
+    min_alt_deg: float = 10.0,      # more realistic than -8 or 0
+    max_star_mag: float = 4.5,      # hide very dim stars
+    min_stars_per_const: int = 1,   # require at least N stars above threshold
+) -> dict:
+    """
+    Uses your MAJOR_AUDIO list (audio subset) to decide which constellations are realistically visible.
+
+    Returns:
+      {
+        "visible": [{"name": "...", "count": 3}, ...],
+        "counts": {...}
+      }
+    """
+    total_csv_const = len(CSV_CONST_NAMES_SET)
+
+    counts_by_const: dict[str, int] = {}
+    for s in MAJOR_AUDIO:
+        const_name = (s.get("const_name") or "").strip()
+        if not const_name:
+            continue
+        if _norm_key(const_name) not in CSV_CONST_KEYS:
+            continue
+
+        # magnitude filter (realistic visibility)
+        try:
+            mag = float(s.get("mag", 99.0))
+        except Exception:
+            mag = 99.0
+        if mag > max_star_mag:
+            continue
+
+        ra_h = (float(s["ra_deg"]) / 15.0) % 24.0
+        alt, az = alt_az_from_ra_dec(ra_h, float(s["dec_deg"]), lat, lon, dt)
+        if alt < float(min_alt_deg):
+            continue
+
+        counts_by_const[const_name] = counts_by_const.get(const_name, 0) + 1
+
+    visible = [
+        {"name": k, "count": v}
+        for k, v in counts_by_const.items()
+        if v >= int(min_stars_per_const)
+    ]
+    visible.sort(key=lambda x: (-x["count"], x["name"].upper()))
+
+    return {
+        "visible": visible,
+        "counts": {
+            "csv_constellations_total": total_csv_const,
+            "csv_audio_rows_total": len(MAJOR_AUDIO),
+            "visible_constellations": len(visible),
+        },
+    }
+@app.route("/api/visible_constellations")
+def api_visible_constellations():
+    lat = float(request.args.get("lat", 37.5665))
+    lon = float(request.args.get("lon", 126.9780))
+    ts = request.args.get("ts", "")
+    dt = datetime.fromisoformat(ts.replace("Z", "+00:00")) if ts else datetime.now(timezone.utc)
+
+    # tweak these defaults anytime
+    min_alt = float(request.args.get("min_alt", 10.0))
+    max_mag = float(request.args.get("max_mag", 4.5))
+    min_stars = int(request.args.get("min_stars", 1))
+
+    result = compute_visible_constellations(
+        lat=lat,
+        lon=lon,
+        dt=dt,
+        min_alt_deg=min_alt,
+        max_star_mag=max_mag,
+        min_stars_per_const=min_stars,
+    )
+
+    visible = result["visible"]
+    counts = result["counts"]
+
+    # ---- CONSOLE PRINT (what you asked for) ----
+    print(
+        "[VISIBLE]",
+        f"lat={lat:.4f} lon={lon:.4f} ts={dt.isoformat()} | "
+        f"CSV constellations={counts['csv_constellations_total']} | "
+        f"Audio rows={counts['csv_audio_rows_total']} | "
+        f"Visible constellations={counts['visible_constellations']} "
+        f"(min_alt={min_alt}, max_mag={max_mag}, min_stars={min_stars})"
+    )
+
+    # Optional GPT natural-language summary (does not change what is visible)
+    gpt_text = None
+    if _openai_client and visible:
+        names = [v["name"] for v in visible[:30]]
+        prompt = (
+            "You are an astronomy guide. Given a location/time and a list of visible constellations, "
+            "write a short, practical viewing summary (2-4 sentences) and then a comma-separated list "
+            "of the top constellations to look for first.\n\n"
+            f"Location: lat={lat}, lon={lon}\n"
+            f"Time (UTC): {dt.isoformat()}\n"
+            f"Visible constellations ({len(visible)}): {', '.join(names)}"
+        )
+        try:
+            resp = _openai_client.responses.create(
+                model=OPENAI_MODEL,
+                input=prompt,
+            )
+            # responses API returns output items; simplest is to read .output_text if available
+            gpt_text = getattr(resp, "output_text", None) or str(resp)
+        except Exception as e:
+            print("[VISIBLE][GPT] failed:", repr(e))
+            gpt_text = None
+
+    return jsonify(
+        {
+            "visible": visible,
+            "counts": counts,
+            "params": {"min_alt": min_alt, "max_mag": max_mag, "min_stars": min_stars},
+            "ts_utc": dt.isoformat().replace("+00:00", "Z"),
+            "gpt_summary": gpt_text,
+        }
+    )
+
 # ------------------------------------------------------------
 # Frontend-projection compatibility
 # IMPORTANT: Must match sky.html for consistent geometry
@@ -347,31 +482,33 @@ def gmst_deg(dt_utc: datetime) -> float:
     )
     return gmst % 360.0
 
+def alt_az_from_ra_dec(ra_hours: float, dec_deg: float, lat_deg: float, lon_deg: float, dt_utc: datetime):
+    # clamp latitude to avoid invalid inputs and exact poles causing numeric issues
+    lat_deg = max(-89.999999, min(89.999999, float(lat_deg)))
+    lon_deg = float(lon_deg)
 
-def alt_az_from_ra_dec(
-    ra_hours: float, dec_deg: float, lat_deg: float, lon_deg: float, dt_utc: datetime
-):
     lst_deg = (gmst_deg(dt_utc) + lon_deg) % 360.0
     ra_deg = (ra_hours * 15.0) % 360.0
     ha_deg = (lst_deg - ra_deg) % 360.0
     if ha_deg > 180:
-        ha_deg -= 360
+        ha_deg -= 360.0
 
-    ha = math.radians(ha_deg)
+    ha  = math.radians(ha_deg)
     dec = math.radians(dec_deg)
     lat = math.radians(lat_deg)
 
+    # altitude
     sin_alt = math.sin(dec) * math.sin(lat) + math.cos(dec) * math.cos(lat) * math.cos(ha)
     sin_alt = max(-1.0, min(1.0, sin_alt))
     alt = math.asin(sin_alt)
 
-    cos_az = (math.sin(dec) - math.sin(alt) * math.sin(lat)) / (math.cos(alt) * math.cos(lat) + 1e-12)
-    cos_az = max(-1.0, min(1.0, cos_az))
-    az = math.acos(cos_az)
-    if math.sin(ha) > 0:
-        az = 2 * math.pi - az
+    # azimuth (robust atan2 form)
+    y = math.sin(ha)
+    x = math.cos(ha) * math.sin(lat) - math.tan(dec) * math.cos(lat)
+    az = math.atan2(y, x)  # returns [-pi, pi]
+    az_deg = (math.degrees(az) + 180.0) % 360.0  # normalize to [0, 360)
 
-    return math.degrees(alt), math.degrees(az)
+    return math.degrees(alt), az_deg
 
 
 # ------------------------------------------------------------
@@ -685,6 +822,14 @@ def api_sky():
         )
 
     consts_with_lines = len([c for c in constellations if c["polylines"]])
+    print(
+        "[SKY]",
+        f"CSV constellations={len(CSV_CONST_NAMES_SET)} | "
+        f"Audio rows={len(MAJOR_AUDIO)} | "
+        f"Sent constellations={len(constellations)} | "
+        f"With lines visible={consts_with_lines} | "
+        f"min_alt={min_alt}"
+    )
 
     return jsonify(
         {
@@ -698,12 +843,239 @@ def api_sky():
             },
         }
     )
+@app.route("/api/constellation_report")
+def api_constellation_report():
+    """
+    FULL constellation list from CSV_CONST_NAMES_SET (star_map.csv).
+    GPT decides show/hide + one sentence + reason.
+    NO try/except: failures will raise and crash the request.
+    """
 
+    lat = float(request.args.get("lat", 37.5665))
+    lon = float(request.args.get("lon", 126.9780))
+    season = (request.args.get("season") or "winter").strip().lower()
 
-# ------------------------------------------------------------
-# API: CONSTELLATIONS (for constellations.html archive cards)
-# Returns REAL topology (polylines + vertices) in X/Y using same projection.
-# ------------------------------------------------------------
+    # signals (for GPT + debugging)
+    min_alt = float(request.args.get("min_alt", 10.0))
+    max_mag = float(request.args.get("max_mag", 4.5))
+    min_stars = int(request.args.get("min_stars", 1))
+    max_send = int(request.args.get("max_send", 9999))
+
+    # season -> reference date (internal only)
+    y = datetime.now(timezone.utc).year
+    season_map = {
+        "spring": (3, 21),
+        "summer": (6, 21),
+        "fall":   (9, 22),
+        "autumn": (9, 22),
+        "winter": (12, 21),
+    }
+    m, d = season_map.get(season, (12, 21))
+    dt = datetime(y, m, d, 21, 0, 0, tzinfo=timezone.utc)
+    season_label = season.capitalize() if season in ("spring", "summer", "fall", "winter") else season
+
+    # 1) Full constellation list from your CSV-derived set
+    csv_constellations = sorted([c for c in CSV_CONST_NAMES_SET if (c or "").strip()], key=lambda s: s.upper())
+
+    # 2) Signals for every constellation (init)
+    by_const = {
+        cname: {
+            "total_audio_rows": 0,
+            "pass": 0,
+            "best_alt": -999.0,
+            "avg_alt_sum": 0.0,
+            "best_mag": 99.0,
+            "avg_mag_sum": 0.0,
+        }
+        for cname in csv_constellations
+    }
+
+    # Accumulate signals from MAJOR_AUDIO
+    for s in MAJOR_AUDIO:
+        cname = (s.get("const_name") or "").strip()
+        if not cname or cname not in by_const:
+            continue
+
+        mag = float(s.get("mag", 99.0))
+
+        ra_h = (float(s["ra_deg"]) / 15.0) % 24.0
+        alt, az = alt_az_from_ra_dec(ra_h, float(s["dec_deg"]), lat, lon, dt)
+
+        info = by_const[cname]
+        info["total_audio_rows"] += 1
+        info["best_alt"] = max(info["best_alt"], float(alt))
+        info["best_mag"] = min(info["best_mag"], float(mag))
+        info["avg_alt_sum"] += float(alt)
+        info["avg_mag_sum"] += float(mag)
+
+        if (float(alt) >= min_alt) and (float(mag) <= max_mag):
+            info["pass"] += 1
+
+    # Finalize averages + build candidates
+    candidates = []
+    for cname in csv_constellations:
+        info = by_const[cname]
+        n = max(1, int(info["total_audio_rows"]))
+        avg_alt = float(info["avg_alt_sum"]) / n
+        avg_mag = float(info["avg_mag_sum"]) / n
+
+        candidates.append(
+            {
+                "name": cname,
+                "total_audio_rows": int(info["total_audio_rows"]),
+                "pass": int(info["pass"]),
+                "best_alt": round(float(info["best_alt"]), 2),
+                "avg_alt": round(float(avg_alt), 2),
+                "best_mag": round(float(info["best_mag"]), 2),
+                "avg_mag": round(float(avg_mag), 2),
+            }
+        )
+
+    # Sort: strongest first
+    candidates.sort(key=lambda x: (-x["pass"], -x["best_alt"], x["best_mag"], x["name"].upper()))
+    candidates_for_gpt = candidates[: max(10, min(max_send, len(candidates)))]
+
+    # 3) GPT decides (NO try/except)
+    if not _openai_client:
+        raise RuntimeError("OpenAI client not configured (missing OPENAI_API_KEY or openai import failed).")
+
+    sys = (
+        "Return STRICT JSON only. "
+        "You are an astronomy guide. "
+        "Given a location (lat/lon), a season, and visibility signals per constellation, "
+        "decide whether to SHOW or HIDE each constellation. "
+        "For each constellation, write exactly ONE sentence (no time-of-day, no clock times). "
+        "Also provide a short REASON for the show/hide decision."
+    )
+
+    payload = {
+        "location": {"lat": lat, "lon": lon},
+        "season": season_label,
+        "signals_policy": {
+            "min_alt_deg_signal": min_alt,
+            "max_mag_signal": max_mag,
+            "min_stars_signal": min_stars,
+            "guidance": [
+                "If pass >= min_stars_signal, prefer show.",
+                "If pass == 0, usually hide.",
+                "Use best_alt and pass as the strongest evidence.",
+                "Keep reasons short and evidence-based (mention pass/best_alt/best_mag).",
+                "Sentence must not contain any time or hour."
+            ],
+        },
+        "constellations": candidates_for_gpt,
+        "output_schema": {
+            "items": [
+                {
+                    "name": "must match input name exactly",
+                    "show": "boolean",
+                    "sentence": "one sentence, no time mentioned",
+                    "reason": "short reason referencing signals"
+                }
+            ]
+        }
+    }
+
+    resp = _openai_client.responses.create(
+        model=OPENAI_MODEL,
+        input=[
+            {"role": "system", "content": sys},
+            {"role": "user", "content": json.dumps(payload, ensure_ascii=False)},
+        ],
+    )
+
+    raw = getattr(resp, "output_text", None) or str(resp)
+
+    # NO try/except: if model returns non-JSON this will raise
+    parsed = json.loads(raw)
+
+    items = parsed["items"]  # will raise if missing / wrong type
+
+    gpt_items_map = {}
+    for it in items:
+        nm = (it.get("name") or "").strip()
+        if not nm:
+            continue
+        gpt_items_map[nm] = {
+            "show": bool(it.get("show", False)),
+            "sentence": (it.get("sentence") or "").strip(),
+            "reason": (it.get("reason") or "").strip(),
+        }
+
+    # 4) Output for ALL csv_constellations
+    items_out = []
+    for cname in csv_constellations:
+        sig = by_const[cname]
+        passing = int(sig["pass"])
+        total = int(sig["total_audio_rows"])
+
+        if cname in gpt_items_map:
+            show = bool(gpt_items_map[cname]["show"])
+            sentence = gpt_items_map[cname]["sentence"]
+            reason = gpt_items_map[cname]["reason"]
+            gpt_decided = True
+        else:
+            # Fallback for constellations not included due to max_send
+            show = passing >= min_stars
+            sentence = f"{cname} is {'recommended' if show else 'not recommended'} in {season_label} from your location."
+            reason = f"Fallback: pass={passing} (min_stars={min_stars}), best_alt={sig['best_alt']:.1f}, best_mag={sig['best_mag']:.1f}."
+            gpt_decided = False
+
+        items_out.append(
+            {
+                "name": cname,
+                "show": show,
+                "sentence": sentence,
+                "reason": reason,
+                "signals": {
+                    "pass": passing,
+                    "total_audio_rows": total,
+                    "best_alt": float(sig["best_alt"]),
+                    "best_mag": float(sig["best_mag"]),
+                    "min_alt": min_alt,
+                    "max_mag": max_mag,
+                    "min_stars": min_stars,
+                },
+                "gpt_decided": gpt_decided,
+            }
+        )
+
+    items_out.sort(
+        key=lambda x: (
+            not x["show"],
+            -x["signals"]["pass"],
+            -x["signals"]["best_alt"],
+            x["signals"]["best_mag"],
+            x["name"].upper(),
+        )
+    )
+
+    shown_count = sum(1 for it in items_out if it["show"])
+    gpt_decided_count = sum(1 for it in items_out if it["gpt_decided"])
+
+    print(
+        "[CONST_REPORT]",
+        f"lat={lat:.4f} lon={lon:.4f} season={season_label} | "
+        f"csv_total={len(csv_constellations)} shown={shown_count} | "
+        f"sent_to_gpt={len(candidates_for_gpt)} gpt_decided={gpt_decided_count}"
+    )
+
+    return jsonify(
+        {
+            "season": season_label,
+            "ts_utc": dt.isoformat().replace("+00:00", "Z"),
+            "csv_constellations": csv_constellations,
+            "items": items_out,
+            "counts": {
+                "csv_constellations_total": len(csv_constellations),
+                "shown": shown_count,
+                "gpt_decided": gpt_decided_count,
+            },
+            "gpt_used": True,
+            "model": OPENAI_MODEL,
+        }
+    )
+
 @app.route("/api/constellations")
 def api_constellations():
     """

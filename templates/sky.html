@@ -6,6 +6,8 @@
   <title>Celestial Navigation - Constellations Only</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../static/images/apple-touch-icon.png">
 
   <style>
     :root{
@@ -294,7 +296,7 @@
     #minimap{
       position:fixed;
       right:12px;
-      bottom:54px; /* above the toggle */
+      bottom:54px;
       width: 220px;
       height: 160px;
       max-width: calc(100vw - 24px);
@@ -316,7 +318,6 @@
     #minimap svg{ width:100%; height:100%; display:block; }
     .mm-bg{ fill: rgba(0,0,0,.12); }
 
-    /* Only ONE gold dot per constellation */
     .mm-const{
       fill: rgba(197,160,89,.86);
       opacity: .98;
@@ -385,6 +386,7 @@
       display:flex; flex-direction:column; gap:10px;
       pointer-events:none;
     }
+
     .toastish{
       pointer-events:none;
       background: rgba(0,0,0,.45);
@@ -399,14 +401,248 @@
       transition: opacity .22s ease, transform .22s ease;
       max-width: min(520px, calc(100vw - 24px));
       line-height: 1.35;
+      overflow: hidden;
+      position: relative;
     }
     .toastish.show{ opacity: 1; transform: translateY(0); }
+
     .toastish .t1{ font-weight: 950; }
     .toastish .t2{ color: rgba(255,255,255,.70); font-size:.9rem; margin-top:2px; }
+
+    .toastish.is-error{
+      background: rgba(120, 20, 20, .42);
+      border-color: rgba(255, 90, 90, .28);
+      box-shadow: 0 12px 44px rgba(0,0,0,.45), 0 0 0 1px rgba(255, 90, 90, .10) inset;
+    }
+    .toastish.is-error::before{
+      content:"";
+      position:absolute;
+      left:0; top:0; bottom:0;
+      width: 4px;
+      background: rgba(255, 90, 90, .92);
+    }
+    .toastish.is-error .t1{ color: rgba(255, 235, 235, .96); }
+    .toastish.is-error .t2{ color: rgba(255, 210, 210, .78); }
+
+    /* =====================================================
+       REPORT floating button + bottom-right modal panel
+       ===================================================== */
+    #report-toggle{
+      position:fixed;
+      right:56px;
+      bottom:12px;
+      z-index:2160;
+      height:34px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.32);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 40px rgba(0,0,0,.40);
+      color: rgba(255,255,255,.92);
+      cursor:pointer;
+      user-select:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-weight:950;
+      font-size:.84rem;
+      line-height:1;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      white-space:nowrap;
+    }
+    #report-toggle:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    #report-toggle .dot{
+      width:8px; height:8px; border-radius:999px;
+      background: var(--gold);
+      box-shadow: 0 0 14px rgba(197,160,89,.45);
+    }
+
+    #report-modal{
+      position:fixed;
+      right:12px;
+      bottom:54px;
+      width: 520px;
+      max-width: calc(100vw - 24px);
+      max-height: min(64vh, 560px);
+      background: var(--panel2);
+      backdrop-filter: blur(18px);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      z-index:2190;
+      box-shadow: 0 12px 60px rgba(0,0,0,.55);
+      overflow:hidden;
+      transform-origin: bottom right;
+      transition: transform .55s cubic-bezier(.16,1,.3,1), opacity .25s ease;
+    }
+    #report-modal.is-hidden{
+      opacity:0;
+      transform: translateY(10px) scale(.96);
+      pointer-events:none;
+    }
+    #report-modal .r-head{
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    #report-modal .r-title{
+      margin:0;
+      font-weight:950;
+      letter-spacing:.01em;
+      font-size:.98rem;
+      color: rgba(255,255,255,.92);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    #report-modal .r-title small{
+      color: rgba(255,255,255,.62);
+      font-weight:800;
+      letter-spacing:.02em;
+      font-size:.78rem;
+      white-space:nowrap;
+    }
+    #report-modal .r-actions{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex: 0 0 auto;
+    }
+    #report-modal .r-btn{
+      height:30px;
+      padding: 0 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.92);
+      font-weight:900;
+      font-size:.80rem;
+      cursor:pointer;
+    }
+    #report-modal .r-btn:hover{
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.22);
+    }
+    #report-modal .r-body{
+      padding: 10px 12px 12px;
+      overflow:auto;
+      max-height: calc(min(64vh, 560px) - 52px);
+    }
+    .r-row{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      border-radius: 14px;
+      padding: 10px 10px;
+      margin: 8px 0;
+    }
+    .r-row .r-name{
+      font-weight:950;
+      letter-spacing:.01em;
+      color: rgba(255,255,255,.92);
+      margin-bottom:4px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .r-row .r-badge{
+      font-size:.72rem;
+      font-weight:950;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      border-radius:999px;
+      padding: 3px 8px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.78);
+      white-space:nowrap;
+    }
+    .r-row.is-ok .r-badge{
+      border-color: rgba(197,160,89,.22);
+      background: rgba(197,160,89,.10);
+      color: rgba(255,255,255,.92);
+    }
+    .r-row.is-bad .r-badge{
+      border-color: rgba(255,90,90,.22);
+      background: rgba(255,90,90,.08);
+      color: rgba(255,235,235,.92);
+    }
+    .r-row .r-sentence{
+      color: rgba(255,255,255,.74);
+      font-size:.90rem;
+      line-height:1.35;
+      margin:0;
+      word-break: break-word;
+    }
+
+    /* =========================
+       PAGE LOADER (full-screen)
+       ========================= */
+    .page-loader{
+      position:fixed; inset:0; z-index:5000;
+      display:flex; align-items:center; justify-content:center;
+      background:
+        radial-gradient(900px 520px at 20% 10%, rgba(197,160,89,.16), transparent 60%),
+        radial-gradient(700px 480px at 80% 30%, rgba(127,211,255,.10), transparent 62%),
+        rgba(0,0,0,.70);
+      backdrop-filter: blur(12px);
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    .page-loader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+
+    .loader-card{
+      width:min(520px, calc(100vw - 28px));
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,12,18,.82);
+      box-shadow: 0 18px 80px rgba(0,0,0,.55);
+      padding: 18px 18px 16px;
+      text-align:center;
+    }
+    .loader-title{
+      color: rgba(255,255,255,.92);
+      font-weight: 950;
+      letter-spacing: .01em;
+      margin-top: 12px;
+      font-size: 1.02rem;
+    }
+    .loader-sub{
+      color: rgba(255,255,255,.62);
+      margin-top: 6px;
+      font-size: .88rem;
+      line-height: 1.35;
+    }
+    .loader-ring{
+      width: 54px; height: 54px;
+      border-radius: 999px;
+      border: 4px solid rgba(255,255,255,.14);
+      border-top-color: rgba(197,160,89,.92);
+      margin: 0 auto;
+      animation: spin 1.0s linear infinite;
+      box-shadow: 0 0 22px rgba(197,160,89,.15);
+    }
+    @keyframes spin{ to{ transform: rotate(360deg);} }
   </style>
 </head>
 
 <body>
+  <!-- PAGE LOADER -->
+  <div id="pageLoader" class="page-loader" aria-live="polite" aria-busy="true">
+    <div class="loader-card">
+      <div class="loader-ring" aria-hidden="true"></div>
+      <div class="loader-title">Loading sky…</div>
+      <div class="loader-sub" id="loaderSub">Preparing constellations and audio stars</div>
+    </div>
+  </div>
+
   <div id="sky-container">
     <svg id="sky-svg">
       <g id="view-port">
@@ -418,8 +654,10 @@
   <!-- TOP RIGHT CONTROLS -->
   <div id="ui-overlay">
     <button id="btn-loc" class="btn btn-outline-light">Use my location</button>
-    <input id="lat" class="ctl form-control" placeholder="Lat" value="37.5665" />
-    <input id="lon" class="ctl form-control" placeholder="Lon" value="126.9780" />
+
+    <input id="lat" type="text" class="ctl form-control" placeholder="Lat" value="37.5665" />
+    <input id="lon" type="text" class="ctl form-control" placeholder="Lon" value="126.9780" />
+
     <select id="season" class="ctl form-select">
       <option value="spring">Spring (Mar 21)</option>
       <option value="summer">Summer (Jun 21)</option>
@@ -449,8 +687,14 @@
     <div class="body" id="const-list"></div>
   </div>
 
-  <!-- MINIMAP TOGGLE (right bottom) -->
+  <!-- MINIMAP TOGGLE -->
   <div id="minimap-toggle" title="Toggle minimap" role="button" tabindex="0" aria-controls="minimap" aria-expanded="false">◎</div>
+
+  <!-- REPORT TOGGLE (right bottom) -->
+  <div id="report-toggle" title="Season visibility report" role="button" tabindex="0" aria-controls="report-modal" aria-expanded="false">
+    <span class="dot"></span>
+    <span>Report</span>
+  </div>
 
   <!-- MINIMAP PANEL -->
   <div id="minimap" class="is-hidden" aria-hidden="true">
@@ -460,6 +704,23 @@
       <rect id="mm-rect" class="mm-rect" x="70" y="50" width="70" height="60"></rect>
     </svg>
     <div class="mm-hint">Minimap · dots = constellations</div>
+  </div>
+
+  <!-- REPORT MODAL (bottom-right) -->
+  <div id="report-modal" class="is-hidden" aria-hidden="true">
+    <div class="r-head">
+      <div class="r-title">
+        <span>Season Visibility Report</span>
+        <small id="report-sub">Season · Lat/Lon</small>
+      </div>
+      <div class="r-actions">
+        <button class="r-btn" id="report-refresh" title="Refresh report">Refresh</button>
+        <button class="r-btn" id="report-close" title="Close report">Close</button>
+      </div>
+    </div>
+    <div class="r-body" id="report-body">
+      <div class="text-white-50">Click “Refresh” to load the report.</div>
+    </div>
   </div>
 
   <div id="sidebar">
@@ -501,6 +762,10 @@
   let CONST_INFO = {};
   let FOCUSED_CONST = null;
 
+  // NEW: Visibility set (season/location driven)
+  let VISIBLE_CONST_SET = null; // null => show all
+  let LAST_REPORT_PAYLOAD = null;
+
   const svg = document.getElementById("sky-svg");
   const viewport = document.getElementById("view-port");
   const groupsLayer = document.getElementById("groups-layer");
@@ -516,6 +781,21 @@
   };
   let MINIMAP_OPEN = false;
   let WORLD_BOUNDS = null;
+
+  // =========================
+  // Loader helpers
+  // =========================
+  const pageLoader = document.getElementById("pageLoader");
+  const loaderSub  = document.getElementById("loaderSub");
+  function showLoader(msg){
+    if(loaderSub && msg) loaderSub.textContent = msg;
+    pageLoader?.classList.remove("hide");
+    pageLoader?.setAttribute("aria-busy","true");
+  }
+  function hideLoader(){
+    pageLoader?.classList.add("hide");
+    pageLoader?.setAttribute("aria-busy","false");
+  }
 
   // =========================
   // Finder toggle
@@ -556,6 +836,7 @@
     if(e.key === "Escape"){
       setFinderOpen(false);
       setMinimapOpen(false);
+      setReportOpen(false);
       document.getElementById("sidebar").classList.remove("open");
     }
   });
@@ -563,17 +844,77 @@
   // =========================
   // Toast
   // =========================
-  function showToast(title, detail, ms=1800){
+  function escapeHtml(s){
+    return (s ?? "").replace(/[&<>"']/g, ch => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[ch]));
+  }
+
+  function showToast(title, detail, ms=1800, type="info"){
     const wrap = document.getElementById("toast-wrap");
     const el = document.createElement("div");
-    el.className = "toastish";
-    el.innerHTML = `<div class="t1">${escapeHtml(title || "")}</div>${detail ? `<div class="t2">${escapeHtml(detail)}</div>` : ""}`;
+    el.className = "toastish" + (type === "error" ? " is-error" : "");
+    el.innerHTML =
+      `<div class="t1">${escapeHtml(title || "")}</div>` +
+      (detail ? `<div class="t2">${escapeHtml(detail)}</div>` : "");
     wrap.appendChild(el);
     requestAnimationFrame(()=> el.classList.add("show"));
     setTimeout(()=>{
       el.classList.remove("show");
       setTimeout(()=> el.remove(), 260);
     }, ms);
+  }
+
+  function markInvalid(latBad, lonBad, msg){
+    const latEl = document.getElementById("lat");
+    const lonEl = document.getElementById("lon");
+    latEl.classList.toggle("is-invalid", !!latBad);
+    lonEl.classList.toggle("is-invalid", !!lonBad);
+    showToast("Invalid coordinates", msg, 2600, "error");
+  }
+
+  // =========================
+  // Coord validation (ONLY when updating sky)
+  // =========================
+  function clearCoordInvalid(){
+    document.getElementById("lat").classList.remove("is-invalid");
+    document.getElementById("lon").classList.remove("is-invalid");
+  }
+
+  function readLatLonForUpdate(){
+    const latEl = document.getElementById("lat");
+    const lonEl = document.getElementById("lon");
+
+    clearCoordInvalid();
+
+    const latStr = String(latEl.value ?? "").trim();
+    const lonStr = String(lonEl.value ?? "").trim();
+
+    if(latStr === "" || lonStr === ""){
+      markInvalid(latStr === "", lonStr === "", "Latitude/longitude are required.");
+      return null;
+    }
+
+    const lat = Number(latStr);
+    const lon = Number(lonStr);
+
+    const latNum = Number.isFinite(lat);
+    const lonNum = Number.isFinite(lon);
+
+    if(!latNum || !lonNum){
+      markInvalid(!latNum, !lonNum, "Latitude/longitude must be valid numbers.");
+      return null;
+    }
+
+    const latBad = (lat < -90 || lat > 90);
+    const lonBad = (lon < -180 || lon > 180);
+
+    if(latBad || lonBad){
+      markInvalid(latBad, lonBad, "Latitude must be -90..90. Longitude must be -180..180.");
+      return null;
+    }
+
+    return { lat, lon };
   }
 
   // =========================
@@ -612,7 +953,9 @@
               el.closest("#sidebar") ||
               el.closest("#ui-overlay") ||
               el.closest("#minimap") ||
-              el.closest("#minimap-toggle"));
+              el.closest("#minimap-toggle") ||
+              el.closest("#report-modal") ||
+              el.closest("#report-toggle"));
   }
 
   sky.addEventListener("mousedown", (e)=>{
@@ -655,11 +998,12 @@
   window.addEventListener("resize", setupViewBox);
   setupViewBox();
 
-  function applyZoomVisibilityRules(){
-    document.querySelectorAll(".const-label").forEach(l=>{
-      l.style.display = (zoom <= LABEL_SHOW_ZOOM) ? "" : "none";
-    });
-  }
+function applyZoomVisibilityRules(){
+  document.querySelectorAll(".const-label").forEach(l=>{
+    l.style.display = "";
+  });
+}
+
 
   // =========================
   // Projection
@@ -833,25 +1177,20 @@
     document.getElementById("sidebar").classList.add("open");
   }
 
-  function escapeHtml(s){
-    return (s ?? "").replace(/[&<>"']/g, ch => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[ch]));
-  }
-
   document.getElementById("closeSide").onclick = ()=>{
     document.getElementById("sidebar").classList.remove("open");
   };
 
   // =========================
   // Finder list (HIDE 0 AUDIO)
+  // (hidden constellations never enter CONST_INFO, so they also vanish here)
   // =========================
   function buildConstellationList(){
     const list = document.getElementById("const-list");
     const q = (document.getElementById("const-q").value || "").trim().toLowerCase();
 
     const names = Object.keys(CONST_INFO)
-      .filter(n => (CONST_INFO[n]?.audioCount || 0) > 0)          // <-- hide 0 audio
+      .filter(n => (CONST_INFO[n]?.audioCount || 0) > 0)
       .sort()
       .filter(n => !q || n.toLowerCase().includes(q));
 
@@ -896,7 +1235,7 @@
     setFocusConstellation(null);
     tx = window.innerWidth/2;
     ty = window.innerHeight/2;
-    zoom = INITIAL_ZOOM;          // MAX zoom-out
+    zoom = INITIAL_ZOOM;
     setTransform();
   }
   document.getElementById("btn-reset").onclick = resetView;
@@ -947,7 +1286,6 @@
 
     const frag = document.createDocumentFragment();
 
-    // one gold dot per constellation (use label position as center)
     document.querySelectorAll(".const-group").forEach(g=>{
       const name = g.getAttribute("data-const") || "";
       const lbl = g.querySelector("text.const-label");
@@ -1003,7 +1341,6 @@
     mm.rect.setAttribute("height", h);
   }
 
-  // click minimap to pan
   mm.wrap.addEventListener("click", (e)=>{
     const rect = mm.wrap.getBoundingClientRect();
     const sx = e.clientX - rect.left;
@@ -1021,6 +1358,249 @@
   });
 
   // =========================
+  // REPORT modal logic
+  // =========================
+  const report = {
+    toggle: document.getElementById("report-toggle"),
+    modal: document.getElementById("report-modal"),
+    close: document.getElementById("report-close"),
+    refresh: document.getElementById("report-refresh"),
+    body: document.getElementById("report-body"),
+    sub: document.getElementById("report-sub"),
+    open: false,
+    loading: false
+  };
+
+  function setReportOpen(open){
+    report.open = open;
+    report.modal.classList.toggle("is-hidden", !open);
+    report.modal.setAttribute("aria-hidden", open ? "false" : "true");
+    report.toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  setReportOpen(false);
+
+  report.toggle.addEventListener("click", ()=>{
+    setReportOpen(!report.open);
+    if(report.open) loadReport(); // auto-load on open
+  });
+  report.toggle.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter" || e.key === " "){
+      e.preventDefault();
+      setReportOpen(!report.open);
+      if(report.open) loadReport();
+    }
+  });
+
+  report.close.addEventListener("click", ()=> setReportOpen(false));
+  report.refresh.addEventListener("click", loadReport);
+
+  function reportRowHTML(it){
+    const cls = it.show ? "r-row is-ok" : "r-row is-bad";
+    const badge = it.show ? "SHOW" : "HIDE";
+    return `
+      <div class="${cls}">
+        <div class="r-name">
+          <span>${escapeHtml(it.name || "")}</span>
+          <span class="r-badge">${badge}</span>
+        </div>
+        <p class="r-sentence">${escapeHtml(it.sentence || "")}</p>
+      </div>
+    `;
+  }
+
+  function visibilitySetFromReportPayload(d){
+    const items = d?.items || [];
+    const set = new Set();
+    for(const it of items){
+      if(it && it.name && it.show) set.add(it.name);
+    }
+    return set;
+  }
+
+  async function fetchSeasonVisibility(lat, lon, season){
+    // You can tune these once you like
+    const minAlt = 10.0;
+    const maxMag = 4.5;
+    const minStars = 1;
+
+    const url =
+      `/api/constellation_report?lat=${encodeURIComponent(lat)}` +
+      `&lon=${encodeURIComponent(lon)}` +
+      `&season=${encodeURIComponent(season)}` +
+      `&min_alt=${encodeURIComponent(minAlt)}` +
+      `&max_mag=${encodeURIComponent(maxMag)}` +
+      `&min_stars=${encodeURIComponent(minStars)}`;
+
+    const r = await fetch(url);
+    const d = await r.json();
+    LAST_REPORT_PAYLOAD = d;
+    VISIBLE_CONST_SET = visibilitySetFromReportPayload(d);
+    return VISIBLE_CONST_SET;
+  }
+
+  function renderReportFromCache(){
+    const d = LAST_REPORT_PAYLOAD;
+    if(!d || !report.open) return;
+
+    const items = d.items || [];
+    if(!items.length){
+      report.body.innerHTML = `<div class="text-white-50">No constellations found for this report.</div>`;
+      return;
+    }
+    report.body.innerHTML = items.map(reportRowHTML).join("");
+  }
+
+  async function loadReport(){
+    const ll = readLatLonForUpdate();
+    if(!ll) return;
+
+    const season = (document.getElementById("season").value || "winter").trim();
+
+    // Update subtitle
+    report.sub.textContent = `${season.toUpperCase()} · lat ${ll.lat.toFixed(4)}, lon ${ll.lon.toFixed(4)}`;
+
+    if(report.loading) return;
+    report.loading = true;
+    report.body.innerHTML = `<div class="text-white-50">Loading report…</div>`;
+
+    try{
+      await fetchSeasonVisibility(ll.lat, ll.lon, season);
+      renderReportFromCache();
+
+      const vis = LAST_REPORT_PAYLOAD?.counts?.visible ?? "";
+      const tot = LAST_REPORT_PAYLOAD?.counts?.constellations_total ?? (LAST_REPORT_PAYLOAD?.items?.length || "");
+      showToast("Report updated", `Visible: ${vis}/${tot} (season-only)`, 1600);
+    } catch (err){
+      console.error(err);
+      report.body.innerHTML = `<div class="text-white-50">Failed to load report. Check /api/constellation_report.</div>`;
+      showToast("Report failed", "Check /api/constellation_report", 2200, "error");
+    } finally {
+      report.loading = false;
+    }
+  }
+
+  // =========================
+  // Time controls + fetch (still used to render sky)
+  // =========================
+  function seasonDateUTC(season){
+    const y = new Date().getFullYear();
+    const map = { spring:[3,21], summer:[6,21], fall:[9,22], winter:[12,21] };
+    const md = map[season] || map.winter;
+    const hour = parseInt(document.getElementById("hour").value || "21", 10);
+    return new Date(y, md[0]-1, md[1], hour, 0, 0).toISOString();
+  }
+
+  function setLoading(isLoading){
+    const btnGo  = document.getElementById("btn-go");
+    const btnLoc = document.getElementById("btn-loc");
+
+    if(!btnGo.dataset.label)  btnGo.dataset.label  = btnGo.innerText;
+    if(!btnLoc.dataset.label) btnLoc.dataset.label = btnLoc.innerText;
+
+    btnGo.disabled  = isLoading;
+    btnLoc.disabled = isLoading;
+
+    btnGo.innerText  = isLoading ? "Loading…" : btnGo.dataset.label;
+    btnLoc.innerText = isLoading ? "Loading…" : btnLoc.dataset.label;
+  }
+
+  // =========================
+  // MAIN: updateSky
+  // - fetch /api/sky
+  // - fetch /api/constellation_report (season visibility)
+  // - filter out hidden constellations BEFORE rendering (finder/search hides too)
+  // =========================
+  async function updateSky(lat, lon, ts){
+    if(!Number.isFinite(lat) || !Number.isFinite(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180){
+      markInvalid(!(lat >= -90 && lat <= 90), !(lon >= -180 && lon <= 180), "Blocked request due to invalid coordinates.");
+      return;
+    }
+
+    setLoading(true);
+    showLoader("Fetching sky data…");
+
+    const season = (document.getElementById("season").value || "winter").trim();
+
+    const url =
+      `/api/sky?lat=${encodeURIComponent(lat)}` +
+      `&lon=${encodeURIComponent(lon)}` +
+      `&ts=${encodeURIComponent(ts)}` +
+      `&min_alt=${encodeURIComponent(MIN_ALT)}`;
+
+    try{
+      const r = await fetch(url);
+      const d = await r.json();
+
+      showLoader("Computing season visibility…");
+      await fetchSeasonVisibility(lat, lon, season);
+
+      const incoming = d.constellations || [];
+      const visSet = VISIBLE_CONST_SET;
+
+      // If report returns an empty set (all hidden), you'll see nothing (including finder list)
+      CONSTS = (visSet && visSet.size)
+        ? incoming.filter(c => visSet.has(c.name))
+        : []; // season says none visible
+
+      showLoader("Rendering sky…");
+      renderConstellations();
+      resetView();
+
+      // If report is open, render cached payload (no extra fetch)
+      if(report.open) renderReportFromCache();
+
+      const cCount = CONSTS.length;
+      const total = incoming.length;
+      const aRows  = d.counts?.audio_csv_rows ?? "";
+      showToast("Sky updated", `Shown: ${cCount}/${total}${aRows!=="" ? ` · Audio rows: ${aRows}` : ""}`, 1700);
+    } catch(err){
+      console.error(err);
+      showToast("Failed to load sky", "Check /api/sky and /api/constellation_report", 2200, "error");
+    } finally{
+      hideLoader();
+      setLoading(false);
+    }
+  }
+
+  document.getElementById("btn-loc").onclick = async ()=>{
+    if(!navigator.geolocation) return;
+
+    setLoading(true);
+    showLoader("Getting your location…");
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos)=>{
+        try{
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+
+          document.getElementById("lat").value = lat.toFixed(6);
+          document.getElementById("lon").value = lon.toFixed(6);
+          clearCoordInvalid();
+
+          await updateSky(lat, lon, seasonDateUTC(document.getElementById("season").value));
+        } finally {
+          // updateSky controls loader, but if it returns early for any reason:
+          hideLoader();
+          setLoading(false);
+        }
+      },
+      (err)=>{
+        hideLoader();
+        setLoading(false);
+        showToast("Location failed", err?.message || "Permission denied", 2200, "error");
+      },
+      { enableHighAccuracy:true, timeout:10000, maximumAge:60000 }
+    );
+  };
+
+  document.getElementById("btn-go").onclick = ()=>{
+    const ll = readLatLonForUpdate();
+    if(!ll) return;
+    updateSky(ll.lat, ll.lon, seasonDateUTC(document.getElementById("season").value));
+  };
+
+  // =========================
   // Main render
   // =========================
   function renderConstellations(){
@@ -1033,7 +1613,6 @@
       const lineStars = c.line_stars || [];
       let audioStars = c.audio_stars || [];
 
-      // SAFETY: if backend ever sends 0-audio constellations, skip
       if(!audioStars || audioStars.length === 0) continue;
 
       const allLinePts = [];
@@ -1087,7 +1666,6 @@
           .filter(s => (s._distToLine ?? Infinity) <= keepDist);
       }
 
-      // after snapping/keeping, if constellation ends up 0 audio stars, skip it
       if(!spreadAudio || spreadAudio.length === 0) continue;
 
       let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
@@ -1163,11 +1741,14 @@
         cc.setAttribute("cy", s.y);
         cc.setAttribute("r", magToR_audio(s.mag));
         cc.setAttribute("class", "star major");
+        cc.dataset.starName = s.name || "";
+        cc.dataset.const = name;
+
         cc.addEventListener("pointerdown", (e)=> e.stopPropagation());
         cc.addEventListener("mousedown", (e)=> e.stopPropagation());
         cc.addEventListener("click", (e)=>{
           e.stopPropagation();
-          openStar(s);
+          openStar({ ...s, const: name });
         });
         g.appendChild(cc);
       }
@@ -1182,68 +1763,16 @@
     if(WORLD_BOUNDS){
       updateMinimapConstDots();
       if(MINIMAP_OPEN) updateMinimapRect();
+    } else {
+      mm.layer.innerHTML = "";
     }
   }
 
   // =========================
-  // Time controls + fetch
+  // Init
   // =========================
-  function seasonDateUTC(season){
-    const y = new Date().getFullYear();
-    const map = { spring:[3,21], summer:[6,21], fall:[9,22], winter:[12,21] };
-    const md = map[season] || map.winter;
-    const hour = parseInt(document.getElementById("hour").value || "21", 10);
-    return new Date(y, md[0]-1, md[1], hour, 0, 0).toISOString();
-  }
-
-  async function updateSky(lat, lon, ts){
-    const btn = document.getElementById("btn-go");
-    const prev = btn.innerText;
-    btn.disabled = true;
-    btn.innerText = "Loading…";
-
-    const url =
-      `/api/sky?lat=${encodeURIComponent(lat)}` +
-      `&lon=${encodeURIComponent(lon)}` +
-      `&ts=${encodeURIComponent(ts)}` +
-      `&min_alt=${encodeURIComponent(MIN_ALT)}`;
-
-    try{
-      const r = await fetch(url);
-      const d = await r.json();
-
-      CONSTS = d.constellations || [];
-      renderConstellations();
-      resetView();
-
-      const cCount = d.counts?.constellations_sent ?? CONSTS.length;
-      const aRows  = d.counts?.audio_csv_rows ?? "";
-      showToast("Sky updated", `Constellations: ${cCount}${aRows!=="" ? ` · Audio rows: ${aRows}` : ""}`, 1700);
-    } catch(err){
-      showToast("Failed to load sky", "Check /api/sky response", 2200);
-      console.error(err);
-    } finally{
-      btn.disabled = false;
-      btn.innerText = prev;
-    }
-  }
-
-  document.getElementById("btn-loc").onclick = ()=>{
-    if(navigator.geolocation) navigator.geolocation.getCurrentPosition((pos)=>{
-      document.getElementById("lat").value = pos.coords.latitude.toFixed(6);
-      document.getElementById("lon").value = pos.coords.longitude.toFixed(6);
-    });
-  };
-
-  document.getElementById("btn-go").onclick = ()=>{
-    updateSky(
-      document.getElementById("lat").value,
-      document.getElementById("lon").value,
-      seasonDateUTC(document.getElementById("season").value)
-    );
-  };
-
   (function init(){
+    showLoader("Initializing…");
     updateSky(37.5665, 126.9780, seasonDateUTC("winter"));
   })();
 </script>
