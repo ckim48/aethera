@@ -20,6 +20,24 @@
       --lineSoft: rgba(197,160,89,.18);
       --gold: rgba(197,160,89,.92);
     }
+#ui-overlay select,
+#ui-overlay .form-select,
+#ui-overlay .ctl.form-select{
+  color: #fff !important;
+  background-color: rgba(255,255,255,.06) !important;
+  border-color: rgba(255,255,255,.12) !important;
+}
+
+#ui-overlay select option,
+#ui-overlay .form-select option{
+  background: #0a0c12;
+  color: #ffffff;
+}
+
+#ui-overlay .form-select:focus{
+  border-color: rgba(255,255,255,.22) !important;
+  box-shadow: none !important;
+}
 
     html,body{height:100%; margin:0; background:#000; overflow:hidden; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;}
     #sky-container{
@@ -69,7 +87,7 @@
       opacity: 1;
       filter: drop-shadow(0 0 16px rgba(197,160,89,.35));
     }
-
+#loaderSub{ white-space: pre-line; }
     .const-label{
       fill: var(--muted);
       font-weight: 900;
@@ -148,7 +166,7 @@
     #finder-toggle{
       position:fixed;
       top:12px;
-      left:12px;
+      left:100px;
       z-index:2050;
       display:inline-flex;
       align-items:center;
@@ -181,26 +199,34 @@
       flex: 0 0 auto;
     }
 
-    #finder{
-      position:fixed;
-      top:48px; left:12px;
-      width:270px;
-      max-width: calc(100vw - 24px);
-      background: var(--panel);
-      backdrop-filter: blur(18px);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 16px;
-      z-index:2000;
-      overflow:hidden;
-      box-shadow: 0 10px 40px rgba(0,0,0,.45);
-      transition: transform .55s cubic-bezier(.16,1,.3,1), opacity .25s ease;
-      transform-origin: top left;
-    }
-    #finder.is-hidden{
-      opacity: 0;
-      transform: translateX(-10px) scale(.95);
-      pointer-events:none;
-    }
+/* Finder panel: OFFCANVAS slide (left -> right) */
+#finder{
+  position:fixed;
+  top:48px;
+  left:12px;
+  width:270px;
+  max-width: calc(100vw - 24px);
+  background: var(--panel);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px;
+  z-index:2000;
+  overflow:hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,.45);
+
+  /* slide animation */
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform .28s cubic-bezier(.2,.9,.2,1), opacity .18s ease;
+}
+
+/* hidden state: move LEFT out of view */
+#finder.is-hidden{
+  opacity: 0;
+  transform: translateX(-320px);
+  pointer-events:none;
+}
+
 
     #finder .head{
       padding:10px 10px 8px 10px;
@@ -630,16 +656,241 @@
       box-shadow: 0 0 22px rgba(197,160,89,.15);
     }
     @keyframes spin{ to{ transform: rotate(360deg);} }
+/* ===== Floating MENU button + offcanvas ===== */
+#menu-fab{
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 2600;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.32);
+  backdrop-filter: blur(14px);
+  color: rgba(255,255,255,.92);
+  box-shadow: 0 10px 40px rgba(0,0,0,.40);
+  cursor: pointer;
+  user-select: none;
+  font-weight: 950;
+  font-size: .84rem;
+  line-height: 1;
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+#menu-fab:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.22);
+}
+#menu-fab .dot{
+  width: 9px; height: 9px;
+  border-radius: 999px;
+  background: rgba(197,160,89,.92);
+  box-shadow: 0 0 14px rgba(197,160,89,.45);
+  flex: 0 0 auto;
+}
+
+/* Offcanvas style to match Aethera */
+.offcanvas.aethera-canvas{
+  background:
+    radial-gradient(600px 280px at 18% 12%, rgba(197,160,89,0.16), transparent 60%),
+    radial-gradient(640px 300px at 80% 32%, rgba(110,140,210,0.10), transparent 62%),
+    rgba(7,8,11,.96);
+  border-right: 1px solid rgba(242,225,194,0.16);
+  color: rgba(255,255,255,.92);
+  backdrop-filter: blur(18px);
+}
+.aethera-brand{
+  font-family: "Cinzel", serif;
+  letter-spacing: .4em;
+  color: rgba(242,225,194,0.96);
+  font-weight: 700;
+  margin: 0;
+}
+.aethera-link{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.82);
+  text-decoration: none;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-size: .74rem;
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+.aethera-link:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.06);
+  border-color: rgba(242,225,194,0.18);
+  color: rgba(242,225,194,0.96);
+}
+/* ===== Custom MENU panel (slide-in) ===== */
+.menu-scrim{
+  position: fixed;
+  inset: 0;
+  z-index: 2550;
+  background: rgba(0,0,0,.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+
+.menu-scrim.show{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.menu-panel{
+  position: fixed;
+  top: 52px;
+  left: 0;
+  height: 100vh;
+  width: 320px;
+  max-width: calc(100vw - 36px);
+  z-index: 2560;
+
+  background:
+    radial-gradient(600px 280px at 18% 12%, rgba(197,160,89,0.16), transparent 60%),
+    radial-gradient(640px 300px at 80% 32%, rgba(110,140,210,0.10), transparent 62%),
+    rgba(7,8,11,.96);
+  border-right: 1px solid rgba(242,225,194,0.16);
+  backdrop-filter: blur(18px);
+  color: rgba(255,255,255,.92);
+
+  /* start hidden off-screen */
+  transform: translateX(-110%);
+  opacity: 0.98;
+
+  /* smoother + slower */
+  transition: transform .55s cubic-bezier(.16,1,.3,1), opacity .35s ease;
+  will-change: transform;
+  border-top-right-radius: 18px;
+  border-bottom-right-radius: 18px;
+  overflow: hidden;
+}
+
+.menu-panel.open{
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.menu-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+
+.menu-brand{
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;
+  font-weight: 950;
+  letter-spacing: .28em;
+  color: rgba(242,225,194,0.96);
+  font-size: .9rem;
+}
+
+.menu-x{
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.85);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.menu-x:hover{ background: rgba(255,255,255,.06); }
+
+.menu-body{
+  padding: 12px;
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-link{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.82);
+  text-decoration: none;
+  font-weight: 900;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  font-size: .74rem;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.menu-link:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.06);
+  border-color: rgba(242,225,194,0.18);
+  color: rgba(242,225,194,0.96);
+}
+.menu-link .chev{ opacity: .7; font-size: 1.1rem; }
+
+.menu-foot{
+  padding: 10px 14px 14px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.menu-hint{
+  color: rgba(255,255,255,.55);
+  font-size: .78rem;
+}
+
   </style>
 </head>
 
 <body>
-  <!-- PAGE LOADER -->
+<!-- MENU BUTTON (top-left) -->
+<div id="menu-fab" title="Menu" role="button" tabindex="0" aria-controls="aetheraMenu" aria-expanded="false">
+  <span class="dot"></span>
+  <span>Menu</span>
+</div>
+
+<!-- MENU PANEL (slides in) -->
+<div id="aetheraMenu" class="menu-panel" aria-hidden="true">
+  <div class="menu-head">
+    <div class="menu-brand">AETHERA</div>
+    <button id="menuClose" class="menu-x" type="button" aria-label="Close menu">×</button>
+  </div>
+
+  <div class="menu-body">
+    <a class="menu-link" href="/sky"><span>Interactive Sky</span><span class="chev">›</span></a>
+    <a class="menu-link" href="/sonification"><span>Sonification</span><span class="chev">›</span></a>
+    <a class="menu-link" href="/constellations"><span>Constellations</span><span class="chev">›</span></a>
+    <a class="menu-link" href="/#contact"><span>Contact</span><span class="chev">›</span></a>
+  </div>
+
+  <div class="menu-foot">
+    <div class="menu-hint">Press Esc to close</div>
+  </div>
+</div>
+
+<!-- Optional dim backdrop (click to close) -->
+<div id="menuScrim" class="menu-scrim" aria-hidden="true"></div>
+
   <div id="pageLoader" class="page-loader" aria-live="polite" aria-busy="true">
     <div class="loader-card">
       <div class="loader-ring" aria-hidden="true"></div>
-      <div class="loader-title">Loading sky…</div>
-      <div class="loader-sub" id="loaderSub">Preparing constellations and audio stars</div>
+<div class="loader-title">Locating your sky…</div>
+<div class="loader-sub" id="loaderSub">
+  Preparing constellations using AI-assisted analysis and sonification
+</div>
     </div>
   </div>
 
@@ -734,6 +985,7 @@
   </div>
 
   <div id="toast-wrap" aria-live="polite" aria-atomic="true"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
   // =========================
@@ -803,10 +1055,10 @@
   const finder = document.getElementById("finder");
   const finderToggle = document.getElementById("finder-toggle");
 
-  function setFinderOpen(open){
-    finder.classList.toggle("is-hidden", !open);
-    finderToggle.setAttribute("aria-expanded", open ? "true" : "false");
-  }
+function setFinderOpen(open){
+  finder.classList.toggle("is-hidden", !open);
+  finderToggle.setAttribute("aria-expanded", open ? "true" : "false");
+}
   setFinderOpen(true);
 
   function toggleFinder(){ setFinderOpen(finder.classList.contains("is-hidden")); }
@@ -947,15 +1199,17 @@
   }
 
   function isInteractiveTarget(el){
-    return !!(el.closest(".star.major") ||
-              el.closest("#finder") ||
-              el.closest("#finder-toggle") ||
-              el.closest("#sidebar") ||
-              el.closest("#ui-overlay") ||
-              el.closest("#minimap") ||
-              el.closest("#minimap-toggle") ||
-              el.closest("#report-modal") ||
-              el.closest("#report-toggle"));
+  return !!(el.closest(".star.major") ||
+            el.closest("#finder") ||
+            el.closest("#finder-toggle") ||
+            el.closest("#sidebar") ||
+            el.closest("#ui-overlay") ||
+            el.closest("#minimap") ||
+            el.closest("#minimap-toggle") ||
+            el.closest("#report-modal") ||
+            el.closest("#report-toggle") ||
+            el.closest("#menu-fab") ||
+            el.closest("#aetheraMenu"));
   }
 
   sky.addEventListener("mousedown", (e)=>{
@@ -1531,7 +1785,8 @@ function applyZoomVisibilityRules(){
       const r = await fetch(url);
       const d = await r.json();
 
-      showLoader("Computing season visibility…");
+showLoader("Calculating stars visible from your location and time. \n AI generating constellations unique to this observe.");
+
       await fetchSeasonVisibility(lat, lon, season);
 
       const incoming = d.constellations || [];
@@ -1767,6 +2022,44 @@ function applyZoomVisibilityRules(){
       mm.layer.innerHTML = "";
     }
   }
+// =========================
+// Menu toggle (custom panel)
+// =========================
+const menuBtn   = document.getElementById("menu-fab");
+const menuPanel = document.getElementById("aetheraMenu");
+const menuClose = document.getElementById("menuClose");
+const menuScrim = document.getElementById("menuScrim");
+
+function setMenuOpen(open){
+  menuPanel.classList.toggle("open", open);
+  menuScrim.classList.toggle("show", open);
+
+  menuPanel.setAttribute("aria-hidden", open ? "false" : "true");
+  menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+
+  // optional: prevent background scrolling (you already have overflow hidden, but keep clean)
+  document.documentElement.style.overflow = open ? "hidden" : "";
+  document.body.style.overflow = open ? "hidden" : "";
+}
+
+function toggleMenu(){
+  const open = !menuPanel.classList.contains("open");
+  setMenuOpen(open);
+}
+
+menuBtn.addEventListener("click", (e)=>{ e.preventDefault(); toggleMenu(); });
+menuBtn.addEventListener("keydown", (e)=>{
+  if(e.key === "Enter" || e.key === " "){ e.preventDefault(); toggleMenu(); }
+});
+menuClose.addEventListener("click", ()=> setMenuOpen(false));
+menuScrim.addEventListener("click", ()=> setMenuOpen(false));
+
+// Update your Escape handler to also close menu:
+window.addEventListener("keydown", (e)=>{
+  if(e.key === "Escape"){
+    setMenuOpen(false);
+  }
+});
 
   // =========================
   // Init
